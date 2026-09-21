@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, ::before, ::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+  
+  body {
+    background-color: #FAF7F2;
+    color: #2A1E24;
+    overflow-x: hidden;
+    max-width: 100%;
+    width: 100%;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Ensure interactive touch targets meet accessibility standards on mobile */
+  button, a, input, select, textarea {
+    touch-action: manipulation;
+  }
+
+  ::selection {
+    background-color: #D83A75;
+    color: #ffffff;
+  }
+}
+
+@layer utilities {
+  .text-glow {
+    text-shadow: 0 2px 10px rgba(216, 58, 117, 0.25);
+  }
+  
+  .glass-card {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  
+  .glass-pill {
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 10px 30px -5px rgba(216, 58, 117, 0.08), 0 4px 12px rgba(0, 0, 0, 0.03);
+  }
+
+  /* Hide scrollbar for category pills on mobile while retaining touch scrolling */
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Custom delicate scrollbar for desktop */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FAF7F2;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E8A3BE;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #D83A75;
+}
