@@ -343,16 +343,85 @@ export const ALL_SERVICES = [
     description: 'Tidy, hygienic bikini line waxing using ultra-gentle hard wax.',
     features: ['Bikini line edging', 'Comfort hard wax', 'Tea tree soothing balm']
   },
+  // ==========================================
+  // FACIAL SERVICES
+  // ==========================================
   {
-    id: 'facial',
-    name: 'Facial',
+    id: 'mini-facial',
+    name: 'Mini-Facial',
+    category: 'facial',
+    categoryName: 'Facial',
+    price: 20,
+    duration: '25 min',
+    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
+    description: 'Quick refreshing facial treatment featuring scrub exfoliation, warm steaming, and blackheads extraction.',
+    features: ['Scrub exfoliation', 'Warm steaming', 'Blackheads extraction', 'Soothing mist']
+  },
+  {
+    id: 'express-facial',
+    name: 'Express Facial',
+    category: 'facial',
+    categoryName: 'Facial',
+    price: 40,
+    duration: '35 min',
+    image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80',
+    description: 'Rejuvenating express facial featuring deep cleansing, gentle scrubbing, and a relaxing face massage.',
+    features: ['Cleansing', 'Scrubbing', 'Relaxing face massage', 'Hydration seal']
+  },
+  {
+    id: 'classic-facial',
+    name: 'Classic Facial',
     category: 'facial',
     categoryName: 'Facial',
     price: 65,
     duration: '50 min',
     image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80',
-    description: 'Deep cleansing, 24K Gold, Hydra-Glow & herbal Ayurvedic facial therapies.',
-    features: ['Deep pore cleanse', 'Exfoliation & steam', 'Custom herbal mask', 'Glowing hydration seal']
+    description: 'Essential refreshing facial featuring double cleanse, exfoliation, steam, and customized hydration mask.',
+    features: ['Double cleanse', 'Enzyme exfoliation', 'Warm towel steam', 'Custom soothing mask']
+  },
+  {
+    id: 'deep-cleansing-facial',
+    name: 'Deep Cleansing Facial',
+    category: 'facial',
+    categoryName: 'Facial',
+    price: 85,
+    duration: '60 min',
+    image: 'https://images.unsplash.com/photo-1512290900672-1f02e60938c5?auto=format&fit=crop&w=800&q=80',
+    description: 'Pore decongesting treatment with gentle extractions, purifying clay mask, and antibacterial therapy.',
+    features: ['Pore unclogging steam', 'Manual comedone extraction', 'Purifying clay mask', 'High frequency therapy']
+  },
+  {
+    id: 'hydrating-facial',
+    name: 'Hydrating Facial',
+    category: 'facial',
+    categoryName: 'Facial',
+    price: 80,
+    duration: '60 min',
+    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
+    description: 'Quenches dry skin with hyaluronic acid infusions and a soothing rosewater hydro-jelly mask.',
+    features: ['Hyaluronic multi-layer serum', 'Hydro-jelly mask', 'Cryo-globe massage', 'Barrier renewal cream']
+  },
+  {
+    id: 'brightening-kumkumadi-facial',
+    name: 'Brightening Kumkumadi Facial',
+    category: 'facial',
+    categoryName: 'Facial',
+    price: 95,
+    duration: '60 min',
+    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80',
+    description: 'Ayurvedic Kumkumadi and botanical alpha-arbutin treatment to diminish sunspots and restore luminous glow.',
+    features: ['Sandalwood exfoliation', 'Kumkumadi oil lymphatic massage', 'Brightening botanical pack', 'Sun defense seal']
+  },
+  {
+    id: '24k-gold-hydra-facial',
+    name: '24K Gold & Hydra-Glow Facial',
+    category: 'facial',
+    categoryName: 'Facial',
+    price: 135,
+    duration: '75 min',
+    image: 'https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=800&q=80',
+    description: 'Luxurious 24K pure gold leaf facial that improves cellular renewal and leaves skin royally radiant.',
+    features: ['24K gold foil application', 'Gold serum ionization', 'Lymphatic face massage', 'Illuminating gold mask']
   },
   {
     id: 'massage',
