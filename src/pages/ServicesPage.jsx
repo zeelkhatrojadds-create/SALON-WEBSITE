@@ -3,7 +3,6 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Sparkles, RefreshCw, Layers, ChevronLeft, ChevronRight } from 'lucide-react';
 import { CATEGORIES } from '../data/servicesData';
 import salonDB from '../db/salonDatabase';
-import ServicesHero from '../components/services/ServicesHero';
 import ServicesBenefits from '../components/services/ServicesBenefits';
 import CategoryFilter from '../components/services/CategoryFilter';
 import SearchBar from '../components/services/SearchBar';
@@ -130,10 +129,7 @@ export default function ServicesPage({ isSection = false }) {
     >
       <div className="w-full px-3 sm:px-6 lg:px-12 xl:px-20 mx-auto">
         
-        {/* 1. Services Hero Banner */}
-        <ServicesHero />
-
-        {/* 2. Four-Column Trust Benefits Section */}
+        {/* Four-Column Trust Benefits Section */}
         <ServicesBenefits />
 
         {/* 3. Filter & Search Controls */}
