@@ -1,5 +1,5 @@
 // Complete, clean treatment dataset for GLAM GIRL BY JANKI
-// Contains ONLY the 10 requested services
+// All 44 Services with matching HD images and exact pricing
 
 export const CATEGORIES = [
   { id: 'all', name: 'All Services', icon: 'Sparkles', slug: 'all' },
@@ -43,6 +43,9 @@ export const SERVICE_BENEFITS = [
 ];
 
 export const ALL_SERVICES = [
+  // ==========================================
+  // THREADING SERVICES (8 Items)
+  // ==========================================
   {
     id: 'eyebrows-threading',
     name: 'Eyebrows Threading',
@@ -61,7 +64,7 @@ export const ALL_SERVICES = [
     categoryName: 'Threading',
     price: 6,
     duration: '10 min',
-    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1512290900672-1f02e60938c5?auto=format&fit=crop&w=800&q=80',
     description: 'Quick, gentle cotton thread hair removal for the upper lip.',
     features: ['Sanitized thread', 'Fast & precise', 'Soothing rosewater']
   },
@@ -83,7 +86,7 @@ export const ALL_SERVICES = [
     categoryName: 'Threading',
     price: 8,
     duration: '10 min',
-    image: 'https://images.unsplash.com/photo-1512290900672-1f02e60938c5?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
     description: 'Targeted chin hair threading with anti-irritation soothing balm.',
     features: ['Root hair removal', 'Chin shaping', 'Aloe soothing']
   },
@@ -94,7 +97,7 @@ export const ALL_SERVICES = [
     categoryName: 'Threading',
     price: 8,
     duration: '15 min',
-    image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=800&q=80',
     description: 'Gentle cheek peach fuzz removal leaving skin soft and makeup-ready.',
     features: ['Peach fuzz removal', 'Smooth finish', 'Hydrating compress']
   },
@@ -116,7 +119,7 @@ export const ALL_SERVICES = [
     categoryName: 'Threading',
     price: 8,
     duration: '15 min',
-    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=800&q=80',
     description: 'Neck area stray hair threading for a clean, elegant look.',
     features: ['Neck hair removal', 'Skin calming balm', 'Zero redness formula']
   },
@@ -127,10 +130,11 @@ export const ALL_SERVICES = [
     categoryName: 'Threading',
     price: 35,
     duration: '30 min',
-    image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=800&q=80',
     description: 'Complete facial threading covering brows, lip, chin, cheeks, forehead, sideburns & neck.',
     features: ['Brows, lip, chin, cheeks, forehead', 'Full facial hair removal', 'Cooling cucumber compress', 'Calming aloe lotion']
   },
+
   // ==========================================
   // WAXING SERVICES (19 Items)
   // ==========================================
@@ -174,7 +178,7 @@ export const ALL_SERVICES = [
     categoryName: 'Waxing',
     price: 8,
     duration: '10 min',
-    image: 'https://images.unsplash.com/photo-1512290900672-1f02e60938c5?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
     description: 'Chin area hair removal using gentle stripless wax.',
     features: ['Root elimination', 'Aloe soothing lotion', 'Smooth skin']
   },
@@ -185,7 +189,7 @@ export const ALL_SERVICES = [
     categoryName: 'Waxing',
     price: 8,
     duration: '15 min',
-    image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=800&q=80',
     description: 'Cheek peach fuzz waxing for a silky smooth finish.',
     features: ['Peach fuzz removal', 'Zero residue', 'Calming compress']
   },
@@ -207,7 +211,7 @@ export const ALL_SERVICES = [
     categoryName: 'Waxing',
     price: 8,
     duration: '15 min',
-    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=800&q=80',
     description: 'Gentle neck area waxing.',
     features: ['Stray hair removal', 'Soothing balm', 'No irritation']
   },
@@ -218,7 +222,7 @@ export const ALL_SERVICES = [
     categoryName: 'Waxing',
     price: 35,
     duration: '35 min',
-    image: 'https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80',
     description: 'Complete facial waxing covering forehead, brows, lip, chin, cheeks & sideburns.',
     features: ['Full facial coverage', 'Gentle hard wax', 'Ice globe massage', 'Aloe mask']
   },
@@ -229,7 +233,7 @@ export const ALL_SERVICES = [
     categoryName: 'Waxing',
     price: 12,
     duration: '15 min',
-    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?auto=format&fit=crop&w=800&q=80',
     description: 'Clean, smooth underarm waxing leaving skin hair-free for weeks.',
     features: ['Root removal', 'Stripless hard wax', 'Ingrown prevention']
   },
@@ -343,9 +347,7 @@ export const ALL_SERVICES = [
     description: 'Tidy, hygienic bikini line waxing using ultra-gentle hard wax.',
     features: ['Bikini line edging', 'Comfort hard wax', 'Tea tree soothing balm']
   },
-  // ==========================================
-  // FACIAL SERVICES
-  // ==========================================
+
   // ==========================================
   // FACIAL SERVICES (10 Items)
   // ==========================================
@@ -459,6 +461,10 @@ export const ALL_SERVICES = [
     description: 'Signature luxury treatment featuring a full facial, hot towel treatment, and relaxing back massage.',
     features: ['Full signature facial', 'Hot towel treatment', 'Relaxing back massage', 'Hydrating face pack', 'Royal pampering']
   },
+
+  // ==========================================
+  // MASSAGE (1 Item)
+  // ==========================================
   {
     id: 'massage',
     name: 'Massage',
@@ -470,6 +476,10 @@ export const ALL_SERVICES = [
     description: 'Therapeutic warm oil head & scalp massage, neck relief & body relaxation.',
     features: ['Warm herbal oil', 'Scalp acupressure', 'Neck & shoulder relief', 'Tension melt therapy']
   },
+
+  // ==========================================
+  // HENNA (1 Item)
+  // ==========================================
   {
     id: 'henna',
     name: 'Henna',
@@ -481,6 +491,10 @@ export const ALL_SERVICES = [
     description: '100% natural organic Rajastani henna designs for hands, feet & hair application.',
     features: ['Arabic & floral motifs', 'Bridal Mehndi couture', 'Organic hair henna', 'Rich long-lasting stain']
   },
+
+  // ==========================================
+  // MAKEUP (1 Item)
+  // ==========================================
   {
     id: 'makeup',
     name: 'Makeup',
@@ -492,6 +506,10 @@ export const ALL_SERVICES = [
     description: 'HD Airbrush bridal makeover, engagement glow & glamorous party makeup.',
     features: ['Skin prep & base', 'Eye couture & lashes', 'High-Definition contour', '24-hr setting lock']
   },
+
+  // ==========================================
+  // HAIRSTYLING (1 Item)
+  // ==========================================
   {
     id: 'hairstyling',
     name: 'Hairstyling',
@@ -503,6 +521,10 @@ export const ALL_SERVICES = [
     description: 'Hollywood waves, bouncy blowouts, party updos & bridal hair styling.',
     features: ['Hot tool curling & waves', 'Volumizing blowout', 'Bridal updos & buns', 'Shine lock setting']
   },
+
+  // ==========================================
+  // HAIR CUT (1 Item)
+  // ==========================================
   {
     id: 'haircut',
     name: 'Hair cut',
@@ -514,6 +536,10 @@ export const ALL_SERVICES = [
     description: 'Bespoke precision haircuts, butterfly layers, bangs & signature blow dry.',
     features: ['Consultation & cut', 'Layers & texturizing', 'Curtain bangs framing', 'Bouncy blowout']
   },
+
+  // ==========================================
+  // HAIR COLOR (1 Item)
+  // ==========================================
   {
     id: 'haircolor',
     name: 'Hair color',
@@ -525,6 +551,10 @@ export const ALL_SERVICES = [
     description: 'Single process global hair colour, hand-painted balayage, root touch-up & highlights.',
     features: ['Ammonia-free formulas', 'Balayage & ombre', 'Root regrowth coverage', 'Olaplex gloss sealant']
   },
+
+  // ==========================================
+  // HAIR TREATMENTS (1 Item)
+  // ==========================================
   {
     id: 'hairtreatments',
     name: 'Hair treatments',
