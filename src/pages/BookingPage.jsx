@@ -26,7 +26,7 @@ import confetti from 'canvas-confetti';
 import floralImg from '../assets/floral-booking.jpg';
 import jankiPhoto from '../assets/janki-khatroja.jpg';
 import { ALL_SERVICES, CATEGORIES } from '../data/servicesData';
-import { getWhatsAppBookingUrl, getWhatsAppConfig, sendWhatsAppBookingDirect, formatDisplayPhone } from '../utils/whatsapp';
+import { getWhatsAppBookingUrl, getWhatsAppConfig, formatDisplayPhone } from '../utils/whatsapp';
 import salonDB from '../db/salonDatabase';
 
 const STYLISTS = [
@@ -223,11 +223,6 @@ export default function BookingPage() {
 
     // Save to Salon Database
     salonDB.addAppointment(bookingPayload);
-
-    // Auto-trigger WhatsApp message dispatch
-    try {
-      sendWhatsAppBookingDirect(bookingPayload);
-    } catch (e) {}
 
     setConfirmedBooking(bookingPayload);
     setIsSubmitting(false);
