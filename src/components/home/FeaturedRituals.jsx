@@ -19,7 +19,7 @@ export default function FeaturedRituals() {
   };
 
   const handleViewDetails = (service) => {
-    navigate(`/services/${service.id}`);
+    navigate(`/book-appointment?service=${service.id}`);
   };
 
   return (

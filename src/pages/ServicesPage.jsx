@@ -118,7 +118,7 @@ export default function ServicesPage({ isSection = false }) {
   };
 
   const handleViewDetails = (service) => {
-    navigate(`/services/${service.id}`);
+    navigate(`/book-appointment?service=${service.id}`);
   };
 
   return (

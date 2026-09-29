@@ -18,16 +18,11 @@ export default function ServiceCard({ service, onQuickBook, onViewDetails }) {
     }
   };
 
-  const handleDetails = () => {
-    if (onViewDetails) {
-      onViewDetails(service);
-    } else {
-      navigate(`/services/${service.id}`);
-    }
-  };
-
   return (
-    <div className="bg-[#1C1418]/90 backdrop-blur-md rounded-3xl overflow-hidden border border-white/10 shadow-2xl hover:border-brand-pink/50 hover:shadow-brand-pink/15 transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1.5 w-full">
+    <div 
+      onClick={handleBook}
+      className="bg-[#1C1418]/90 backdrop-blur-md rounded-3xl overflow-hidden border border-white/10 shadow-2xl hover:border-brand-pink/50 hover:shadow-brand-pink/15 transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1.5 w-full cursor-pointer"
+    >
       {/* Treatment Image Container */}
       <div className="relative aspect-[16/10] sm:aspect-[4/3] w-full overflow-hidden bg-white/5">
         <img
@@ -65,7 +60,7 @@ export default function ServiceCard({ service, onQuickBook, onViewDetails }) {
           {/* Price & Duration */}
           <div className="flex items-center justify-between text-xs py-2 border-t border-white/10 mb-3 sm:mb-4">
             <div>
-              <span className="text-[10px] uppercase tracking-wider text-white/50 block -mb-0.5">From</span>
+              <span className="text-[10px] uppercase tracking-wider text-white/50 block -mb-0.5">Price</span>
               <span className="font-serif font-bold text-white text-base sm:text-lg">
                 CA${service.price}
               </span>
@@ -78,28 +73,18 @@ export default function ServiceCard({ service, onQuickBook, onViewDetails }) {
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="grid grid-cols-2 gap-2 sm:gap-2.5 pt-1">
-          <Link
-            to={`/services/${service.id}`}
-            onClick={(e) => {
-              if (onViewDetails) {
-                e.preventDefault();
-                onViewDetails(service);
-              }
-            }}
-            className="min-h-[44px] py-2.5 px-2.5 sm:px-3 rounded-full bg-white/5 hover:bg-white/15 text-white/90 hover:text-white text-xs font-medium border border-white/15 flex items-center justify-center text-center transition-all cursor-pointer"
-          >
-            View Details
-          </Link>
-
+        {/* Action Button: Direct Book */}
+        <div className="pt-1">
           <button
             type="button"
-            onClick={handleBook}
-            className="min-h-[44px] py-2.5 px-2.5 sm:px-3 rounded-full bg-brand-pink hover:bg-brand-pink-hover text-white text-xs font-semibold text-center shadow-md shadow-brand-pink/25 active:scale-95 transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleBook();
+            }}
+            className="w-full min-h-[44px] py-2.5 px-4 rounded-full bg-brand-pink hover:bg-brand-pink-hover text-white text-xs font-bold uppercase tracking-wider shadow-md shadow-brand-pink/25 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
-            <Calendar className="w-3.5 h-3.5 flex-shrink-0" />
-            <span>Book Now</span>
+            <Calendar className="w-4 h-4 flex-shrink-0" />
+            <span>Book Appointment</span>
           </button>
         </div>
       </div>

@@ -73,12 +73,11 @@ export default function RelatedServices({ currentServiceId, category, categoryNa
 
                 <button
                   onClick={() => {
-                    navigate(`/services/${service.id}`);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    navigate(`/book-appointment?service=${service.id}`);
                   }}
-                  className="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-brand-pink text-white text-xs font-semibold transition-all cursor-pointer"
+                  className="px-3.5 py-1.5 rounded-full bg-brand-pink text-white text-xs font-semibold transition-all cursor-pointer"
                 >
-                  View Details
+                  Book Now
                 </button>
               </div>
             </div>

@@ -26,11 +26,11 @@ export default function ServicesPreview({ selectedCategory, onSelectCategory }) 
     : ALL_SERVICES.filter((s) => s.category === activeTab);
 
   const handleQuickBook = (service) => {
-    navigate(`/booking?service=${service.id}`);
+    navigate(`/book-appointment?service=${service.id}`);
   };
 
   const handleViewDetails = (service) => {
-    navigate(`/services/${service.id}`);
+    navigate(`/book-appointment?service=${service.id}`);
   };
 
   return (

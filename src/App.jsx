@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, useParams, Navigate } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import HomePage from './pages/HomePage';
@@ -7,6 +7,11 @@ import BookingPage from './pages/BookingPage';
 import ServiceDetailPage from './pages/ServiceDetailPage';
 import AdminPage from './pages/AdminPage';
 import NotFoundPage from './pages/NotFoundPage';
+
+function ServiceRedirect() {
+  const { id } = useParams();
+  return <Navigate to={`/book-appointment?service=${id}`} replace />;
+}
 
 // Helper component for page transitions
 function RouteScrollManager() {
@@ -75,8 +80,8 @@ function AppLayout() {
           <Route path="/about" element={<HomePage defaultSection="about" />} />
           <Route path="/contact" element={<HomePage defaultSection="contact" />} />
 
-          {/* Individual Service Deep Dive Page */}
-          <Route path="/services/:id" element={<ServiceDetailPage />} />
+          {/* Direct Service Booking Redirect (No detail page) */}
+          <Route path="/services/:id" element={<ServiceRedirect />} />
 
           {/* Dedicated Admin Portal Route */}
           <Route path="/admin" element={<AdminPage />} />
