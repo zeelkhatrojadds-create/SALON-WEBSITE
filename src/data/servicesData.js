@@ -12,7 +12,8 @@ export const CATEGORIES = [
   { id: 'hairstyling', name: 'Hairstyling', icon: 'Sparkles', slug: 'hairstyling' },
   { id: 'haircut', name: 'Hair cut', icon: 'Scissors', slug: 'hair-cut' },
   { id: 'haircolor', name: 'Hair color', icon: 'Droplets', slug: 'hair-color' },
-  { id: 'hairtreatments', name: 'Hair treatments', icon: 'Heart', slug: 'hair-treatments' }
+  { id: 'hairtreatments', name: 'Hair treatments', icon: 'Heart', slug: 'hair-treatments' },
+  { id: 'other', name: 'Other Services', icon: 'Sparkles', slug: 'other-services' }
 ];
 
 export const SERVICE_BENEFITS = [
@@ -463,18 +464,29 @@ export const ALL_SERVICES = [
   },
 
   // ==========================================
-  // MASSAGE (1 Item)
+  // MASSAGE (2 Items)
   // ==========================================
   {
-    id: 'massage',
-    name: 'Massage',
+    id: 'indian-head-massage',
+    name: 'Indian Head massage',
     category: 'massage',
     categoryName: 'Massage',
     price: 50,
     duration: '30 min',
     image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
-    description: 'Therapeutic warm oil head & scalp massage, neck relief & body relaxation.',
+    description: 'Traditional warm herbal oil scalp, neck and shoulder massage to melt away stress.',
     features: ['Warm herbal oil', 'Scalp acupressure', 'Neck & shoulder relief', 'Tension melt therapy']
+  },
+  {
+    id: 'body-massage',
+    name: 'Body massage',
+    category: 'massage',
+    categoryName: 'Massage',
+    price: 100,
+    duration: '60 min',
+    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
+    description: 'Full body relaxing massage restoring muscle tone and deep relaxation.',
+    features: ['Full body therapy', 'Essential oil blend', 'Deep muscle relaxation', 'Stress release']
   },
 
   // ==========================================
@@ -565,6 +577,65 @@ export const ALL_SERVICES = [
     image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80',
     description: 'Royal herbal hair spa, pure keratin smoothing, deep conditioning & straightening.',
     features: ['Herbal steam hair spa', 'Formaldehyde-free keratin', 'Deep cuticle repair', 'High-shine gloss']
+  },
+
+  // ==========================================
+  // OTHER SERVICES (5 Items)
+  // ==========================================
+  {
+    id: 'brow-lamination',
+    name: 'Brow lamination',
+    category: 'other',
+    categoryName: 'Other Services',
+    price: 70,
+    duration: '45 min',
+    image: 'https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=800&q=80',
+    description: 'Symmetry, volume and fullness treatment for sleek, lifted eyebrows.',
+    features: ['Symmetry brow mapping', 'Lamination perming formula', 'Nourishing kerashield']
+  },
+  {
+    id: 'eyebrow-tinting',
+    name: 'Eyebrow tinting',
+    category: 'other',
+    categoryName: 'Other Services',
+    price: 15,
+    duration: '20 min',
+    image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80',
+    description: 'Custom brow dye tinting for fuller, defined eyebrows.',
+    features: ['Custom shade matching', 'Long-lasting tint', 'Brow conditioning']
+  },
+  {
+    id: 'eyelash-tinting',
+    name: 'Eyelash tinting',
+    category: 'other',
+    categoryName: 'Other Services',
+    price: 20,
+    duration: '25 min',
+    image: 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=800&q=80',
+    description: 'Darkening tint for natural lashes providing mascara-like definition.',
+    features: ['Deep jet-black/brown dye', 'Safe ocular formula', 'Zero smudging']
+  },
+  {
+    id: 'indian-head-massage-other',
+    name: 'Indian Head massage',
+    category: 'other',
+    categoryName: 'Other Services',
+    price: 50,
+    duration: '30 min',
+    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
+    description: 'Traditional warm herbal oil scalp, neck and shoulder massage to melt away stress.',
+    features: ['Warm herbal oil', 'Scalp acupressure', 'Neck & shoulder relief']
+  },
+  {
+    id: 'body-massage-other',
+    name: 'Body massage',
+    category: 'other',
+    categoryName: 'Other Services',
+    price: 100,
+    duration: '60 min',
+    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
+    description: 'Full body relaxing massage restoring muscle tone and deep relaxation.',
+    features: ['Full body therapy', 'Essential oil blend', 'Deep muscle relaxation']
   }
 ];
 

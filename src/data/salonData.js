@@ -78,8 +78,16 @@ export const CATEGORIES = [
     name: 'Hair treatments',
     slug: 'hair-treatments',
     icon: 'Heart',
-    count: 6,
+    count: 1,
     description: 'Royal herbal hair spa, pure keratin smoothing & deep repair treatments.'
+  },
+  {
+    id: 'other',
+    name: 'Other Services',
+    slug: 'other-services',
+    icon: 'Sparkles',
+    count: 5,
+    description: 'Brow lamination, lash/brow tinting, Indian Head massage & body massage.'
   }
 ];
 
