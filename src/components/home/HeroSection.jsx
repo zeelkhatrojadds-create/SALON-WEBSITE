@@ -47,7 +47,7 @@ export default function HeroSection() {
             {/* Primary Button */}
             <Link
               to="/book-appointment"
-              className="w-full sm:w-auto h-[48px] sm:h-[52px] inline-flex items-center justify-center gap-2 bg-[#DDB88C] hover:bg-[#E8C59A] text-[#120E10] text-xs sm:text-sm font-semibold uppercase tracking-wider px-7 rounded-full shadow-lg shadow-[#DDB88C]/20 hover:shadow-xl hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-[#DDB88C] focus:ring-offset-2 focus:ring-offset-[#0D0B0B] active:scale-98 transition-all duration-200 cursor-pointer"
+              className="w-full sm:w-auto h-[48px] sm:h-[52px] inline-flex items-center justify-center gap-2 bg-[#D83A75] hover:bg-[#c42f65] text-white text-xs sm:text-sm font-bold uppercase tracking-wider px-7 rounded-full shadow-lg shadow-[#D83A75]/30 hover:shadow-xl hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-[#D83A75] focus:ring-offset-2 focus:ring-offset-[#0D0B0B] active:scale-98 transition-all duration-200 cursor-pointer"
             >
               <span>BOOK YOUR APPOINTMENT</span>
               <ArrowRight className="w-4 h-4" />

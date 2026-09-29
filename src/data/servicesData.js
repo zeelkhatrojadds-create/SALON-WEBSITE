@@ -529,7 +529,7 @@ export const ALL_SERVICES = [
     categoryName: 'Hairstyling',
     price: 55,
     duration: '45 min',
-    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80',
+    image: '/service.img/HairStyling.jpg',
     description: 'Hollywood waves, bouncy blowouts, party updos & bridal hair styling.',
     features: ['Hot tool curling & waves', 'Volumizing blowout', 'Bridal updos & buns', 'Shine lock setting']
   },
@@ -544,7 +544,7 @@ export const ALL_SERVICES = [
     categoryName: 'Hair cut',
     price: 45,
     duration: '45 min',
-    image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80',
+    image: '/service.img/Haircut&Styling.jpg',
     description: 'Bespoke precision haircuts, butterfly layers, bangs & signature blow dry.',
     features: ['Consultation & cut', 'Layers & texturizing', 'Curtain bangs framing', 'Bouncy blowout']
   },
@@ -559,7 +559,7 @@ export const ALL_SERVICES = [
     categoryName: 'Hair color',
     price: 85,
     duration: '90 min',
-    image: 'https://images.unsplash.com/photo-1605497788044-5a32c7078486?auto=format&fit=crop&w=800&q=80',
+    image: '/service.img/HairColour.jpg',
     description: 'Single process global hair colour, hand-painted balayage, root touch-up & highlights.',
     features: ['Ammonia-free formulas', 'Balayage & ombre', 'Root regrowth coverage', 'Olaplex gloss sealant']
   },
@@ -574,7 +574,7 @@ export const ALL_SERVICES = [
     categoryName: 'Hair treatments',
     price: 85,
     duration: '60 min',
-    image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80',
+    image: '/service.img/HairSpa.jpg',
     description: 'Royal herbal hair spa, pure keratin smoothing, deep conditioning & straightening.',
     features: ['Herbal steam hair spa', 'Formaldehyde-free keratin', 'Deep cuticle repair', 'High-shine gloss']
   },

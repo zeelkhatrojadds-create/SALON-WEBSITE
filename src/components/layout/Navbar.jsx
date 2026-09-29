@@ -152,7 +152,7 @@ export default function Navbar() {
               {/* Desktop Book Appointment Button */}
               <Link
                 to="/book-appointment"
-                className="hidden sm:inline-flex items-center gap-2 bg-[#DDB88C] hover:bg-[#E8C59A] text-[#120E10] text-xs font-semibold uppercase tracking-wider px-5 xl:px-6 py-2.5 rounded-full shadow-lg shadow-[#DDB88C]/20 hover:scale-102 transition-all duration-200 cursor-pointer"
+                className="hidden sm:inline-flex items-center gap-2 bg-[#D83A75] hover:bg-[#c42f65] text-white text-xs font-bold uppercase tracking-wider px-5 xl:px-6 py-2.5 rounded-full shadow-lg shadow-[#D83A75]/30 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
               >
                 <Calendar className="w-3.5 h-3.5" />
                 <span>BOOK APPOINTMENT</span>
