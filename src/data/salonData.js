@@ -2,44 +2,84 @@
 
 export const CATEGORIES = [
   {
-    id: 'hair',
-    name: 'Hair Care',
-    slug: 'hair-care',
-    icon: 'Scissors',
-    count: 8,
-    description: 'Bespoke cuts, balayage, botanical conditioning & Indian hair spa rituals.'
-  },
-  {
-    id: 'skin',
-    name: 'Skin Care',
-    slug: 'skin-care',
-    icon: 'Sparkles',
-    count: 6,
-    description: 'Gold facials, Hydra-glow therapies, Ayurvedic skin rejuvenating treatments.'
-  },
-  {
-    id: 'nails',
-    name: 'Nail Care',
-    slug: 'nail-care',
-    icon: 'Hand',
+    id: 'threading',
+    name: 'Threading',
+    slug: 'threading',
+    icon: 'Feather',
     count: 5,
-    description: 'Luxury gel manicures, organic spa pedicures and hand-painted nail artistry.'
+    description: 'Precision cotton thread shaping for eyebrows, upper lip, chin & full face.'
+  },
+  {
+    id: 'waxing',
+    name: 'Waxing',
+    slug: 'waxing',
+    icon: 'Sparkle',
+    count: 9,
+    description: 'Gentle stripless hard wax & warm honey wax for smooth, hair-free skin.'
+  },
+  {
+    id: 'facial',
+    name: 'Facial',
+    slug: 'facial',
+    icon: 'Sparkles',
+    count: 7,
+    description: '24K Gold, Hydra-Glow, Ayurvedic Kumkumadi & deep cleansing facials.'
+  },
+  {
+    id: 'massage',
+    name: 'Massage',
+    slug: 'massage',
+    icon: 'Flower2',
+    count: 4,
+    description: 'Therapeutic head & scalp massage, aromatherapy & deep relaxation.'
+  },
+  {
+    id: 'henna',
+    name: 'Henna',
+    slug: 'henna',
+    icon: 'Palette',
+    count: 5,
+    description: 'Rajastani organic bridal Mehndi, party henna art & natural hair henna.'
   },
   {
     id: 'makeup',
     name: 'Makeup',
     slug: 'makeup',
-    icon: 'Palette',
-    count: 6,
-    description: 'Bridal glam, HD party makeover, Mehndi styling & soft editorial finishes.'
+    icon: 'Wand2',
+    count: 5,
+    description: 'Royal HD Airbrush bridal makeover, engagement & evening glam.'
   },
   {
-    id: 'spa',
-    name: 'Spa & Wellness',
-    slug: 'spa-wellness',
-    icon: 'Flower2',
+    id: 'hairstyling',
+    name: 'Hairstyling',
+    slug: 'hairstyling',
+    icon: 'Sparkles',
     count: 5,
-    description: 'Aromatherapy massages, body polishing and tranquil wellness ceremonies.'
+    description: 'Hollywood waves, voluminous blowouts, bridal updos & event styling.'
+  },
+  {
+    id: 'haircut',
+    name: 'Hair cut',
+    slug: 'hair-cut',
+    icon: 'Scissors',
+    count: 4,
+    description: 'Bespoke precision haircuts, butterfly layers & face-framing fringe.'
+  },
+  {
+    id: 'haircolor',
+    name: 'Hair color',
+    slug: 'hair-color',
+    icon: 'Droplets',
+    count: 6,
+    description: 'Hand-painted balayage, single process colour, root touch-ups & highlights.'
+  },
+  {
+    id: 'hairtreatments',
+    name: 'Hair treatments',
+    slug: 'hair-treatments',
+    icon: 'Heart',
+    count: 6,
+    description: 'Royal herbal hair spa, pure keratin smoothing & deep repair treatments.'
   }
 ];
 

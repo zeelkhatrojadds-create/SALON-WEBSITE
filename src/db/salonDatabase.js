@@ -50,15 +50,11 @@ class SalonDatabase {
   initDatabase() {
     if (typeof window === 'undefined') return;
 
-    // 1. Seed Services if missing
-    if (!localStorage.getItem(DB_KEYS.SERVICES)) {
-      localStorage.setItem(DB_KEYS.SERVICES, JSON.stringify(ALL_SERVICES.map(s => ({ ...s, active: true }))));
-    }
+    // 1. Seed & Sync Services
+    localStorage.setItem(DB_KEYS.SERVICES, JSON.stringify(ALL_SERVICES.map(s => ({ ...s, active: true }))));
 
-    // 2. Seed Categories if missing
-    if (!localStorage.getItem(DB_KEYS.CATEGORIES)) {
-      localStorage.setItem(DB_KEYS.CATEGORIES, JSON.stringify(CATEGORIES));
-    }
+    // 2. Seed & Sync Categories
+    localStorage.setItem(DB_KEYS.CATEGORIES, JSON.stringify(CATEGORIES));
 
     // 3. Seed Appointments if missing
     if (!localStorage.getItem(DB_KEYS.APPOINTMENTS)) {
