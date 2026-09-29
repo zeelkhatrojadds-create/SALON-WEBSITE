@@ -1,83 +1,144 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, ArrowRight, Sparkles, MapPin, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Scissors, Flower2, Gem, MapPin } from 'lucide-react';
 import jankiPhoto from '../../assets/janki-khatroja.jpg';
 
 export default function HeroSection() {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   return (
-    <section className="relative w-full min-h-screen overflow-hidden bg-[#140E11] flex items-center pt-24 pb-14 sm:py-28 lg:py-32">
+    <section className="relative w-full min-h-screen bg-[#F6F1EA] text-[#2D2327] flex flex-col justify-between pt-20 sm:pt-24 lg:pt-28 pb-8 overflow-hidden selection:bg-[#B38357] selection:text-white">
       
-      {/* 1. Full-Bleed Background Photograph of Main Owner Janki Khatroja */}
-      <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
-        <img
-          src={jankiPhoto || "/janki-khatroja.jpg"}
-          alt="Janki Khatroja — Founder, Main Owner & Master Beauty Director"
-          onLoad={() => setImageLoaded(true)}
-          className={`w-full h-full object-cover object-[center_20%] lg:object-[80%_20%] transition-transform duration-1000 ease-out transform ${
-            imageLoaded ? 'scale-100 opacity-100' : 'scale-105 opacity-90'
-          }`}
-          loading="eager"
-        />
+      {/* Ambient background glow & lighting */}
+      <div className="absolute top-0 right-1/3 w-96 h-96 bg-[#E8D4C2]/40 rounded-full blur-3xl pointer-events-none -mt-20" />
+      <div className="absolute bottom-0 left-10 w-80 h-80 bg-[#E5C3B0]/30 rounded-full blur-3xl pointer-events-none" />
 
-        {/* 2. Professional Cinematic Gradient Overlays for Maximum Readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#140E11] via-[#140E11]/90 via-45% md:via-55% md:to-transparent to-black/50" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#140E11]/80 via-transparent to-[#140E11]/95" />
-        <div className="absolute top-1/4 left-5 sm:left-10 w-72 sm:w-96 h-72 sm:h-96 bg-brand-pink/15 rounded-full blur-3xl pointer-events-none" />
-      </div>
-
-      {/* 3. Hero Foreground Content */}
-      <div className="relative z-20 w-full px-4 sm:px-6 md:px-10 lg:px-16 xl:px-24 mx-auto flex flex-col justify-center">
-        <div className="max-w-xl lg:max-w-2xl xl:max-w-3xl space-y-5 sm:space-y-7 md:space-y-8 animate-fade-in">
+      {/* Main Grid: Left Content (60%) & Right Janki Khatroja Photo (40%) */}
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 flex-1 grid grid-cols-1 lg:grid-cols-12 items-center gap-8 lg:gap-12 relative z-10">
+        
+        {/* LEFT COLUMN: Copy, Heading, Buttons */}
+        <div className="lg:col-span-7 space-y-6 sm:space-y-8 pt-4 sm:pt-6 text-center lg:text-left">
           
-          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-brand-gold-light text-[10px] sm:text-xs md:text-[13px] font-bold tracking-[0.2em] sm:tracking-[0.26em] uppercase shadow-lg shadow-black/20 self-start">
-            <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-brand-pink flex-shrink-0" />
-            <span className="truncate">OTTAWA • JANKI KHATROJA BEAUTY STUDIO</span>
+          {/* Top Ornament Badge matching mockup */}
+          <div className="inline-flex flex-col items-center lg:items-start space-y-1">
+            <div className="flex items-center gap-3 text-[#A87B51]">
+              <span className="w-8 h-[1px] bg-[#A87B51]/40 hidden sm:inline-block"></span>
+              <Flower2 className="w-4 h-4 text-[#A87B51] flex-shrink-0" />
+              <span className="text-[10px] sm:text-xs font-semibold tracking-[0.24em] uppercase text-[#7A5A3E]">
+                OTTAWA • WOMEN'S BEAUTY STUDIO
+              </span>
+              <span className="w-8 h-[1px] bg-[#A87B51]/40 hidden sm:inline-block"></span>
+            </div>
           </div>
 
-          <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold text-white tracking-tight leading-[1.06] uppercase drop-shadow-md">
-            BEAUTY <br />
-            THAT FEELS <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-pink-muted via-brand-pink to-brand-gold-light">
-              LIKE YOU.
-            </span>
-          </h1>
+          {/* Headline matching exact mockup typography */}
+          <div className="space-y-1 sm:space-y-2">
+            <h1 className="font-serif text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight text-[#2B2025] leading-[1.08]">
+              Your Beauty.
+            </h1>
+            <h1 className="font-serif text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight text-[#2B2025] leading-[1.08]">
+              Your Confidence.
+            </h1>
+            <div className="font-script text-5xl sm:text-7xl lg:text-8xl xl:text-9xl text-[#C4956B] leading-[0.9] pt-1">
+              Your Moment.
+            </div>
+          </div>
 
-          <p className="text-[#F2ECE4] text-sm sm:text-base md:text-lg lg:text-xl font-normal leading-relaxed max-w-lg lg:max-w-xl drop-shadow-sm">
-            Personalized beauty & wellness experiences created by Founder & Master Artist Janki Khatroja to highlight your natural confidence.
+          {/* Subtitle Paragraph matching mockup */}
+          <p className="text-[#695852] text-sm sm:text-base lg:text-lg max-w-lg mx-auto lg:mx-0 leading-relaxed font-normal">
+            Premium beauty services designed to bring out the best version of you.
           </p>
 
-          <div className="pt-1 sm:pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 md:gap-5">
-            {/* Primary Button: BOOK APPOINTMENT */}
+          {/* Action Buttons matching mockup */}
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 sm:gap-4">
+            {/* Primary Button: Book Your Appointment */}
             <Link
               to="/book-appointment"
-              className="w-full sm:w-auto min-h-[48px] inline-flex items-center justify-center gap-2.5 bg-brand-pink hover:bg-brand-pink-hover text-white text-xs sm:text-sm md:text-base font-semibold px-6 sm:px-8 md:px-9 py-3.5 sm:py-4 rounded-full shadow-lg shadow-brand-pink/30 hover:shadow-xl hover:shadow-brand-pink/40 hover:scale-[1.02] active:scale-95 transition-all duration-200 text-center uppercase tracking-wider cursor-pointer"
+              className="w-full sm:w-auto min-h-[48px] inline-flex items-center justify-center gap-2.5 bg-[#B38357] hover:bg-[#9C6F45] text-white text-xs sm:text-sm font-semibold px-7 sm:px-8 py-3.5 rounded-full shadow-lg shadow-[#B38357]/25 hover:shadow-xl hover:scale-[1.02] active:scale-98 transition-all duration-200 cursor-pointer"
             >
-              <Calendar className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-              <span>BOOK APPOINTMENT</span>
+              <span>Book Your Appointment</span>
+              <ArrowRight className="w-4 h-4" />
             </Link>
 
-            {/* Secondary Button: EXPLORE SERVICES */}
+            {/* Secondary Button: Explore Services */}
             <Link
               to="/services"
-              className="w-full sm:w-auto min-h-[48px] inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white hover:text-brand-pink-muted text-xs sm:text-sm md:text-base font-semibold px-6 sm:px-7 md:px-8 py-3.5 sm:py-4 rounded-full border border-white/25 hover:border-brand-pink/50 backdrop-blur-md shadow-sm hover:scale-[1.02] active:scale-95 transition-all duration-200 text-center uppercase tracking-wider cursor-pointer"
+              className="w-full sm:w-auto min-h-[48px] inline-flex items-center justify-center gap-2 bg-transparent hover:bg-[#3D3028]/5 text-[#3D3028] text-xs sm:text-sm font-semibold px-7 sm:px-8 py-3.5 rounded-full border border-[#3D3028]/25 hover:border-[#3D3028]/50 transition-all duration-200 cursor-pointer"
             >
-              <span>EXPLORE SERVICES</span>
-              <ArrowRight className="w-4 h-4 flex-shrink-0" />
+              <span>Explore Services</span>
+              <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
-          <div className="pt-5 sm:pt-7 border-t border-white/15 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm text-brand-ivory/80">
-            <div className="flex items-center gap-1.5">
-              <MapPin className="w-4 h-4 text-brand-pink flex-shrink-0" />
-              <span className="font-medium">450 Bank Street, Central Ottawa</span>
+        </div>
+
+        {/* RIGHT COLUMN: Real Seated Photo of Main Owner Janki Khatroja in Salon */}
+        <div className="lg:col-span-5 relative flex items-center justify-center">
+          <div className="relative w-full max-w-lg lg:max-w-none aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/60 bg-[#EFE8DF] group">
+            <img
+              src={jankiPhoto || "/janki-khatroja.jpg"}
+              alt="Janki Khatroja — Main Owner & Lead Beauty Director"
+              onLoad={() => setImageLoaded(true)}
+              className={`w-full h-full object-cover object-center group-hover:scale-103 transition-transform duration-700 ease-out ${
+                imageLoaded ? 'opacity-100' : 'opacity-90'
+              }`}
+              loading="eager"
+            />
+            {/* Subtle soft gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
+
+            {/* Owner Label Tag */}
+            <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-semibold text-[#2D2327] shadow-lg border border-white/60 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#B38357] animate-pulse" />
+              <span>Janki Khatroja — Owner & Main Artist</span>
             </div>
-            <span className="hidden sm:inline text-white/30">•</span>
-            <div className="flex items-center gap-1.5 text-emerald-400 font-semibold">
-              <ShieldCheck className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-              <span>Founder & Lead Artist Janki Khatroja</span>
+          </div>
+        </div>
+
+      </div>
+
+      {/* BOTTOM 4-FEATURE TRUST BADGES BAR matching exact mockup */}
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 pt-10 sm:pt-12 relative z-10">
+        <div className="pt-6 border-t border-[#E3D8CC] grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-center">
+          
+          {/* Feature 1: Professional Stylists */}
+          <div className="flex flex-col items-center gap-2 p-2">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#EDE4DA] border border-[#D9CABA] flex items-center justify-center text-[#96673E] shadow-xs">
+              <Scissors className="w-5 h-5" />
             </div>
+            <span className="text-xs sm:text-sm font-semibold text-[#3D3028]">
+              Professional Stylists
+            </span>
+          </div>
+
+          {/* Feature 2: Personalized Care */}
+          <div className="flex flex-col items-center gap-2 p-2">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#EDE4DA] border border-[#D9CABA] flex items-center justify-center text-[#96673E] shadow-xs">
+              <Flower2 className="w-5 h-5" />
+            </div>
+            <span className="text-xs sm:text-sm font-semibold text-[#3D3028]">
+              Personalized Care
+            </span>
+          </div>
+
+          {/* Feature 3: Premium Products */}
+          <div className="flex flex-col items-center gap-2 p-2">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#EDE4DA] border border-[#D9CABA] flex items-center justify-center text-[#96673E] shadow-xs">
+              <Gem className="w-5 h-5" />
+            </div>
+            <span className="text-xs sm:text-sm font-semibold text-[#3D3028]">
+              Premium Products
+            </span>
+          </div>
+
+          {/* Feature 4: Ottawa's Beauty Destination */}
+          <div className="flex flex-col items-center gap-2 p-2">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#EDE4DA] border border-[#D9CABA] flex items-center justify-center text-[#96673E] shadow-xs">
+              <MapPin className="w-5 h-5" />
+            </div>
+            <span className="text-xs sm:text-sm font-semibold text-[#3D3028]">
+              Ottawa's Beauty Destination
+            </span>
           </div>
 
         </div>
