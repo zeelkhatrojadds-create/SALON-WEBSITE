@@ -14,7 +14,7 @@ export default function ServiceCard({ service, onQuickBook, onViewDetails }) {
     if (onQuickBook) {
       onQuickBook(service);
     } else {
-      navigate(`/booking?service=${service.id}`);
+      navigate(`/book-appointment?service=${service.id}`);
     }
   };
 
@@ -78,7 +78,7 @@ export default function ServiceCard({ service, onQuickBook, onViewDetails }) {
           </div>
         </div>
 
-        {/* Action Buttons: [View Details] [Book Now] with minimum 44px touch height */}
+        {/* Action Buttons */}
         <div className="grid grid-cols-2 gap-2 sm:gap-2.5 pt-1">
           <Link
             to={`/services/${service.id}`}

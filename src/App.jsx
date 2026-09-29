@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import HomePage from './pages/HomePage';
+import BookingPage from './pages/BookingPage';
 import ServiceDetailPage from './pages/ServiceDetailPage';
 import AdminPage from './pages/AdminPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -12,8 +13,14 @@ function RouteScrollManager() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    // Only scroll to top if on detail page, admin, or 404
-    if (pathname.startsWith('/services/') || pathname.startsWith('/admin') || pathname === '/404') {
+    // Scroll to top for dedicated routes
+    if (
+      pathname.startsWith('/services/') ||
+      pathname.startsWith('/admin') ||
+      pathname === '/book-appointment' ||
+      pathname === '/booking' ||
+      pathname === '/404'
+    ) {
       window.scrollTo({
         top: 0,
         left: 0,
@@ -29,6 +36,7 @@ function RouteScrollManager() {
 function AppLayout() {
   const { pathname } = useLocation();
   const isAdminRoute = pathname.startsWith('/admin');
+  const isBookingRoute = pathname === '/book-appointment' || pathname === '/booking';
 
   if (isAdminRoute) {
     return (
@@ -36,6 +44,17 @@ function AppLayout() {
         <Routes>
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/admin/*" element={<AdminPage />} />
+        </Routes>
+      </main>
+    );
+  }
+
+  if (isBookingRoute) {
+    return (
+      <main className="min-h-screen">
+        <Routes>
+          <Route path="/book-appointment" element={<BookingPage />} />
+          <Route path="/booking" element={<BookingPage />} />
         </Routes>
       </main>
     );
@@ -49,10 +68,9 @@ function AppLayout() {
       {/* Main Application Pages */}
       <main className="flex-1">
         <Routes>
-          {/* SPA Routes: All main sections on single page */}
+          {/* SPA Routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/services" element={<HomePage defaultSection="services" />} />
-          <Route path="/booking" element={<HomePage defaultSection="booking" />} />
           <Route path="/gallery" element={<HomePage defaultSection="gallery" />} />
           <Route path="/about" element={<HomePage defaultSection="about" />} />
           <Route path="/contact" element={<HomePage defaultSection="contact" />} />

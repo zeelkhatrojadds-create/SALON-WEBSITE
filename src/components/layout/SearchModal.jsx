@@ -47,7 +47,7 @@ export default function SearchModal({ isOpen, onClose }) {
 
   const handleSelectService = (serviceId) => {
     onClose();
-    navigate(`/booking?service=${serviceId}`);
+    navigate(`/book-appointment?service=${serviceId}`);
   };
 
   return (

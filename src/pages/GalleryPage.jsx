@@ -77,7 +77,7 @@ export default function GalleryPage({ isSection = false }) {
                   <h3 className="font-serif font-semibold text-white text-sm sm:text-base lg:text-lg mt-0.5 truncate">{item.title}</h3>
                 </div>
                 <Link
-                  to="/booking"
+                  to="/book-appointment"
                   className="min-h-[40px] flex items-center justify-center text-xs text-white/80 hover:text-white hover:bg-brand-pink transition-colors px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 flex-shrink-0"
                 >
                   Book Look

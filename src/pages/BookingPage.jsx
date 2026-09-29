@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { 
   Calendar as CalendarIcon, 
   Clock, 
@@ -10,34 +10,79 @@ import {
   Sparkles, 
   AlertCircle, 
   ArrowLeft, 
-  Heart, 
+  ArrowRight,
   ShieldCheck, 
-  Trash2, 
-  ChevronDown,
-  FileText,
-  MapPin,
-  RefreshCw,
-  Scissors,
-  Star,
-  Search,
-  Check,
-  X,
+  Scissors, 
+  Star, 
+  Search, 
+  Check, 
+  X, 
   MessageCircle,
-  ExternalLink
+  FileText,
+  Trash2,
+  ChevronRight
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import floralImg from '../assets/floral-booking.jpg';
-import { ALL_SERVICES } from '../data/servicesData';
-import { SALON_INFO } from '../data/salonData';
+import { ALL_SERVICES, CATEGORIES } from '../data/servicesData';
 import { getWhatsAppBookingUrl, getWhatsAppConfig, sendWhatsAppBookingDirect, formatDisplayPhone } from '../utils/whatsapp';
 import salonDB from '../db/salonDatabase';
 
-export default function BookingPage({ isSection = false }) {
-  const [searchParams] = useSearchParams();
-  const preselectedServiceId = searchParams.get('service');
-  const { phoneNumber: whatsappNumber, rawPhone } = getWhatsAppConfig();
+const STYLISTS = [
+  {
+    id: 'any',
+    name: 'Any Available Stylist',
+    role: 'First Available Expert Specialist',
+    experience: 'Optimal availability',
+    image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=400&q=80',
+    rating: '5.0★'
+  },
+  {
+    id: 'janki',
+    name: 'Janki Khatroja',
+    role: 'Master Hair & Bridal Artistry Director',
+    experience: '12+ Yrs Experience',
+    image: '/janki-khatroja.jpg',
+    rating: '5.0★'
+  },
+  {
+    id: 'sophie',
+    name: 'Sophie Dupont',
+    role: 'Senior Skin & Aesthetic Specialist',
+    experience: '8+ Yrs Experience',
+    image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80',
+    rating: '4.9★'
+  },
+  {
+    id: 'chloe',
+    name: 'Chloe Bennett',
+    role: 'Nail Couture & Lash Expert',
+    experience: '6+ Yrs Experience',
+    image: 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=400&q=80',
+    rating: '4.9★'
+  }
+];
 
-  // Dynamic services pulled from salonDatabase
+const TIME_SLOTS = [
+  '09:00 AM',
+  '10:00 AM',
+  '11:00 AM',
+  '12:00 PM',
+  '01:00 PM',
+  '02:00 PM',
+  '03:00 PM',
+  '04:00 PM',
+  '05:00 PM',
+  '06:00 PM'
+];
+
+export default function BookingPage() {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const preselectedServiceId = searchParams.get('service');
+  const preselectedStylistId = searchParams.get('stylist');
+
+  const { phoneNumber: whatsappNumber } = getWhatsAppConfig();
   const [availableServices, setAvailableServices] = useState(() => salonDB.getServices());
 
   useEffect(() => {
@@ -48,71 +93,24 @@ export default function BookingPage({ isSection = false }) {
     return () => unsub();
   }, []);
 
-  // Group all services dynamically by category
-  const serviceCategories = [
-    {
-      name: 'HAIR CARE',
-      key: 'hair',
-      services: availableServices.filter(s => s.category === 'hair' && s.active !== false)
-    },
-    {
-      name: 'SKIN CARE',
-      key: 'skin',
-      services: availableServices.filter(s => s.category === 'skin' && s.active !== false)
-    },
-    {
-      name: 'HAIR REMOVAL & BEAUTY EXTRAS',
-      key: 'waxing',
-      services: availableServices.filter(s => s.category === 'waxing' && s.active !== false)
-    },
-    {
-      name: 'NAIL CARE',
-      key: 'nails',
-      services: availableServices.filter(s => s.category === 'nails' && s.active !== false)
-    },
-    {
-      name: 'MAKEUP',
-      key: 'makeup',
-      services: availableServices.filter(s => s.category === 'makeup' && s.active !== false)
-    },
-    {
-      name: 'SPA & WELLNESS',
-      key: 'spa',
-      services: availableServices.filter(s => s.category === 'spa' && s.active !== false)
-    }
-  ];
+  // Step State (1: Treatment, 2: Stylist, 3: Date, 4: Time, 5: Customer Details, 6: Summary, 7: Confirmation)
+  const [currentStep, setCurrentStep] = useState(1);
 
-  // Time slot options
-  const timeSlots = [
-    '09:00 AM',
-    '10:00 AM',
-    '11:00 AM',
-    '12:00 PM',
-    '01:00 PM',
-    '02:00 PM',
-    '03:00 PM',
-    '04:00 PM',
-    '05:00 PM',
-    '06:00 PM'
-  ];
-
-  // Form State - Controlled inputs by Unique Service ID
+  // Selections State
   const [selectedServiceId, setSelectedServiceId] = useState('');
-  const [serviceDropdownOpen, setServiceDropdownOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [serviceSearchQuery, setServiceSearchQuery] = useState('');
-  const dropdownRef = useRef(null);
+  const [selectedStylistId, setSelectedStylistId] = useState('any');
 
-  // Directly find selected service object using unique ID
-  const selectedServiceData = ALL_SERVICES.find(
-    (service) => service.id === selectedServiceId || service.name === selectedServiceId
-  );
+  const tomorrowStr = () => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return d.toISOString().split('T')[0];
+  };
 
-  const [selectedDate, setSelectedDate] = useState(() => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    return tomorrow.toISOString().split('T')[0];
-  });
+  const [selectedDate, setSelectedDate] = useState(tomorrowStr());
   const [selectedTime, setSelectedTime] = useState('10:00 AM');
+  
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -124,23 +122,9 @@ export default function BookingPage({ isSection = false }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmedBooking, setConfirmedBooking] = useState(null);
   const [savedAppointments, setSavedAppointments] = useState([]);
-  const [showAppointmentsModal, setShowAppointmentsModal] = useState(false);
+  const [showSavedModal, setShowSavedModal] = useState(false);
 
-  // Minimum selectable date = Today (YYYY-MM-DD)
-  const todayStr = new Date().toISOString().split('T')[0];
-
-  // Click outside to close service dropdown
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setServiceDropdownOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  // Load past appointments from localStorage
+  // Load saved appointments from localStorage
   useEffect(() => {
     try {
       const stored = localStorage.getItem('girl-looked-for-you-appointments');
@@ -148,881 +132,865 @@ export default function BookingPage({ isSection = false }) {
         setSavedAppointments(JSON.parse(stored));
       }
     } catch (err) {
-      console.warn('LocalStorage error:', err);
+      console.warn('LocalStorage load error:', err);
     }
   }, []);
 
-  // Pre-fill service if parameter is provided in query string or custom event
+  // Pre-fill service & stylist from URL query parameters
   useEffect(() => {
     if (preselectedServiceId) {
-      const matched = ALL_SERVICES.find(
+      const match = availableServices.find(
         (s) => s.id === preselectedServiceId || s.name.toLowerCase() === preselectedServiceId.toLowerCase()
       );
-      if (matched) {
-        setSelectedServiceId(matched.id);
+      if (match) {
+        setSelectedServiceId(match.id);
       }
     }
-  }, [preselectedServiceId]);
-
-  useEffect(() => {
-    const handleServiceSelect = (e) => {
-      if (e.detail) {
-        setSelectedServiceId(e.detail);
+    if (preselectedStylistId) {
+      const matchStylist = STYLISTS.find(st => st.id === preselectedStylistId);
+      if (matchStylist) {
+        setSelectedStylistId(matchStylist.id);
       }
-    };
-    window.addEventListener('select-booking-service', handleServiceSelect);
-    return () => window.removeEventListener('select-booking-service', handleServiceSelect);
-  }, []);
-
-  // Validation functions
-  const validateField = (name, value) => {
-    let error = '';
-    switch (name) {
-      case 'service':
-        if (!value || value.trim() === '') {
-          error = 'Please select a service.';
-        }
-        break;
-      case 'date':
-        if (!value) {
-          error = 'Please select a date.';
-        } else if (value < todayStr) {
-          error = 'Date cannot be in the past.';
-        }
-        break;
-      case 'time':
-        if (!value || value.trim() === '') {
-          error = 'Please select a time.';
-        }
-        break;
-      case 'name':
-        if (!value || value.trim().length < 2) {
-          error = 'Please enter your name (at least 2 characters).';
-        }
-        break;
-      case 'phone':
-        const phoneDigits = value.replace(/\D/g, '');
-        if (!value || phoneDigits.length < 8) {
-          error = 'Please enter a valid phone number.';
-        }
-        break;
-      case 'email':
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!value || !emailRegex.test(value.trim())) {
-          error = 'Please enter a valid email address.';
-        }
-        break;
-      default:
-        break;
     }
-    return error;
-  };
+  }, [preselectedServiceId, preselectedStylistId, availableServices]);
 
-  const handleChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    const err = validateField(field, value);
-    setErrors((prev) => ({ ...prev, [field]: err }));
-  };
+  const selectedServiceObj = availableServices.find((s) => s.id === selectedServiceId);
+  const selectedStylistObj = STYLISTS.find((st) => st.id === selectedStylistId) || STYLISTS[0];
 
-  const handleSelectService = (service) => {
-    if (!service) {
-      setSelectedServiceId('');
-      const err = validateField('service', '');
-      setErrors((prev) => ({ ...prev, service: err }));
-    } else {
-      setSelectedServiceId(service.id);
-      const err = validateField('service', service.id);
-      setErrors((prev) => ({ ...prev, service: err }));
+  // Filtering services for Step 1
+  const filteredServices = availableServices.filter((s) => {
+    if (s.active === false) return false;
+    const matchesCategory = selectedCategory === 'all' || s.category === selectedCategory;
+    const q = serviceSearchQuery.trim().toLowerCase();
+    const matchesSearch =
+      !q ||
+      s.name.toLowerCase().includes(q) ||
+      (s.categoryName && s.categoryName.toLowerCase().includes(q)) ||
+      (s.description && s.description.toLowerCase().includes(q));
+    return matchesCategory && matchesSearch;
+  });
+
+  const generateBookingReference = () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
     }
-    setServiceDropdownOpen(false);
-    setServiceSearchQuery('');
+    return `GGJ-${code}`;
   };
 
-  const handleDateChange = (e) => {
-    const val = e.target.value;
-    setSelectedDate(val);
-    const err = validateField('date', val);
-    setErrors((prev) => ({ ...prev, date: err }));
-  };
-
-  const handleTimeChange = (e) => {
-    const val = e.target.value;
-    setSelectedTime(val);
-    const err = validateField('time', val);
-    setErrors((prev) => ({ ...prev, time: err }));
-  };
-
-  const validateAll = () => {
-    const newErrors = {
-      service: validateField('service', selectedServiceId),
-      date: validateField('date', selectedDate),
-      time: validateField('time', selectedTime),
-      name: validateField('name', formData.name),
-      phone: validateField('phone', formData.phone),
-      email: validateField('email', formData.email)
-    };
-
-    const activeErrors = {};
-    Object.keys(newErrors).forEach((key) => {
-      if (newErrors[key]) {
-        activeErrors[key] = newErrors[key];
-      }
-    });
-
-    setErrors(activeErrors);
-    return Object.keys(activeErrors).length === 0;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!validateAll()) {
-      return;
+  // Form Validation
+  const validateDetailsStep = () => {
+    const newErrors = {};
+    if (!formData.name || formData.name.trim().length < 2) {
+      newErrors.name = 'Please enter your full name (at least 2 characters).';
     }
+    const phoneDigits = formData.phone.replace(/\D/g, '');
+    if (!formData.phone || phoneDigits.length < 8) {
+      newErrors.phone = 'Please enter a valid phone number.';
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email || !emailRegex.test(formData.email.trim())) {
+      newErrors.email = 'Please enter a valid email address.';
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
+  // Submit Handler
+  const handleFinalSubmit = (e) => {
+    if (e) e.preventDefault();
     setIsSubmitting(true);
 
+    const refCode = generateBookingReference();
+
     const bookingPayload = {
-      serviceId: selectedServiceData ? selectedServiceData.id : selectedServiceId,
-      service: selectedServiceData ? selectedServiceData.name : 'Salon Treatment',
-      serviceDuration: selectedServiceData ? selectedServiceData.duration : '60 mins',
-      servicePrice: selectedServiceData ? selectedServiceData.price : 85,
-      serviceImage: selectedServiceData ? selectedServiceData.image : floralImg,
-      serviceCategory: selectedServiceData ? selectedServiceData.categoryName : 'Hair Care',
+      id: refCode,
+      referenceCode: refCode,
+      serviceId: selectedServiceObj ? selectedServiceObj.id : 'womens-haircut',
+      service: selectedServiceObj ? selectedServiceObj.name : 'Salon Treatment',
+      serviceDuration: selectedServiceObj ? selectedServiceObj.duration : '60 min',
+      servicePrice: selectedServiceObj ? selectedServiceObj.price : 85,
+      serviceImage: selectedServiceObj ? selectedServiceObj.image : floralImg,
+      serviceCategory: selectedServiceObj ? selectedServiceObj.categoryName : 'Hair Care',
+      stylistId: selectedStylistObj.id,
+      stylist: selectedStylistObj.name,
+      stylistRole: selectedStylistObj.role,
       date: selectedDate,
       time: selectedTime,
       customerName: formData.name.trim(),
       phone: formData.phone.trim(),
       email: formData.email.trim(),
-      notes: formData.notes.trim()
+      notes: formData.notes.trim(),
+      submittedAt: new Date().toLocaleString()
     };
 
-    // Save with salonDatabase smart auto-accept logic
-    const newBooking = salonDB.addAppointment(bookingPayload);
-
-    // 1. Immediately open WhatsApp with pre-filled details in the user's click gesture stack (prevents popup blocker)
+    // Save to Database
+    const savedRecord = salonDB.addAppointment(bookingPayload);
+    
+    // Save to localStorage
     try {
-      sendWhatsAppBookingDirect(newBooking);
+      const updated = [bookingPayload, ...savedAppointments.filter(a => a.id !== refCode)];
+      localStorage.setItem('girl-looked-for-you-appointments', JSON.stringify(updated));
+      setSavedAppointments(updated);
     } catch (err) {
-      console.warn('WhatsApp auto-open error:', err);
+      console.warn('LocalStorage save error:', err);
     }
 
-    // 2. Show confirmation voucher
-    setConfirmedBooking(newBooking);
+    // Auto-trigger WhatsApp message dispatch
+    try {
+      sendWhatsAppBookingDirect(bookingPayload);
+    } catch (e) {}
+
+    setConfirmedBooking(bookingPayload);
     setIsSubmitting(false);
+    setCurrentStep(7); // Jump to Step 7: Confirmation
 
     try {
       confetti({
-        particleCount: 110,
-        spread: 75,
+        particleCount: 120,
+        spread: 80,
         origin: { y: 0.6 },
         colors: ['#D83A75', '#E95E92', '#F3E5AB', '#C59A45']
       });
     } catch (err) {}
   };
 
-  const handleReset = () => {
+  const handleResetBooking = () => {
     setConfirmedBooking(null);
+    setCurrentStep(1);
     setSelectedServiceId('');
-    setFormData({
-      name: '',
-      phone: '',
-      email: '',
-      notes: ''
-    });
+    setFormData({ name: '', phone: '', email: '', notes: '' });
     setErrors({});
   };
 
-  const handleDeleteSaved = (id) => {
-    salonDB.deleteAppointment(id);
-    const updated = savedAppointments.filter((a) => a.id !== id);
-    setSavedAppointments(updated);
-  };
-
-  // Filtered categories for searchable dropdown
-  const filteredCategories = serviceCategories.map((cat) => {
-    const query = serviceSearchQuery.trim().toLowerCase();
-    if (!query) return cat;
-
-    const filtered = cat.services.filter(
-      (s) =>
-        s.name.toLowerCase().includes(query) ||
-        s.categoryName.toLowerCase().includes(query) ||
-        s.duration.toLowerCase().includes(query) ||
-        s.price.toString().includes(query)
-    );
-
-    return {
-      ...cat,
-      services: filtered
-    };
-  }).filter((cat) => cat.services.length > 0);
-
-  const totalFilteredCount = filteredCategories.reduce((acc, cat) => acc + cat.services.length, 0);
+  const stepsList = [
+    { num: 1, label: 'Treatment' },
+    { num: 2, label: 'Stylist' },
+    { num: 3, label: 'Date' },
+    { num: 4, label: 'Time' },
+    { num: 5, label: 'Details' },
+    { num: 6, label: 'Summary' },
+    { num: 7, label: 'Confirmation' }
+  ];
 
   return (
-    <div 
-      id="booking"
-      className={`w-full bg-[#FAF6F4] text-brand-charcoal ${
-        isSection ? 'py-16 sm:py-24' : 'min-h-screen pt-24 sm:pt-32 pb-16 sm:pb-24'
-      } px-3 sm:px-6 lg:px-8 selection:bg-brand-pink selection:text-white`}
-    >
+    <div className="min-h-screen bg-[#140E11] text-white flex flex-col justify-between selection:bg-brand-pink selection:text-white">
       
-      {/* 1. TOP STEP INTRO SECTION (Well spaced, never hidden behind header) */}
-      <div className="max-w-[1180px] mx-auto mb-6 sm:mb-10">
-        <div className="flex items-center gap-3 sm:gap-5">
-          {/* Step Badge: 04 */}
-          <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-brand-pink text-white font-serif font-bold text-lg sm:text-2xl flex items-center justify-center shadow-lg shadow-brand-pink/30 flex-shrink-0 border-2 border-white">
-            04
-          </div>
+      {/* 1. TOP STANDALONE DEDICATED HEADER */}
+      <header className="sticky top-0 z-40 bg-[#140E11]/95 backdrop-blur-md border-b border-white/10 px-4 sm:px-8 py-3.5 sm:py-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+          
+          {/* Back to Home Button */}
+          <button
+            type="button"
+            onClick={() => navigate('/')}
+            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-semibold transition-all border border-white/15 cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4 text-brand-pink" />
+            <span>Back to Home</span>
+          </button>
 
-          {/* Heading & Subtitle */}
-          <div>
-            <h1 className="font-serif text-2xl sm:text-4xl lg:text-5xl font-bold text-[#2A1620] tracking-tight leading-tight">
-              Book Appointment
+          {/* Center Brand Title */}
+          <div className="text-center">
+            <h1 className="font-serif text-lg sm:text-2xl font-bold text-white tracking-tight">
+              Book Your Appointment
             </h1>
-            <p className="text-[#87586A] text-xs sm:text-sm md:text-base font-medium mt-0.5">
-              Select service, date, time and fill details. Instant auto-confirmation for free slots.
+            <p className="hidden sm:block text-[11px] sm:text-xs text-white/60">
+              Reserve your luxury treatment at Lumière Beauty Salon
             </p>
           </div>
-        </div>
-      </div>
 
-      {/* 2. MAIN BOOKING CARD (Centered, max-width: 1180px, 24px border radius, subtle border & shadow) */}
-      <div className="max-w-[1180px] mx-auto bg-white rounded-2xl sm:rounded-[24px] border border-[#ECDCDF] shadow-[0_20px_60px_rgba(42,22,32,0.06)] overflow-hidden">
-        
-        <div className="p-4 sm:p-8 lg:p-12">
-          
-          {/* SUCCESS CONFIRMATION STATE WITH WHATSAPP INTEGRATION */}
-          {confirmedBooking ? (
-            <div className="max-w-2xl mx-auto text-center py-4 sm:py-10 animate-fade-in">
-              <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full ${confirmedBooking.isAutoAccepted ? 'bg-emerald-100 text-emerald-600 border-2 border-emerald-300' : 'bg-amber-100 text-amber-600 border-2 border-amber-300'} flex items-center justify-center mx-auto mb-4 sm:mb-5 shadow-inner`}>
-                <CheckCircle className="w-8 h-8 sm:w-10 sm:h-10" />
-              </div>
-
-              {confirmedBooking.isAutoAccepted ? (
-                <span className="inline-block px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px] sm:text-xs uppercase tracking-[0.2em] mb-2 border border-emerald-300 shadow-xs">
-                  ✨ Auto-Accepted • Slot Confirmed
-                </span>
-              ) : (
-                <span className="inline-block px-3.5 py-1 rounded-full bg-amber-100 text-amber-900 font-bold text-[10px] sm:text-xs uppercase tracking-[0.2em] mb-2 border border-amber-300 shadow-xs">
-                  ⏳ Pending Review • Working Progress Conflict
-                </span>
-              )}
-
-              <h2 className="font-serif text-2xl sm:text-4xl font-bold text-[#2A1620] mb-2 sm:mb-3">
-                {confirmedBooking.isAutoAccepted ? 'Appointment Confirmed & Reserved' : 'Appointment Request Received'}
-              </h2>
-
-              <p className="text-[#6D4C58] text-xs sm:text-base max-w-md mx-auto mb-6 sm:mb-8 leading-relaxed">
-                {confirmedBooking.isAutoAccepted ? (
-                  <>Thank you, <strong>{confirmedBooking.customerName}</strong>! Your appointment has been <strong>automatically accepted and confirmed</strong> for {confirmedBooking.date} at {confirmedBooking.time}.</>
-                ) : (
-                  <>Thank you, <strong>{confirmedBooking.customerName}</strong>! Another client service is currently scheduled during this time slot. Our concierge has registered your priority request and will coordinate with you on WhatsApp immediately.</>
-                )}
-              </p>
-
-              {/* Summary Voucher Card */}
-              <div className="bg-[#FAF5F6] border border-[#EEDDE2] rounded-2xl p-4 sm:p-8 text-left space-y-3 sm:space-y-4 shadow-sm max-w-lg mx-auto mb-6 sm:mb-8">
-                <div className="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-[#EEDDE2]">
-                  <span className="text-[10px] sm:text-xs text-[#8A6A74] uppercase font-bold tracking-wider">Booking ID</span>
-                  <span className="font-mono font-bold text-brand-pink text-sm sm:text-base">{confirmedBooking.id}</span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-4 text-xs sm:text-sm">
-                  <div>
-                    <span className="text-[#8A6A74] block text-[10px] sm:text-[11px]">Selected Service</span>
-                    <span className="font-bold text-[#2A1620]">{confirmedBooking.service}</span>
-                  </div>
-                  <div>
-                    <span className="text-[#8A6A74] block text-[10px] sm:text-[11px]">Requested Date & Time</span>
-                    <span className="font-bold text-[#2A1620]">{confirmedBooking.date} • {confirmedBooking.time}</span>
-                  </div>
-                  <div>
-                    <span className="text-[#8A6A74] block text-[10px] sm:text-[11px]">Guest Name</span>
-                    <span className="font-semibold text-[#2A1620]">{confirmedBooking.customerName}</span>
-                  </div>
-                  <div>
-                    <span className="text-[#8A6A74] block text-[10px] sm:text-[11px]">Phone Number</span>
-                    <span className="font-semibold text-[#2A1620]">{confirmedBooking.phone}</span>
-                  </div>
-                </div>
-
-                {confirmedBooking.notes && (
-                  <div className="pt-2.5 sm:pt-3 border-t border-[#EEDDE2] text-xs">
-                    <span className="text-[#8A6A74] block text-[10px] sm:text-[11px]">Special Requests</span>
-                    <span className="text-[#2A1620] italic">"{confirmedBooking.notes}"</span>
-                  </div>
-                )}
-
-                <div className="pt-2.5 sm:pt-3 border-t border-[#EEDDE2] flex flex-wrap items-center justify-between gap-2 text-xs text-[#6D4C58]">
-                  <div className="flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-brand-pink flex-shrink-0" />
-                    <span>450 Bank St, Ottawa, ON</span>
-                  </div>
-                  <span className="text-[10px] sm:text-[11px] text-[#8A6A74]">{confirmedBooking.submittedAt}</span>
-                </div>
-              </div>
-
-              {/* WHATSAPP CONFIRMATION ACTION BUTTON */}
-              <div className="max-w-lg mx-auto mb-6 p-4 rounded-2xl bg-emerald-50/90 border border-emerald-300 text-left flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-1.5 text-emerald-900 font-bold text-xs">
-                    <MessageCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                    <span>Instant WhatsApp Dispatch</span>
-                  </div>
-                  <p className="text-[11px] text-emerald-800 leading-tight">
-                    Sending to Ottawa Concierge: <strong className="font-mono text-emerald-950 font-bold">{formatDisplayPhone(whatsappNumber)}</strong>
-                  </p>
-                </div>
-
-                <a
-                  href={getWhatsAppBookingUrl(confirmedBooking)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => {
-                    try {
-                      sendWhatsAppBookingDirect(confirmedBooking);
-                    } catch (e) {}
-                  }}
-                  className="inline-flex items-center justify-center gap-2 min-h-[44px] px-5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-emerald-600/30 transition-all flex-shrink-0 active:scale-95 cursor-pointer"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  <span>Send on WhatsApp</span>
-                  <ExternalLink className="w-3.5 h-3.5 opacity-80" />
-                </a>
-              </div>
-
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-                <button
-                  onClick={handleReset}
-                  className="w-full sm:w-auto min-h-[44px] px-6 sm:px-8 py-3 sm:py-3.5 rounded-full bg-brand-pink hover:bg-brand-pink-hover text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-brand-pink/30 hover:scale-105 active:scale-95 transition-all cursor-pointer inline-flex items-center justify-center gap-2"
-                >
-                  <RefreshCw className="w-4 h-4" />
-                  <span>Book Another Appointment</span>
-                </button>
-
-                <Link
-                  to="/services"
-                  className="w-full sm:w-auto min-h-[44px] px-6 sm:px-8 py-3 sm:py-3.5 rounded-full bg-white hover:bg-brand-pink-light border border-[#EEDDE2] text-[#2A1620] font-semibold text-xs uppercase tracking-wider transition-all inline-flex items-center justify-center gap-2"
-                >
-                  <span>Explore All Services</span>
-                </Link>
-              </div>
-            </div>
-          ) : (
-            
-            /* 2-COLUMN BALANCED DESKTOP LAYOUT (55% Form / 45% Floral Artwork) */
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-              
-              {/* LEFT COLUMN: 55% (Form) */}
-              <div className="lg:col-span-7 space-y-6">
-                <div>
-                  <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#2A1620] tracking-tight">
-                    Appointment Details
-                  </h2>
-                  <p className="text-xs sm:text-sm text-[#87586A] mt-1">
-                    Select your beauty ritual from our complete 86-treatment menu below.
-                  </p>
-                </div>
-
-                <form onSubmit={handleSubmit} noValidate className="space-y-4 sm:space-y-5">
-                  
-                  {/* 1. SEARCHABLE & SCROLLABLE SELECT SERVICE DROPDOWN (ALL 86 SERVICES GROUPED BY CATEGORY) */}
-                  <div ref={dropdownRef} className="relative">
-                    <div className="flex items-center justify-between mb-1.5">
-                      <label htmlFor="serviceSelectTrigger" className="block text-xs font-bold text-[#3B1E2B] uppercase tracking-wide">
-                        Select Service <span className="text-brand-pink">*</span>
-                      </label>
-                      <span className="text-[11px] font-semibold text-brand-pink bg-brand-pink-light px-2 py-0.5 rounded-full">
-                        86 Treatments Available
-                      </span>
-                    </div>
-
-                    {/* Custom Dropdown Trigger Button */}
-                    <button
-                      type="button"
-                      id="serviceSelectTrigger"
-                      onClick={() => setServiceDropdownOpen(!serviceDropdownOpen)}
-                      className={`w-full h-12 px-4 bg-[#FAF7F8] border rounded-xl text-left text-xs sm:text-sm flex items-center justify-between transition-all cursor-pointer ${
-                        errors.service 
-                          ? 'border-red-400 bg-red-50/20' 
-                          : serviceDropdownOpen 
-                            ? 'border-brand-pink ring-2 ring-brand-pink/20 bg-white' 
-                            : 'border-[#E6D4D9] hover:border-brand-pink/50'
-                      }`}
-                      aria-haspopup="listbox"
-                      aria-expanded={serviceDropdownOpen}
-                    >
-                      <span className={`truncate font-medium ${selectedServiceData ? 'text-[#2A1620]' : 'text-[#8A6A74]'}`}>
-                        {selectedServiceData 
-                          ? `${selectedServiceData.name} (${selectedServiceData.duration} • $${selectedServiceData.price} CAD)` 
-                          : '-- Choose a beauty treatment --'}
-                      </span>
-                      <ChevronDown className={`w-4 h-4 text-[#87586A] flex-shrink-0 transition-transform duration-200 ${
-                        serviceDropdownOpen ? 'rotate-180 text-brand-pink' : ''
-                      }`} />
-                    </button>
-
-                    {/* Dropdown Floating Menu with Search & Category Groupings */}
-                    {serviceDropdownOpen && (
-                      <div className="absolute z-50 left-0 right-0 mt-2 bg-white border border-[#E6D4D9] rounded-2xl shadow-2xl overflow-hidden animate-scale-up">
-                        
-                        {/* Live Search Input inside Dropdown */}
-                        <div className="p-3 border-b border-[#F0E4E7] bg-[#FCF8F9] sticky top-0 z-10">
-                          <div className="relative">
-                            <Search className="w-4 h-4 text-[#87586A] absolute left-3 top-1/2 -translate-y-1/2" />
-                            <input
-                              type="text"
-                              value={serviceSearchQuery}
-                              onChange={(e) => setServiceSearchQuery(e.target.value)}
-                              placeholder="Search 86 services (e.g. Hair Spa, Balayage, Facial, Threading)..."
-                              className="w-full pl-9 pr-8 py-2 bg-white border border-[#E6D4D9] rounded-xl text-xs text-[#2A1620] placeholder-[#B59AA3] focus:outline-none focus:border-brand-pink focus:ring-1 focus:ring-brand-pink"
-                              autoFocus
-                            />
-                            {serviceSearchQuery && (
-                              <button
-                                type="button"
-                                onClick={() => setServiceSearchQuery('')}
-                                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-0.5"
-                              >
-                                <X className="w-3.5 h-3.5" />
-                              </button>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Scrollable Categories and Services List */}
-                        <div className="max-h-72 overflow-y-auto divide-y divide-[#F6EDF0]">
-                          
-                          {/* Default / Deselect Option */}
-                          <div
-                            onClick={() => handleSelectService(null)}
-                            className={`px-4 py-2.5 text-xs text-[#8A6A74] hover:bg-brand-pink-light hover:text-brand-pink cursor-pointer transition-colors ${
-                              !selectedServiceId ? 'bg-brand-pink-light font-semibold text-brand-pink' : ''
-                            }`}
-                          >
-                            -- Choose a beauty treatment --
-                          </div>
-
-                          {filteredCategories.length > 0 ? (
-                            filteredCategories.map((cat) => (
-                              <div key={cat.key} className="py-2">
-                                {/* Category Header */}
-                                <div className="px-4 py-1.5 bg-[#FAF3F5] text-[10px] font-bold tracking-[0.16em] uppercase text-[#8A1A4A] flex items-center justify-between">
-                                  <span>{cat.name}</span>
-                                  <span className="text-[9px] bg-white text-brand-pink px-2 py-0.5 rounded-full border border-brand-pink/20 font-mono">
-                                    {cat.services.length} {cat.services.length === 1 ? 'Service' : 'Services'}
-                                  </span>
-                                </div>
-
-                                {/* Service Items */}
-                                <div className="py-1">
-                                  {cat.services.map((service) => {
-                                    const isSelected = selectedServiceId === service.id;
-                                    return (
-                                      <div
-                                        key={service.id}
-                                        onClick={() => handleSelectService(service)}
-                                        className={`px-4 py-2 text-xs flex items-center justify-between hover:bg-[#FDF2F6] cursor-pointer transition-colors ${
-                                          isSelected ? 'bg-brand-pink-light/70 font-bold text-brand-pink' : 'text-[#2A1620]'
-                                        }`}
-                                      >
-                                        <div className="flex items-center gap-2 truncate pr-2">
-                                          {isSelected && <Check className="w-3.5 h-3.5 text-brand-pink flex-shrink-0" />}
-                                          <span className="truncate">{service.name}</span>
-                                        </div>
-                                        <div className="flex items-center gap-2 flex-shrink-0 text-[11px]">
-                                          <span className="text-[#87586A] bg-gray-100 px-2 py-0.5 rounded-md text-[10px]">
-                                            {service.duration}
-                                          </span>
-                                          <span className="font-serif font-bold text-[#8A1A4A]">
-                                            ${service.price} CAD
-                                          </span>
-                                        </div>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                            ))
-                          ) : (
-                            <div className="p-6 text-center text-xs text-[#87586A]">
-                              No services found matching "{serviceSearchQuery}".
-                            </div>
-                          )}
-
-                        </div>
-
-                        {/* Footer Status Bar in Dropdown */}
-                        <div className="px-4 py-2 bg-[#FAF5F6] border-t border-[#F0E4E7] text-[10px] text-[#87586A] flex items-center justify-between">
-                          <span>Showing {totalFilteredCount} of 86 treatments</span>
-                          <span className="text-brand-pink font-semibold">GIRL LOOKED FOR YOU</span>
-                        </div>
-
-                      </div>
-                    )}
-
-                    {/* Validation Error Message */}
-                    {errors.service && (
-                      <p className="text-[11px] text-red-600 mt-1 flex items-center gap-1 animate-fade-in">
-                        <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
-                        <span>{errors.service}</span>
-                      </p>
-                    )}
-                  </div>
-
-                  {/* 2-Column Row: Date & Time */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* Date */}
-                    <div>
-                      <label htmlFor="dateSelect" className="block text-xs font-bold text-[#3B1E2B] mb-1.5 uppercase tracking-wide">
-                        Select Date <span className="text-brand-pink">*</span>
-                      </label>
-                      <input
-                        type="date"
-                        id="dateSelect"
-                        min={todayStr}
-                        value={selectedDate}
-                        onChange={handleDateChange}
-                        className={`w-full h-12 px-4 bg-[#FAF7F8] border rounded-xl text-xs sm:text-sm text-[#2A1620] focus:outline-none focus:ring-2 focus:ring-brand-pink/20 focus:border-brand-pink focus:bg-white transition-all cursor-pointer ${
-                          errors.date ? 'border-red-400 bg-red-50/20' : 'border-[#E6D4D9]'
-                        }`}
-                      />
-                      {errors.date && (
-                        <p className="text-[11px] text-red-600 mt-1 flex items-center gap-1 animate-fade-in">
-                          <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span>{errors.date}</span>
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Time */}
-                    <div>
-                      <label htmlFor="timeSelect" className="block text-xs font-bold text-[#3B1E2B] mb-1.5 uppercase tracking-wide">
-                        Select Time <span className="text-brand-pink">*</span>
-                      </label>
-                      <div className="relative">
-                        <select
-                          id="timeSelect"
-                          value={selectedTime}
-                          onChange={handleTimeChange}
-                          className={`w-full h-12 px-4 bg-[#FAF7F8] border rounded-xl text-xs sm:text-sm text-[#2A1620] appearance-none focus:outline-none focus:ring-2 focus:ring-brand-pink/20 focus:border-brand-pink focus:bg-white transition-all cursor-pointer ${
-                            errors.time ? 'border-red-400 bg-red-50/20' : 'border-[#E6D4D9]'
-                          }`}
-                        >
-                          <option value="">-- Choose time slot --</option>
-                          {timeSlots.map((t) => (
-                            <option key={t} value={t}>
-                              {t}
-                            </option>
-                          ))}
-                        </select>
-                        <ChevronDown className="w-4 h-4 text-[#87586A] absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
-                      </div>
-                      {errors.time && (
-                        <p className="text-[11px] text-red-600 mt-1 flex items-center gap-1 animate-fade-in">
-                          <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span>{errors.time}</span>
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* 3. Your Name */}
-                  <div>
-                    <label htmlFor="nameInput" className="block text-xs font-bold text-[#3B1E2B] mb-1.5 uppercase tracking-wide">
-                      Your Name <span className="text-brand-pink">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="nameInput"
-                      value={formData.name}
-                      onChange={(e) => handleChange('name', e.target.value)}
-                      placeholder="Enter your name"
-                      className={`w-full h-12 px-4 bg-[#FAF7F8] border rounded-xl text-xs sm:text-sm text-[#2A1620] placeholder-[#B59AA3] focus:outline-none focus:ring-2 focus:ring-brand-pink/20 focus:border-brand-pink focus:bg-white transition-all ${
-                        errors.name ? 'border-red-400 bg-red-50/20' : 'border-[#E6D4D9]'
-                      }`}
-                    />
-                    {errors.name && (
-                      <p className="text-[11px] text-red-600 mt-1 flex items-center gap-1 animate-fade-in">
-                        <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
-                        <span>{errors.name}</span>
-                      </p>
-                    )}
-                  </div>
-
-                  {/* 4. Phone & Email Row */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* Phone Number */}
-                    <div>
-                      <label htmlFor="phoneInput" className="block text-xs font-bold text-[#3B1E2B] mb-1.5 uppercase tracking-wide">
-                        Phone Number <span className="text-brand-pink">*</span>
-                      </label>
-                      <input
-                        type="tel"
-                        id="phoneInput"
-                        value={formData.phone}
-                        onChange={(e) => handleChange('phone', e.target.value)}
-                        placeholder="(613) 555-0182"
-                        className={`w-full h-12 px-4 bg-[#FAF7F8] border rounded-xl text-xs sm:text-sm text-[#2A1620] placeholder-[#B59AA3] focus:outline-none focus:ring-2 focus:ring-brand-pink/20 focus:border-brand-pink focus:bg-white transition-all ${
-                          errors.phone ? 'border-red-400 bg-red-50/20' : 'border-[#E6D4D9]'
-                        }`}
-                      />
-                      {errors.phone && (
-                        <p className="text-[11px] text-red-600 mt-1 flex items-center gap-1 animate-fade-in">
-                          <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span>{errors.phone}</span>
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Email Address */}
-                    <div>
-                      <label htmlFor="emailInput" className="block text-xs font-bold text-[#3B1E2B] mb-1.5 uppercase tracking-wide">
-                        Email Address <span className="text-brand-pink">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        id="emailInput"
-                        value={formData.email}
-                        onChange={(e) => handleChange('email', e.target.value)}
-                        placeholder="name@example.com"
-                        className={`w-full h-12 px-4 bg-[#FAF7F8] border rounded-xl text-xs sm:text-sm text-[#2A1620] placeholder-[#B59AA3] focus:outline-none focus:ring-2 focus:ring-brand-pink/20 focus:border-brand-pink focus:bg-white transition-all ${
-                          errors.email ? 'border-red-400 bg-red-50/20' : 'border-[#E6D4D9]'
-                        }`}
-                      />
-                      {errors.email && (
-                        <p className="text-[11px] text-red-600 mt-1 flex items-center gap-1 animate-fade-in">
-                          <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span>{errors.email}</span>
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* 5. Additional Notes */}
-                  <div>
-                    <label htmlFor="notesInput" className="block text-xs font-bold text-[#3B1E2B] mb-1.5 uppercase tracking-wide">
-                      Additional Notes <span className="text-[#87586A] font-normal lowercase">(optional)</span>
-                    </label>
-                    <textarea
-                      id="notesInput"
-                      rows={2}
-                      value={formData.notes}
-                      onChange={(e) => handleChange('notes', e.target.value)}
-                      placeholder="Any special requests? (optional)"
-                      className="w-full p-3 bg-[#FAF7F8] border border-[#E6D4D9] rounded-xl text-xs sm:text-sm text-[#2A1620] placeholder-[#B59AA3] focus:outline-none focus:ring-2 focus:ring-brand-pink/20 focus:border-brand-pink focus:bg-white transition-all resize-none"
-                    />
-                  </div>
-
-                  {/* 6. Premium Full-Width Submit Button */}
-                  <div className="pt-2">
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full h-12 sm:h-[50px] px-6 rounded-xl bg-brand-pink hover:bg-brand-pink-hover text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-brand-pink/30 hover:shadow-xl hover:shadow-brand-pink/40 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-75 disabled:cursor-not-allowed transition-all cursor-pointer uppercase tracking-[0.14em]"
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <RefreshCw className="w-4 h-4 animate-spin" />
-                          <span>Opening WhatsApp...</span>
-                        </>
-                      ) : (
-                        <>
-                          <MessageCircle className="w-4 h-4" />
-                          <span>Submit & Send on WhatsApp</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-
-                </form>
-
-                {/* Stored Appointment Requests Counter */}
-                {savedAppointments.length > 0 && (
-                  <div className="pt-1 text-center">
-                    <button
-                      type="button"
-                      onClick={() => setShowAppointmentsModal(true)}
-                      className="text-xs font-semibold text-[#8A1A4A] hover:text-brand-pink hover:underline inline-flex items-center gap-1.5 cursor-pointer"
-                    >
-                      <FileText className="w-3.5 h-3.5" />
-                      <span>View Saved Appointment Requests ({savedAppointments.length})</span>
-                    </button>
-                  </div>
-                )}
-
-              </div>
-
-              {/* RIGHT COLUMN: 45% (Dynamic Service Photo & Details Panel) */}
-              <div className="lg:col-span-5 flex flex-col items-center justify-center">
-                <div className="w-full rounded-2xl overflow-hidden bg-gradient-to-br from-[#FFF5F8] via-[#FDF0F5] to-[#F8E7EE] p-5 sm:p-7 border border-[#F0DFE5] shadow-inner space-y-4">
-                  
-                  {selectedServiceData ? (
-                    /* DYNAMIC SELECTED SERVICE PREVIEW */
-                    <div className="space-y-4 animate-fade-in" key={selectedServiceData.id}>
-                      {/* Service Photo with Badges */}
-                      <div className="relative aspect-[4/3] sm:aspect-[16/11] w-full rounded-2xl overflow-hidden bg-black/10 shadow-md border border-white/60 group">
-                        <img
-                          src={selectedServiceData.image || floralImg}
-                          alt={selectedServiceData.name}
-                          onError={(e) => {
-                            e.currentTarget.src = floralImg;
-                          }}
-                          className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-                        
-                        {/* Category Tag Pill */}
-                        <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-bold text-brand-pink shadow-sm border border-brand-pink/20">
-                          {selectedServiceData.categoryName}
-                        </div>
-
-                        {/* Duration & Price Pill */}
-                        <div className="absolute bottom-3 right-3 bg-[#2A1620]/90 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-semibold text-white shadow-sm flex items-center gap-1.5 border border-white/10">
-                          <Clock className="w-3 h-3 text-brand-pink" />
-                          <span>{selectedServiceData.duration} • ${selectedServiceData.price} CAD</span>
-                        </div>
-                      </div>
-
-                      {/* Selected Service Information */}
-                      <div className="space-y-1.5 text-left">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-brand-pink block">
-                            SELECTED SERVICE
-                          </span>
-                          <span className="text-xs font-serif font-bold text-[#8A1A4A] bg-brand-pink-light px-2.5 py-0.5 rounded-full border border-brand-pink/20">
-                            ${selectedServiceData.price} CAD
-                          </span>
-                        </div>
-
-                        <h3 className="font-serif font-bold text-xl sm:text-2xl text-[#2A1620] leading-tight">
-                          {selectedServiceData.name}
-                        </h3>
-
-                        <p className="text-xs text-[#7A5060] leading-relaxed">
-                          {selectedServiceData.description || "Personalized beauty care designed for your style."}
-                        </p>
-                      </div>
-
-                      {/* Service Highlights / Features */}
-                      {selectedServiceData.features && selectedServiceData.features.length > 0 && (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1 text-left">
-                          {selectedServiceData.features.slice(0, 2).map((feat, idx) => (
-                            <div key={idx} className="flex items-center gap-1.5 text-[11px] text-[#6D4C58] bg-white/90 px-2.5 py-1.5 rounded-xl border border-[#ECDCDF]/70 shadow-2xs">
-                              <Check className="w-3.5 h-3.5 text-brand-pink flex-shrink-0" />
-                              <span className="truncate">{feat}</span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Trust Pill Bar */}
-                      <div className="pt-2 border-t border-[#ECDCDF]/70 flex items-center justify-between text-[11px] text-[#7A5060]">
-                        <div className="flex items-center gap-1">
-                          <ShieldCheck className="w-3.5 h-3.5 text-brand-pink" />
-                          <span>Sanitized Tools</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                          <span>4.9★ Rated Treatment</span>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    /* DEFAULT FLORAL SALON PREVIEW (When no service is selected) */
-                    <div className="space-y-4 animate-fade-in text-center">
-                      <div className="relative aspect-[4/5] w-full max-w-[320px] mx-auto rounded-xl overflow-hidden bg-white/50 border border-white/60 shadow-sm flex items-center justify-center">
-                        <img
-                          src={floralImg}
-                          alt="Floral Botanical Luxury Art"
-                          className="w-full h-full object-contain object-center hover:scale-105 transition-transform duration-700"
-                        />
-                      </div>
-
-                      <div className="space-y-1.5 pt-1">
-                        <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-brand-pink block">
-                          YOUR BEAUTY MOMENT
-                        </span>
-                        <h3 className="font-serif font-bold text-base sm:text-lg text-[#2A1620]">
-                          Tailored Elegance & Wellness
-                        </h3>
-                        <p className="text-xs text-[#7A5060] leading-relaxed max-w-xs mx-auto">
-                          Personalized care, thoughtful details, and a beautiful experience. Select any beauty ritual to view its photo and pricing.
-                        </p>
-                      </div>
-
-                      <div className="pt-2 border-t border-[#ECDCDF]/70 flex items-center justify-center gap-4 text-[11px] text-[#7A5060]">
-                        <div className="flex items-center gap-1">
-                          <ShieldCheck className="w-3.5 h-3.5 text-brand-pink" />
-                          <span>Sanitized Tools</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                          <span>4.9★ Rated Salon</span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                </div>
-              </div>
-
-            </div>
-          )}
-
-        </div>
-
-      </div>
-
-      {/* 3. PAST APPOINTMENTS MODAL */}
-      {showAppointmentsModal && (
-        <div 
-          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
-          onClick={() => setShowAppointmentsModal(false)}
-        >
-          <div 
-            className="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full max-h-[85vh] overflow-y-auto shadow-2xl border border-[#EEDDE2]"
-            onClick={(e) => e.stopPropagation()}
+          {/* Saved Appointments Count Button */}
+          <button
+            type="button"
+            onClick={() => setShowSavedModal(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/15 text-white/80 hover:text-white text-xs transition-all cursor-pointer"
           >
-            <div className="flex items-center justify-between pb-4 mb-4 border-b border-[#F4E9EC]">
-              <div>
-                <h3 className="font-serif font-bold text-lg text-[#2A1620]">Saved Appointment Requests</h3>
-                <p className="text-xs text-[#87586A]">Stored locally on your browser</p>
-              </div>
-              <button
-                onClick={() => setShowAppointmentsModal(false)}
-                className="p-2 rounded-full hover:bg-gray-100 text-gray-500 cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
+            <FileText className="w-3.5 h-3.5 text-brand-pink" />
+            <span className="hidden sm:inline">My Bookings</span>
+            {savedAppointments.length > 0 && (
+              <span className="bg-brand-pink text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full">
+                {savedAppointments.length}
+              </span>
+            )}
+          </button>
 
-            <div className="space-y-3">
-              {savedAppointments.map((app) => (
-                <div key={app.id} className="p-4 rounded-xl bg-[#FAF5F6] border border-[#EEDDE2] flex items-center justify-between gap-3 text-xs">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-brand-pink">{app.id}</span>
-                      <span className="text-[#87586A]">• {app.date} at {app.time}</span>
-                    </div>
-                    <div className="font-bold text-sm text-[#2A1620]">{app.service}</div>
-                    <div className="text-[#87586A]">Guest: {app.customerName} ({app.phone})</div>
+        </div>
+      </header>
+
+      {/* 2. 7-STEP PROGRESS INDICATOR BAR */}
+      {currentStep <= 6 && (
+        <div className="bg-[#1C1418] border-b border-white/10 py-3 px-4 overflow-x-auto scrollbar-none">
+          <div className="max-w-4xl mx-auto flex items-center justify-between gap-2 min-w-[550px]">
+            {stepsList.slice(0, 6).map((st) => {
+              const isCompleted = currentStep > st.num;
+              const isActive = currentStep === st.num;
+              return (
+                <div 
+                  key={st.num}
+                  onClick={() => {
+                    if (isCompleted) setCurrentStep(st.num);
+                  }}
+                  className={`flex items-center gap-2 cursor-pointer transition-all ${
+                    isCompleted ? 'text-brand-pink font-medium' : isActive ? 'text-white font-bold' : 'text-white/30'
+                  }`}
+                >
+                  <div className={`w-7 h-7 rounded-full text-xs flex items-center justify-center font-bold ${
+                    isActive
+                      ? 'bg-brand-pink text-white shadow-md shadow-brand-pink/30 scale-110'
+                      : isCompleted
+                        ? 'bg-brand-pink/20 text-brand-pink border border-brand-pink/40'
+                        : 'bg-white/5 text-white/40 border border-white/10'
+                  }`}>
+                    {isCompleted ? <Check className="w-3.5 h-3.5" /> : st.num}
                   </div>
-
-                  <button
-                    onClick={() => handleDeleteSaved(app.id)}
-                    className="p-2 text-[#87586A] hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors cursor-pointer"
-                    title="Delete record"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  <span className="text-xs whitespace-nowrap">{st.label}</span>
+                  {st.num < 6 && <ChevronRight className="w-3.5 h-3.5 text-white/20 ml-1" />}
                 </div>
-              ))}
-            </div>
+              );
+            })}
           </div>
         </div>
       )}
+
+      {/* 3. MAIN STEP-BY-STEP CONTENT AREA */}
+      <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+        
+        {/* ========================================================================= */}
+        {/* STEP 1: SELECT TREATMENT */}
+        {/* ========================================================================= */}
+        {currentStep === 1 && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="text-center max-w-xl mx-auto space-y-2">
+              <span className="text-brand-pink text-xs font-bold uppercase tracking-[0.2em]">Step 1 of 6</span>
+              <h2 className="font-serif text-2xl sm:text-4xl font-bold text-white">Select Treatment</h2>
+              <p className="text-xs sm:text-sm text-white/60">Choose your desired treatment from our comprehensive salon menu.</p>
+            </div>
+
+            {/* Selected Treatment Preview Banner (If already pre-selected) */}
+            {selectedServiceObj && (
+              <div className="p-4 rounded-2xl bg-brand-pink/10 border border-brand-pink/30 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <img src={selectedServiceObj.image || floralImg} alt="" className="w-12 h-12 rounded-xl object-cover" />
+                  <div>
+                    <span className="text-[10px] text-brand-pink font-bold uppercase">{selectedServiceObj.categoryName}</span>
+                    <h4 className="font-serif font-bold text-white text-base">{selectedServiceObj.name}</h4>
+                    <p className="text-xs text-white/70">{selectedServiceObj.duration} • ${selectedServiceObj.price} CAD</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep(2)}
+                  className="px-5 py-2.5 rounded-full bg-brand-pink hover:bg-brand-pink-hover text-white text-xs font-bold transition-all shadow-md cursor-pointer flex-shrink-0"
+                >
+                  Continue with Selection →
+                </button>
+              </div>
+            )}
+
+            {/* Search & Category Filter Controls */}
+            <div className="space-y-4">
+              <div className="relative max-w-md mx-auto">
+                <Search className="w-4 h-4 text-white/50 absolute left-4 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={serviceSearchQuery}
+                  onChange={(e) => setServiceSearchQuery(e.target.value)}
+                  placeholder="Search treatments by name or keyword..."
+                  className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/15 rounded-full text-xs sm:text-sm text-white placeholder-white/40 focus:outline-none focus:border-brand-pink"
+                />
+              </div>
+
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                {CATEGORIES.map((cat) => (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
+                      selectedCategory === cat.id
+                        ? 'bg-brand-pink text-white shadow-md'
+                        : 'bg-white/5 border border-white/10 text-white/70 hover:bg-white/10'
+                    }`}
+                  >
+                    {cat.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Services Cards Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredServices.map((service) => {
+                const isSelected = selectedServiceId === service.id;
+                return (
+                  <div
+                    key={service.id}
+                    onClick={() => setSelectedServiceId(service.id)}
+                    className={`p-4 rounded-2xl bg-[#1C1418] border transition-all cursor-pointer flex flex-col justify-between ${
+                      isSelected
+                        ? 'border-brand-pink ring-2 ring-brand-pink/30 shadow-xl shadow-brand-pink/10 bg-[#24171E]'
+                        : 'border-white/10 hover:border-white/20'
+                    }`}
+                  >
+                    <div className="space-y-3">
+                      <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-black/20">
+                        <img src={service.image} alt={service.name} className="w-full h-full object-cover" />
+                        <span className="absolute top-2 left-2 bg-black/60 backdrop-blur-md text-brand-pink-muted text-[10px] font-bold px-2.5 py-0.5 rounded-full">
+                          {service.categoryName}
+                        </span>
+                      </div>
+
+                      <div>
+                        <h3 className="font-serif font-bold text-white text-base">{service.name}</h3>
+                        <p className="text-white/60 text-xs line-clamp-2 mt-1">{service.description}</p>
+                      </div>
+                    </div>
+
+                    <div className="pt-3 mt-3 border-t border-white/10 flex items-center justify-between">
+                      <div>
+                        <span className="text-[10px] text-white/50 block">Price</span>
+                        <span className="font-serif font-bold text-white text-base">${service.price} CAD</span>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedServiceId(service.id);
+                          setCurrentStep(2);
+                        }}
+                        className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                          isSelected
+                            ? 'bg-brand-pink text-white shadow-md'
+                            : 'bg-white/10 text-white hover:bg-brand-pink hover:text-white'
+                        }`}
+                      >
+                        {isSelected ? 'Selected ✓' : 'Select'}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Step 1 Next Button */}
+            <div className="pt-6 flex justify-end">
+              <button
+                type="button"
+                disabled={!selectedServiceId}
+                onClick={() => setCurrentStep(2)}
+                className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-brand-pink hover:bg-brand-pink-hover disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-brand-pink/30 transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                <span>Continue to Select Stylist</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* STEP 2: SELECT STYLIST */}
+        {/* ========================================================================= */}
+        {currentStep === 2 && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="text-center max-w-xl mx-auto space-y-2">
+              <span className="text-brand-pink text-xs font-bold uppercase tracking-[0.2em]">Step 2 of 6</span>
+              <h2 className="font-serif text-2xl sm:text-4xl font-bold text-white">Select Stylist</h2>
+              <p className="text-xs sm:text-sm text-white/60">Pick your preferred beauty specialist or choose any available expert.</p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
+              {STYLISTS.map((stylist) => {
+                const isSelected = selectedStylistId === stylist.id;
+                return (
+                  <div
+                    key={stylist.id}
+                    onClick={() => setSelectedStylistId(stylist.id)}
+                    className={`p-5 rounded-2xl bg-[#1C1418] border transition-all cursor-pointer flex items-center gap-4 ${
+                      isSelected
+                        ? 'border-brand-pink ring-2 ring-brand-pink/30 shadow-xl bg-[#24171E]'
+                        : 'border-white/10 hover:border-white/20'
+                    }`}
+                  >
+                    <img src={stylist.image} alt={stylist.name} className="w-16 h-16 rounded-full object-cover border-2 border-brand-pink/30 flex-shrink-0" />
+                    <div className="space-y-1 flex-1">
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-serif font-bold text-white text-base">{stylist.name}</h3>
+                        <span className="text-xs text-amber-400 font-bold">{stylist.rating}</span>
+                      </div>
+                      <p className="text-xs text-brand-pink-muted font-medium">{stylist.role}</p>
+                      <p className="text-[11px] text-white/50">{stylist.experience}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="pt-6 flex items-center justify-between gap-4">
+              <button
+                type="button"
+                onClick={() => setCurrentStep(1)}
+                className="px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm transition-all cursor-pointer flex items-center gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Back</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setCurrentStep(3)}
+                className="px-8 py-3.5 rounded-full bg-brand-pink hover:bg-brand-pink-hover text-white font-bold text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-brand-pink/30 transition-all cursor-pointer flex items-center gap-2"
+              >
+                <span>Continue to Select Date</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* STEP 3: SELECT DATE */}
+        {/* ========================================================================= */}
+        {currentStep === 3 && (
+          <div className="space-y-6 animate-fade-in max-w-xl mx-auto">
+            <div className="text-center space-y-2">
+              <span className="text-brand-pink text-xs font-bold uppercase tracking-[0.2em]">Step 3 of 6</span>
+              <h2 className="font-serif text-2xl sm:text-4xl font-bold text-white">Select Date</h2>
+              <p className="text-xs sm:text-sm text-white/60">Choose your appointment date below.</p>
+            </div>
+
+            <div className="p-6 rounded-3xl bg-[#1C1418] border border-white/10 space-y-6 shadow-xl text-center">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-white/70 mb-2">
+                  Pick a Date
+                </label>
+                <input
+                  type="date"
+                  min={new Date().toISOString().split('T')[0]}
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  className="w-full max-w-xs mx-auto py-3 px-4 bg-white/5 border border-white/20 rounded-xl text-center text-sm font-semibold text-white focus:outline-none focus:border-brand-pink cursor-pointer"
+                />
+              </div>
+
+              {/* Selected Date Summary Display */}
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 text-center space-y-1">
+                <span className="text-[11px] text-white/50 block">Selected Appointment Date</span>
+                <span className="font-serif font-bold text-xl text-brand-pink">
+                  {new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+                </span>
+              </div>
+            </div>
+
+            <div className="pt-6 flex items-center justify-between gap-4">
+              <button
+                type="button"
+                onClick={() => setCurrentStep(2)}
+                className="px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm transition-all cursor-pointer flex items-center gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Back</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setCurrentStep(4)}
+                className="px-8 py-3.5 rounded-full bg-brand-pink hover:bg-brand-pink-hover text-white font-bold text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-brand-pink/30 transition-all cursor-pointer flex items-center gap-2"
+              >
+                <span>Continue to Select Time</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* STEP 4: SELECT TIME */}
+        {/* ========================================================================= */}
+        {currentStep === 4 && (
+          <div className="space-y-6 animate-fade-in max-w-2xl mx-auto">
+            <div className="text-center space-y-2">
+              <span className="text-brand-pink text-xs font-bold uppercase tracking-[0.2em]">Step 4 of 6</span>
+              <h2 className="font-serif text-2xl sm:text-4xl font-bold text-white">Select Time</h2>
+              <p className="text-xs sm:text-sm text-white/60">Choose an available time slot for your appointment.</p>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {TIME_SLOTS.map((slot) => {
+                const isSelected = selectedTime === slot;
+                return (
+                  <button
+                    key={slot}
+                    type="button"
+                    onClick={() => setSelectedTime(slot)}
+                    className={`py-3.5 px-4 rounded-2xl text-xs sm:text-sm font-semibold transition-all cursor-pointer flex items-center justify-center gap-2 border ${
+                      isSelected
+                        ? 'bg-brand-pink text-white border-brand-pink shadow-lg shadow-brand-pink/30 scale-105'
+                        : 'bg-[#1C1418] text-white/80 border-white/10 hover:bg-white/10 hover:text-white'
+                    }`}
+                  >
+                    <Clock className="w-3.5 h-3.5 flex-shrink-0" />
+                    <span>{slot}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="pt-6 flex items-center justify-between gap-4">
+              <button
+                type="button"
+                onClick={() => setCurrentStep(3)}
+                className="px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm transition-all cursor-pointer flex items-center gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Back</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setCurrentStep(5)}
+                className="px-8 py-3.5 rounded-full bg-brand-pink hover:bg-brand-pink-hover text-white font-bold text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-brand-pink/30 transition-all cursor-pointer flex items-center gap-2"
+              >
+                <span>Continue to Details</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* STEP 5: CUSTOMER DETAILS */}
+        {/* ========================================================================= */}
+        {currentStep === 5 && (
+          <div className="space-y-6 animate-fade-in max-w-xl mx-auto">
+            <div className="text-center space-y-2">
+              <span className="text-brand-pink text-xs font-bold uppercase tracking-[0.2em]">Step 5 of 6</span>
+              <h2 className="font-serif text-2xl sm:text-4xl font-bold text-white">Customer Details</h2>
+              <p className="text-xs sm:text-sm text-white/60">Enter your contact information for confirmation.</p>
+            </div>
+
+            <div className="p-6 sm:p-8 rounded-3xl bg-[#1C1418] border border-white/10 space-y-4 shadow-xl">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-white/80 mb-1.5">
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="Enter your full name"
+                  className={`w-full py-3 px-4 bg-white/5 border rounded-xl text-xs sm:text-sm text-white placeholder-white/40 focus:outline-none focus:border-brand-pink ${
+                    errors.name ? 'border-red-500' : 'border-white/15'
+                  }`}
+                />
+                {errors.name && <p className="text-[11px] text-red-400 mt-1">{errors.name}</p>}
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-white/80 mb-1.5">
+                  Phone Number *
+                </label>
+                <input
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  placeholder="(613) 555-0182"
+                  className={`w-full py-3 px-4 bg-white/5 border rounded-xl text-xs sm:text-sm text-white placeholder-white/40 focus:outline-none focus:border-brand-pink ${
+                    errors.phone ? 'border-red-500' : 'border-white/15'
+                  }`}
+                />
+                {errors.phone && <p className="text-[11px] text-red-400 mt-1">{errors.phone}</p>}
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-white/80 mb-1.5">
+                  Email Address *
+                </label>
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  placeholder="name@example.com"
+                  className={`w-full py-3 px-4 bg-white/5 border rounded-xl text-xs sm:text-sm text-white placeholder-white/40 focus:outline-none focus:border-brand-pink ${
+                    errors.email ? 'border-red-500' : 'border-white/15'
+                  }`}
+                />
+                {errors.email && <p className="text-[11px] text-red-400 mt-1">{errors.email}</p>}
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-white/80 mb-1.5">
+                  Special Notes / Requests <span className="text-white/40 font-normal lowercase">(optional)</span>
+                </label>
+                <textarea
+                  rows={2}
+                  value={formData.notes}
+                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                  placeholder="Any special requests or allergies..."
+                  className="w-full py-3 px-4 bg-white/5 border border-white/15 rounded-xl text-xs sm:text-sm text-white placeholder-white/40 focus:outline-none focus:border-brand-pink resize-none"
+                />
+              </div>
+            </div>
+
+            <div className="pt-6 flex items-center justify-between gap-4">
+              <button
+                type="button"
+                onClick={() => setCurrentStep(4)}
+                className="px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm transition-all cursor-pointer flex items-center gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Back</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (validateDetailsStep()) {
+                    setCurrentStep(6);
+                  }
+                }}
+                className="px-8 py-3.5 rounded-full bg-brand-pink hover:bg-brand-pink-hover text-white font-bold text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-brand-pink/30 transition-all cursor-pointer flex items-center gap-2"
+              >
+                <span>Review Booking</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* STEP 6: BOOKING SUMMARY & REVIEW */}
+        {/* ========================================================================= */}
+        {currentStep === 6 && (
+          <div className="space-y-6 animate-fade-in max-w-xl mx-auto">
+            <div className="text-center space-y-2">
+              <span className="text-brand-pink text-xs font-bold uppercase tracking-[0.2em]">Step 6 of 6</span>
+              <h2 className="font-serif text-2xl sm:text-4xl font-bold text-white">Booking Summary</h2>
+              <p className="text-xs sm:text-sm text-white/60">Review all details before confirming your appointment.</p>
+            </div>
+
+            <div className="p-6 sm:p-8 rounded-3xl bg-[#1C1418] border border-white/15 space-y-4 shadow-2xl">
+              <div className="pb-4 border-b border-white/10 flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] text-brand-pink font-bold uppercase tracking-wider block">Treatment</span>
+                  <h3 className="font-serif font-bold text-white text-lg sm:text-xl">
+                    {selectedServiceObj ? selectedServiceObj.name : 'Selected Service'}
+                  </h3>
+                  <span className="text-xs text-white/60">
+                    {selectedServiceObj ? `${selectedServiceObj.duration} • ${selectedServiceObj.categoryName}` : ''}
+                  </span>
+                </div>
+                <span className="font-serif font-bold text-xl text-white">
+                  ${selectedServiceObj ? selectedServiceObj.price : 85} CAD
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 text-xs sm:text-sm py-2">
+                <div>
+                  <span className="text-white/50 block text-[11px]">Stylist</span>
+                  <span className="font-semibold text-white">{selectedStylistObj.name}</span>
+                </div>
+                <div>
+                  <span className="text-white/50 block text-[11px]">Date & Time</span>
+                  <span className="font-semibold text-white">{selectedDate} • {selectedTime}</span>
+                </div>
+                <div>
+                  <span className="text-white/50 block text-[11px]">Customer</span>
+                  <span className="font-semibold text-white">{formData.name}</span>
+                </div>
+                <div>
+                  <span className="text-white/50 block text-[11px]">Phone</span>
+                  <span className="font-semibold text-white">{formData.phone}</span>
+                </div>
+              </div>
+
+              {formData.notes && (
+                <div className="pt-3 border-t border-white/10 text-xs">
+                  <span className="text-white/50 block text-[11px]">Notes</span>
+                  <span className="text-white/80 italic">"{formData.notes}"</span>
+                </div>
+              )}
+            </div>
+
+            <div className="pt-6 flex items-center justify-between gap-4">
+              <button
+                type="button"
+                onClick={() => setCurrentStep(5)}
+                className="px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm transition-all cursor-pointer flex items-center gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Back to Edit</span>
+              </button>
+
+              <button
+                type="button"
+                disabled={isSubmitting}
+                onClick={handleFinalSubmit}
+                className="flex-1 max-w-xs py-3.5 px-6 rounded-full bg-brand-pink hover:bg-brand-pink-hover text-white font-bold text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-brand-pink/30 hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                {isSubmitting ? 'Confirming...' : 'Confirm & Complete Booking'}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* STEP 7: CONFIRMATION & SUCCESS STATE */}
+        {/* ========================================================================= */}
+        {currentStep === 7 && confirmedBooking && (
+          <div className="max-w-2xl mx-auto text-center space-y-6 py-6 animate-fade-in">
+            <div className="w-20 h-20 rounded-full bg-emerald-500/20 text-emerald-400 border-2 border-emerald-500/40 flex items-center justify-center mx-auto shadow-inner">
+              <CheckCircle className="w-10 h-10" />
+            </div>
+
+            <div className="space-y-2">
+              <span className="inline-block px-4 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-bold text-xs uppercase tracking-widest border border-emerald-500/30">
+                ✓ Appointment Request Created
+              </span>
+              <h2 className="font-serif text-3xl sm:text-5xl font-bold text-white">
+                Booking Confirmed!
+              </h2>
+              <p className="text-white/70 text-xs sm:text-sm max-w-md mx-auto">
+                Thank you, <strong>{confirmedBooking.customerName}</strong>! Your appointment has been registered.
+              </p>
+            </div>
+
+            {/* Voucher Details */}
+            <div className="bg-[#1C1418] border border-white/15 rounded-3xl p-6 sm:p-8 text-left space-y-4 shadow-2xl max-w-lg mx-auto">
+              <div className="flex items-center justify-between pb-3 border-b border-white/10">
+                <span className="text-xs text-white/50 uppercase font-bold tracking-wider">Booking Reference</span>
+                <span className="font-mono font-bold text-brand-pink text-base sm:text-lg">{confirmedBooking.referenceCode}</span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 text-xs sm:text-sm">
+                <div>
+                  <span className="text-white/50 block text-[11px]">Treatment</span>
+                  <span className="font-bold text-white">{confirmedBooking.service}</span>
+                </div>
+                <div>
+                  <span className="text-white/50 block text-[11px]">Stylist</span>
+                  <span className="font-bold text-white">{confirmedBooking.stylist}</span>
+                </div>
+                <div>
+                  <span className="text-white/50 block text-[11px]">Date</span>
+                  <span className="font-bold text-white">{confirmedBooking.date}</span>
+                </div>
+                <div>
+                  <span className="text-white/50 block text-[11px]">Time</span>
+                  <span className="font-bold text-white">{confirmedBooking.time}</span>
+                </div>
+                <div>
+                  <span className="text-white/50 block text-[11px]">Price</span>
+                  <span className="font-bold text-brand-pink">${confirmedBooking.servicePrice} CAD</span>
+                </div>
+                <div>
+                  <span className="text-white/50 block text-[11px]">Guest Phone</span>
+                  <span className="font-bold text-white">{confirmedBooking.phone}</span>
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-white/10 text-[11px] text-white/50 flex items-center justify-between">
+                <span>Location: 450 Bank St, Ottawa, ON</span>
+                <span>Saved to browser storage</span>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
+              <button
+                type="button"
+                onClick={() => navigate('/')}
+                className="w-full sm:w-auto px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-wider transition-all cursor-pointer"
+              >
+                Back to Home
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowSavedModal(true)}
+                className="w-full sm:w-auto px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-wider transition-all cursor-pointer"
+              >
+                View Booking
+              </button>
+
+              <button
+                type="button"
+                onClick={handleResetBooking}
+                className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-brand-pink hover:bg-brand-pink-hover text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-brand-pink/30 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+              >
+                Book Another Appointment
+              </button>
+            </div>
+          </div>
+        )}
+
+      </main>
+
+      {/* 4. SAVED APPOINTMENTS MODAL */}
+      {showSavedModal && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in"
+          onClick={() => setShowSavedModal(false)}
+        >
+          <div 
+            className="bg-[#1C1418] rounded-3xl p-6 sm:p-8 max-w-xl w-full max-h-[85vh] overflow-y-auto shadow-2xl border border-white/15"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
+              <div>
+                <h3 className="font-serif font-bold text-lg text-white">Your Saved Bookings</h3>
+                <p className="text-xs text-white/50">Stored in browser localStorage</p>
+              </div>
+              <button
+                onClick={() => setShowSavedModal(false)}
+                className="p-2 rounded-full hover:bg-white/10 text-white/70 hover:text-white cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {savedAppointments.length > 0 ? (
+              <div className="space-y-3">
+                {savedAppointments.map((app) => (
+                  <div key={app.id || app.referenceCode} className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between gap-3 text-xs">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono font-bold text-brand-pink">{app.referenceCode || app.id}</span>
+                        <span className="text-white/50">• {app.date} at {app.time}</span>
+                      </div>
+                      <div className="font-bold text-sm text-white">{app.service}</div>
+                      <div className="text-white/60">Stylist: {app.stylist || 'Any Stylist'} | Guest: {app.customerName}</div>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        const updated = savedAppointments.filter(a => (a.id || a.referenceCode) !== (app.id || app.referenceCode));
+                        setSavedAppointments(updated);
+                        localStorage.setItem('girl-looked-for-you-appointments', JSON.stringify(updated));
+                      }}
+                      className="p-2 text-white/40 hover:text-red-400 rounded-lg hover:bg-red-500/10 transition-colors cursor-pointer"
+                      title="Delete booking"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-white/50 text-xs">
+                No saved appointments found.
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* 5. FOOTER */}
+      <footer className="py-4 px-6 border-t border-white/10 text-center text-xs text-white/40">
+        © {new Date().getFullYear()} Lumière Beauty Salon • 450 Bank St, Ottawa, ON
+      </footer>
 
     </div>
   );

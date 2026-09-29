@@ -93,21 +93,8 @@ export default function Navbar() {
   };
 
   const handleBookingClick = (e) => {
-    e.preventDefault();
-    if (isDetailPage) {
-      navigate('/#booking');
-    } else {
-      const el = document.getElementById('booking');
-      if (el) {
-        const navHeight = 76;
-        const pos = el.getBoundingClientRect().top + window.pageYOffset - navHeight;
-        window.scrollTo({ top: pos, behavior: 'smooth' });
-        window.history.pushState(null, '', '/#booking');
-        setActiveSection('booking');
-      } else {
-        navigate('/#booking');
-      }
-    }
+    if (e) e.preventDefault();
+    navigate('/book-appointment');
   };
 
   return (
@@ -173,14 +160,13 @@ export default function Navbar() {
               </button>
 
               {/* Desktop Book Appointment Button */}
-              <a
-                href="/#booking"
-                onClick={handleBookingClick}
+              <Link
+                to="/book-appointment"
                 className="hidden lg:inline-flex items-center gap-2 bg-brand-pink hover:bg-brand-pink-hover text-white text-xs sm:text-sm font-semibold uppercase tracking-wider px-5 xl:px-6 py-2.5 rounded-full shadow-md shadow-brand-pink/25 hover:shadow-lg hover:shadow-brand-pink/35 active:scale-95 transition-all duration-200 cursor-pointer"
               >
                 <Calendar className="w-4 h-4" />
                 <span>Book Appointment</span>
-              </a>
+              </Link>
 
               {/* Mobile Hamburger Menu Trigger */}
               <button

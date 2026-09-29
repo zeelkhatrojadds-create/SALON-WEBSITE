@@ -190,7 +190,7 @@ export default function AboutPage({ isSection = false }) {
             Book your bespoke consultation or beauty ritual today and let our specialists craft your signature look.
           </p>
           <Link
-            to="/booking"
+            to="/book-appointment"
             className="inline-flex items-center justify-center gap-2 min-h-[44px] px-7 sm:px-8 py-3 sm:py-3.5 rounded-full bg-brand-pink hover:bg-brand-pink-hover text-white font-semibold text-xs sm:text-sm shadow-xl shadow-brand-pink/30 hover:scale-105 active:scale-95 transition-all cursor-pointer uppercase tracking-wider"
           >
             <Calendar className="w-4 h-4" />

@@ -31,7 +31,7 @@ export default function ServiceDetailPage() {
   };
 
   const handleBookAppointment = () => {
-    navigate(`/booking?service=${service.id}`);
+    navigate(`/book-appointment?service=${service.id}`);
   };
 
   if (!service) {

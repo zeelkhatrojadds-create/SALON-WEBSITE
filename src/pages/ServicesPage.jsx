@@ -114,15 +114,7 @@ export default function ServicesPage({ isSection = false }) {
   };
 
   const handleQuickBook = (service) => {
-    const bookingEl = document.getElementById('booking');
-    if (bookingEl) {
-      window.dispatchEvent(new CustomEvent('select-booking-service', { detail: service.id }));
-      const navHeight = 80;
-      const topPos = bookingEl.getBoundingClientRect().top + window.pageYOffset - navHeight;
-      window.scrollTo({ top: topPos, behavior: 'smooth' });
-    } else {
-      navigate(`/booking?service=${service.id}`);
-    }
+    navigate(`/book-appointment?service=${service.id}`);
   };
 
   const handleViewDetails = (service) => {

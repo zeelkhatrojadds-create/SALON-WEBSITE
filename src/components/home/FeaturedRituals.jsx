@@ -15,7 +15,7 @@ export default function FeaturedRituals() {
   });
 
   const handleQuickBook = (service) => {
-    navigate(`/booking?service=${service.id}`);
+    navigate(`/book-appointment?service=${service.id}`);
   };
 
   const handleViewDetails = (service) => {

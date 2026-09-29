@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { X, Calendar, MapPin, Phone, Clock, ChevronRight } from 'lucide-react';
 import Logo from '../common/Logo';
 import { SALON_INFO } from '../../data/salonData';
@@ -8,8 +9,7 @@ export default function MobileMenu({
   activeSection = 'home',
   onClose, 
   onOpenSearch,
-  onNavClick,
-  onBookingClick 
+  onNavClick
 }) {
   // Prevent scrolling when mobile menu is open
   useEffect(() => {
@@ -48,13 +48,6 @@ export default function MobileMenu({
     onClose();
     if (onNavClick) {
       onNavClick(e, link);
-    }
-  };
-
-  const handleBookClick = (e) => {
-    onClose();
-    if (onBookingClick) {
-      onBookingClick(e);
     }
   };
 
@@ -121,14 +114,14 @@ export default function MobileMenu({
 
         {/* CTA & Booking Button */}
         <div className="p-4 sm:p-5 space-y-3.5 sm:space-y-4">
-          <a
-            href="/#booking"
-            onClick={handleBookClick}
+          <Link
+            to="/book-appointment"
+            onClick={onClose}
             className="w-full min-h-[44px] py-3.5 px-5 rounded-full bg-brand-pink hover:bg-brand-pink-hover text-white font-medium text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-brand-pink/25 active:scale-98 transition-all uppercase tracking-wider cursor-pointer"
           >
             <Calendar className="w-4 h-4" />
             <span>Book Appointment</span>
-          </a>
+          </Link>
 
           {/* Ottawa Salon Quick Info */}
           <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-brand-border/70 space-y-2.5 text-[11px] sm:text-xs text-brand-muted">

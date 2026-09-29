@@ -93,21 +93,12 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a 
-                  href="/#booking" 
-                  onClick={(e) => {
-                    const el = document.getElementById('booking');
-                    if (el) {
-                      e.preventDefault();
-                      const pos = el.getBoundingClientRect().top + window.pageYOffset - 76;
-                      window.scrollTo({ top: pos, behavior: 'smooth' });
-                      window.history.pushState(null, '', '/#booking');
-                    }
-                  }} 
+                <Link 
+                  to="/book-appointment" 
                   className="hover:text-brand-pink transition-colors cursor-pointer"
                 >
                   Book Appointment
-                </a>
+                </Link>
               </li>
               <li>
                 <a 
