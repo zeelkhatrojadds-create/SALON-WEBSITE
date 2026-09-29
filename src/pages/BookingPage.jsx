@@ -24,42 +24,19 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import floralImg from '../assets/floral-booking.jpg';
+import jankiPhoto from '../assets/janki-khatroja.jpg';
 import { ALL_SERVICES, CATEGORIES } from '../data/servicesData';
 import { getWhatsAppBookingUrl, getWhatsAppConfig, sendWhatsAppBookingDirect, formatDisplayPhone } from '../utils/whatsapp';
 import salonDB from '../db/salonDatabase';
 
 const STYLISTS = [
   {
-    id: 'any',
-    name: 'Any Available Stylist',
-    role: 'First Available Expert Specialist',
-    experience: 'Optimal availability',
-    image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=400&q=80',
-    rating: '5.0★'
-  },
-  {
     id: 'janki',
     name: 'Janki Khatroja',
-    role: 'Master Hair & Bridal Artistry Director',
-    experience: '12+ Yrs Experience',
-    image: 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=400&q=80',
+    role: 'Salon Owner & Master Beauty Director',
+    experience: '12+ Yrs Experience • Main Artist',
+    image: jankiPhoto || '/janki-khatroja.jpg',
     rating: '5.0★'
-  },
-  {
-    id: 'sophie',
-    name: 'Sophie Dupont',
-    role: 'Senior Skin & Aesthetic Specialist',
-    experience: '8+ Yrs Experience',
-    image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80',
-    rating: '4.9★'
-  },
-  {
-    id: 'chloe',
-    name: 'Chloe Bennett',
-    role: 'Nail Couture & Lash Expert',
-    experience: '6+ Yrs Experience',
-    image: 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=400&q=80',
-    rating: '4.9★'
   }
 ];
 
@@ -96,11 +73,11 @@ export default function BookingPage() {
   // Step State (1: Treatment, 2: Stylist, 3: Date, 4: Time, 5: Customer Details, 6: Summary, 7: Confirmation)
   const [currentStep, setCurrentStep] = useState(1);
 
-  // Selections State
+  // Selections State - Janki Khatroja set as sole master artist & owner
   const [selectedServiceId, setSelectedServiceId] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [serviceSearchQuery, setServiceSearchQuery] = useState('');
-  const [selectedStylistId, setSelectedStylistId] = useState('any');
+  const [selectedStylistId, setSelectedStylistId] = useState('janki');
 
   const tomorrowStr = () => {
     const d = new Date();
@@ -147,15 +124,12 @@ export default function BookingPage() {
       }
     }
     if (preselectedStylistId) {
-      const matchStylist = STYLISTS.find(st => st.id === preselectedStylistId);
-      if (matchStylist) {
-        setSelectedStylistId(matchStylist.id);
-      }
+      setSelectedStylistId('janki');
     }
   }, [preselectedServiceId, preselectedStylistId, availableServices]);
 
   const selectedServiceObj = availableServices.find((s) => s.id === selectedServiceId);
-  const selectedStylistObj = STYLISTS.find((st) => st.id === selectedStylistId) || STYLISTS[0];
+  const selectedStylistObj = STYLISTS[0]; // Janki Khatroja (Main Owner & Lead Artist)
 
   // Filtering services for Step 1
   const filteredServices = availableServices.filter((s) => {
@@ -266,7 +240,7 @@ export default function BookingPage() {
 
   const stepsList = [
     { num: 1, label: 'Treatment' },
-    { num: 2, label: 'Stylist' },
+    { num: 2, label: 'Master Artist' },
     { num: 3, label: 'Date' },
     { num: 4, label: 'Time' },
     { num: 5, label: 'Details' },
@@ -297,7 +271,7 @@ export default function BookingPage() {
               Book Your Appointment
             </h1>
             <p className="hidden sm:block text-[11px] sm:text-xs text-white/60">
-              Reserve your luxury treatment at Lumière Beauty Salon
+              Personalized treatment with Master Artist & Owner Janki Khatroja
             </p>
           </div>
 
@@ -436,7 +410,12 @@ export default function BookingPage() {
                   >
                     <div className="space-y-3">
                       <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-black/20">
-                        <img src={service.image} alt={service.name} className="w-full h-full object-cover" />
+                        <img 
+                          src={service.image} 
+                          alt={service.name} 
+                          onError={(e) => { e.currentTarget.src = floralImg; }}
+                          className="w-full h-full object-cover" 
+                        />
                         <span className="absolute top-2 left-2 bg-black/60 backdrop-blur-md text-brand-pink-muted text-[10px] font-bold px-2.5 py-0.5 rounded-full">
                           {service.categoryName}
                         </span>
@@ -483,7 +462,7 @@ export default function BookingPage() {
                 onClick={() => setCurrentStep(2)}
                 className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-brand-pink hover:bg-brand-pink-hover disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-brand-pink/30 transition-all cursor-pointer flex items-center justify-center gap-2"
               >
-                <span>Continue to Select Stylist</span>
+                <span>Continue to Select Artist</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -491,44 +470,42 @@ export default function BookingPage() {
         )}
 
         {/* ========================================================================= */}
-        {/* STEP 2: SELECT STYLIST */}
+        {/* STEP 2: SELECT STYLIST (SOLE MASTER ARTIST & OWNER JANKI KHATROJA) */}
         {/* ========================================================================= */}
         {currentStep === 2 && (
           <div className="space-y-6 animate-fade-in">
             <div className="text-center max-w-xl mx-auto space-y-2">
               <span className="text-brand-pink text-xs font-bold uppercase tracking-[0.2em]">Step 2 of 6</span>
-              <h2 className="font-serif text-2xl sm:text-4xl font-bold text-white">Select Stylist</h2>
-              <p className="text-xs sm:text-sm text-white/60">Pick your preferred beauty specialist or choose any available expert.</p>
+              <h2 className="font-serif text-2xl sm:text-4xl font-bold text-white">Your Master Artist & Owner</h2>
+              <p className="text-xs sm:text-sm text-white/60">Your luxury treatment will be personally conducted by Janki Khatroja.</p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
+            <div className="max-w-lg mx-auto">
               {STYLISTS.map((stylist) => {
-                const isSelected = selectedStylistId === stylist.id;
                 return (
                   <div
                     key={stylist.id}
-                    onClick={() => setSelectedStylistId(stylist.id)}
-                    className={`p-5 rounded-2xl bg-[#1C1418] border transition-all cursor-pointer flex items-center gap-4 ${
-                      isSelected
-                        ? 'border-brand-pink ring-2 ring-brand-pink/30 shadow-xl bg-[#24171E]'
-                        : 'border-white/10 hover:border-white/20'
-                    }`}
+                    className="p-6 sm:p-8 rounded-3xl bg-[#1C1418] border border-brand-pink ring-2 ring-brand-pink/30 shadow-2xl bg-[#24171E] flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left"
                   >
                     <img 
                       src={stylist.image} 
                       alt={stylist.name} 
                       onError={(e) => {
-                        e.currentTarget.src = 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=400&q=80';
+                        e.currentTarget.src = jankiPhoto;
                       }}
-                      className="w-16 h-16 rounded-full object-cover border-2 border-brand-pink/30 flex-shrink-0" 
+                      className="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl object-cover border-2 border-brand-pink shadow-xl flex-shrink-0" 
                     />
-                    <div className="space-y-1 flex-1">
-                      <div className="flex items-center justify-between">
-                        <h3 className="font-serif font-bold text-white text-base">{stylist.name}</h3>
-                        <span className="text-xs text-amber-400 font-bold">{stylist.rating}</span>
+                    <div className="space-y-2 flex-1">
+                      <div className="flex flex-wrap items-center justify-center sm:justify-between gap-2">
+                        <h3 className="font-serif font-bold text-white text-xl sm:text-2xl">{stylist.name}</h3>
+                        <span className="text-xs text-amber-400 font-bold bg-amber-400/10 px-3 py-0.5 rounded-full border border-amber-400/20">{stylist.rating}</span>
                       </div>
-                      <p className="text-xs text-brand-pink-muted font-medium">{stylist.role}</p>
-                      <p className="text-[11px] text-white/50">{stylist.experience}</p>
+                      <p className="text-xs sm:text-sm text-brand-pink font-semibold">{stylist.role}</p>
+                      <p className="text-xs text-white/70">{stylist.experience}</p>
+                      <div className="pt-2 flex items-center justify-center sm:justify-start gap-1.5 text-xs text-emerald-400 font-medium">
+                        <ShieldCheck className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                        <span>Salon Founder & Primary Lead Artist</span>
+                      </div>
                     </div>
                   </div>
                 );
@@ -796,7 +773,7 @@ export default function BookingPage() {
 
               <div className="grid grid-cols-2 gap-4 text-xs sm:text-sm py-2">
                 <div>
-                  <span className="text-white/50 block text-[11px]">Stylist</span>
+                  <span className="text-white/50 block text-[11px]">Artist & Owner</span>
                   <span className="font-semibold text-white">{selectedStylistObj.name}</span>
                 </div>
                 <div>
@@ -860,7 +837,7 @@ export default function BookingPage() {
                 Booking Confirmed!
               </h2>
               <p className="text-white/70 text-xs sm:text-sm max-w-md mx-auto">
-                Thank you, <strong>{confirmedBooking.customerName}</strong>! Your appointment has been registered.
+                Thank you, <strong>{confirmedBooking.customerName}</strong>! Your appointment has been registered with Janki Khatroja.
               </p>
             </div>
 
@@ -877,7 +854,7 @@ export default function BookingPage() {
                   <span className="font-bold text-white">{confirmedBooking.service}</span>
                 </div>
                 <div>
-                  <span className="text-white/50 block text-[11px]">Stylist</span>
+                  <span className="text-white/50 block text-[11px]">Artist & Owner</span>
                   <span className="font-bold text-white">{confirmedBooking.stylist}</span>
                 </div>
                 <div>
@@ -968,7 +945,7 @@ export default function BookingPage() {
                         <span className="text-white/50">• {app.date} at {app.time}</span>
                       </div>
                       <div className="font-bold text-sm text-white">{app.service}</div>
-                      <div className="text-white/60">Stylist: {app.stylist || 'Any Stylist'} | Guest: {app.customerName}</div>
+                      <div className="text-white/60">Artist: {app.stylist || 'Janki Khatroja'} | Guest: {app.customerName}</div>
                     </div>
 
                     <button

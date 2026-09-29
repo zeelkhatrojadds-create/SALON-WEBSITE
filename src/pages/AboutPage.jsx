@@ -118,20 +118,14 @@ export default function AboutPage({ isSection = false }) {
 
               <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-start gap-6 sm:gap-8 text-center sm:text-left">
                 
-                {/* Portrait Avatar / Clean Image Placeholder */}
+                {/* Real Owner & Main Artist Photograph */}
                 <div className="flex-shrink-0">
-                  <div className="relative w-32 h-32 sm:w-36 sm:h-36 rounded-2xl overflow-hidden border-2 border-brand-pink/40 shadow-xl group-hover:border-brand-pink transition-all bg-gradient-to-br from-[#2D1A25] via-[#1F1219] to-[#140E11] flex items-center justify-center">
-                    {/* Clean Portrait Placeholder / Monogram */}
-                    <div className="flex flex-col items-center justify-center p-3 text-center">
-                      <div className="w-14 h-14 rounded-full bg-brand-pink/20 text-brand-pink flex items-center justify-center mb-1.5 border border-brand-pink/30 shadow-inner">
-                        <span className="font-serif font-bold text-xl text-brand-pink-light">JK</span>
-                      </div>
-                      <span className="text-[10px] font-semibold text-brand-gold-light uppercase tracking-wider">
-                        Main Artist
-                      </span>
-                    </div>
-
-                    {/* Subtle Overlay */}
+                  <div className="relative w-32 h-32 sm:w-36 sm:h-36 rounded-2xl overflow-hidden border-2 border-brand-pink/40 shadow-xl group-hover:border-brand-pink transition-all">
+                    <img 
+                      src="/janki-khatroja.jpg" 
+                      alt="Janki Khatroja — Salon Owner & Main Artist"
+                      className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
                   </div>
                 </div>
