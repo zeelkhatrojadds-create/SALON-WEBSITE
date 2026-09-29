@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, ArrowRight, Sparkles, MapPin } from 'lucide-react';
+import { Calendar, ArrowRight, Sparkles, MapPin, ShieldCheck } from 'lucide-react';
+import jankiPhoto from '../../assets/janki-khatroja.jpg';
 
 export default function HeroSection() {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -8,20 +9,20 @@ export default function HeroSection() {
   return (
     <section className="relative w-full min-h-screen overflow-hidden bg-[#140E11] flex items-center pt-24 pb-14 sm:py-28 lg:py-32">
       
-      {/* 1. Full-Bleed Background Photograph */}
+      {/* 1. Full-Bleed Background Photograph of Main Owner Janki Khatroja */}
       <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
         <img
-          src="/hero-campaign.jpg"
-          alt="Girl Looked For You — Luxury Ottawa Salon Campaign with Elegant Model"
+          src={jankiPhoto || "/janki-khatroja.jpg"}
+          alt="Janki Khatroja — Founder, Main Owner & Master Beauty Director"
           onLoad={() => setImageLoaded(true)}
-          className={`w-full h-full object-cover object-[70%_center] sm:object-[75%_center] lg:object-right-top transition-transform duration-1000 ease-out transform ${
+          className={`w-full h-full object-cover object-[center_20%] lg:object-[80%_20%] transition-transform duration-1000 ease-out transform ${
             imageLoaded ? 'scale-100 opacity-100' : 'scale-105 opacity-90'
           }`}
           loading="eager"
         />
 
         {/* 2. Professional Cinematic Gradient Overlays for Maximum Readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#140E11] via-[#140E11]/90 via-45% md:via-50% md:to-transparent to-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#140E11] via-[#140E11]/90 via-45% md:via-55% md:to-transparent to-black/50" />
         <div className="absolute inset-0 bg-gradient-to-b from-[#140E11]/80 via-transparent to-[#140E11]/95" />
         <div className="absolute top-1/4 left-5 sm:left-10 w-72 sm:w-96 h-72 sm:h-96 bg-brand-pink/15 rounded-full blur-3xl pointer-events-none" />
       </div>
@@ -32,7 +33,7 @@ export default function HeroSection() {
           
           <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-brand-gold-light text-[10px] sm:text-xs md:text-[13px] font-bold tracking-[0.2em] sm:tracking-[0.26em] uppercase shadow-lg shadow-black/20 self-start">
             <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-brand-pink flex-shrink-0" />
-            <span className="truncate">OTTAWA • WOMEN'S BEAUTY STUDIO</span>
+            <span className="truncate">OTTAWA • JANKI KHATROJA BEAUTY STUDIO</span>
           </div>
 
           <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold text-white tracking-tight leading-[1.06] uppercase drop-shadow-md">
@@ -44,7 +45,7 @@ export default function HeroSection() {
           </h1>
 
           <p className="text-[#F2ECE4] text-sm sm:text-base md:text-lg lg:text-xl font-normal leading-relaxed max-w-lg lg:max-w-xl drop-shadow-sm">
-            Personalized beauty experiences created to highlight your natural beauty and confidence.
+            Personalized beauty & wellness experiences created by Founder & Master Artist Janki Khatroja to highlight your natural confidence.
           </p>
 
           <div className="pt-1 sm:pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 md:gap-5">
@@ -73,9 +74,9 @@ export default function HeroSection() {
               <span className="font-medium">450 Bank Street, Central Ottawa</span>
             </div>
             <span className="hidden sm:inline text-white/30">•</span>
-            <div className="flex items-center gap-1 text-amber-400 font-semibold">
-              <span>★ 4.9/5.0</span>
-              <span className="text-white/70 font-normal">(450+ Verified Ottawa Reviews)</span>
+            <div className="flex items-center gap-1.5 text-emerald-400 font-semibold">
+              <ShieldCheck className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+              <span>Founder & Lead Artist Janki Khatroja</span>
             </div>
           </div>
 
