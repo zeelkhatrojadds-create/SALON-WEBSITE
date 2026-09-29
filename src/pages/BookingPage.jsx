@@ -42,7 +42,7 @@ const STYLISTS = [
     name: 'Janki Khatroja',
     role: 'Master Hair & Bridal Artistry Director',
     experience: '12+ Yrs Experience',
-    image: '/janki-khatroja.jpg',
+    image: 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=400&q=80',
     rating: '5.0★'
   },
   {
@@ -514,7 +514,14 @@ export default function BookingPage() {
                         : 'border-white/10 hover:border-white/20'
                     }`}
                   >
-                    <img src={stylist.image} alt={stylist.name} className="w-16 h-16 rounded-full object-cover border-2 border-brand-pink/30 flex-shrink-0" />
+                    <img 
+                      src={stylist.image} 
+                      alt={stylist.name} 
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=400&q=80';
+                      }}
+                      className="w-16 h-16 rounded-full object-cover border-2 border-brand-pink/30 flex-shrink-0" 
+                    />
                     <div className="space-y-1 flex-1">
                       <div className="flex items-center justify-between">
                         <h3 className="font-serif font-bold text-white text-base">{stylist.name}</h3>
