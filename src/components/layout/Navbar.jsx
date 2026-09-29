@@ -102,14 +102,14 @@ export default function Navbar() {
       <header 
         className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${
           isScrolled 
-            ? 'bg-[#140E11]/95 backdrop-blur-md shadow-lg border-b border-white/10 py-2.5 sm:py-3.5' 
+            ? 'bg-[#0E0C0D]/95 backdrop-blur-md shadow-2xl border-b border-white/10 py-3 sm:py-3.5' 
             : activeSection === 'home' && !isDetailPage
-              ? 'bg-gradient-to-b from-black/80 via-black/40 to-transparent py-3 sm:py-5'
-              : 'bg-[#140E11]/95 backdrop-blur-md border-b border-white/10 py-3 sm:py-4'
+              ? 'bg-gradient-to-b from-[#0E0C0D]/90 via-[#0E0C0D]/60 to-transparent py-3 sm:py-5'
+              : 'bg-[#0E0C0D]/95 backdrop-blur-md border-b border-white/10 py-3 sm:py-4'
         }`}
       >
         {/* Full-width responsive header */}
-        <div className="w-full px-3 sm:px-6 lg:px-12 xl:px-20 mx-auto">
+        <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 mx-auto">
           <div className="flex items-center justify-between gap-2">
             
             {/* Left: Brand Logo */}
@@ -119,12 +119,12 @@ export default function Navbar() {
                 onClick={(e) => handleNavClick(e, { id: 'home', path: '/' })}
                 className="cursor-pointer inline-block"
               >
-                <Logo variant="dark" size="default" />
+                <Logo size="default" />
               </a>
             </div>
 
             {/* Center: Desktop Navigation Links with Smooth SPA Scroll */}
-            <nav className="hidden md:flex items-center space-x-6 lg:space-x-10">
+            <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
               {navLinks.map((link) => {
                 const isActive = activeSection === link.id;
                 return (
@@ -132,15 +132,15 @@ export default function Navbar() {
                     key={link.name}
                     href={`/#${link.id}`}
                     onClick={(e) => handleNavClick(e, link)}
-                    className={`relative text-sm lg:text-[15px] font-medium tracking-wide transition-colors py-1.5 cursor-pointer ${
+                    className={`relative text-xs lg:text-sm font-medium tracking-wider uppercase transition-colors py-1.5 cursor-pointer ${
                       isActive
-                        ? 'text-white font-semibold'
+                        ? 'text-[#DDB88C] font-semibold'
                         : 'text-white/80 hover:text-white'
                     }`}
                   >
                     <span>{link.name}</span>
                     {isActive && (
-                      <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-pink rounded-full transition-all duration-300 shadow-glow" />
+                      <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#DDB88C] rounded-full transition-all duration-300 shadow-sm" />
                     )}
                   </a>
                 );
@@ -148,33 +148,33 @@ export default function Navbar() {
             </nav>
 
             {/* Right Actions: Search Trigger & Book Appointment Button */}
-            <div className="flex items-center space-x-1.5 sm:space-x-4 flex-shrink-0">
+            <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
               {/* Search Trigger */}
               <button
                 onClick={() => setIsSearchModalOpen(true)}
-                className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center text-white/90 hover:text-brand-pink hover:bg-white/10 rounded-full transition-colors cursor-pointer"
+                className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-white/80 hover:text-[#DDB88C] hover:bg-white/10 rounded-full transition-colors cursor-pointer"
                 aria-label="Search services"
                 title="Search salon services"
               >
-                <Search className="w-5 h-5" />
+                <Search className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
 
-              {/* Desktop Book Appointment Button */}
+              {/* Desktop Book Appointment Button (Gold Champagne Fill matching mockup) */}
               <Link
                 to="/book-appointment"
-                className="hidden lg:inline-flex items-center gap-2 bg-brand-pink hover:bg-brand-pink-hover text-white text-xs sm:text-sm font-semibold uppercase tracking-wider px-5 xl:px-6 py-2.5 rounded-full shadow-md shadow-brand-pink/25 hover:shadow-lg hover:shadow-brand-pink/35 active:scale-95 transition-all duration-200 cursor-pointer"
+                className="hidden lg:inline-flex items-center gap-2 bg-[#DDB88C] hover:bg-[#E8C59A] text-[#140E11] text-xs font-semibold px-5 xl:px-6 py-2.5 rounded-full shadow-lg shadow-[#DDB88C]/20 hover:scale-102 transition-all duration-200 cursor-pointer"
               >
-                <Calendar className="w-4 h-4" />
+                <Calendar className="w-3.5 h-3.5" />
                 <span>Book Appointment</span>
               </Link>
 
               {/* Mobile Hamburger Menu Trigger */}
               <button
                 onClick={() => setIsMobileMenuOpen(true)}
-                className="md:hidden w-10 h-10 flex items-center justify-center text-white hover:text-brand-pink hover:bg-white/10 rounded-full transition-colors cursor-pointer"
+                className="md:hidden w-9 h-9 flex items-center justify-center text-white hover:text-[#DDB88C] hover:bg-white/10 rounded-full transition-colors cursor-pointer"
                 aria-label="Open menu"
               >
-                <Menu className="w-6 h-6" />
+                <Menu className="w-5 h-5" />
               </button>
             </div>
 

@@ -17,8 +17,8 @@
   }
   
   body {
-    background-color: #FAF7F2;
-    color: #2A1E24;
+    background-color: #0E0C0D;
+    color: #F3ECE7;
     overflow-x: hidden;
     max-width: 100%;
     width: 100%;
@@ -32,8 +32,8 @@
   }
 
   ::selection {
-    background-color: #D83A75;
-    color: #ffffff;
+    background-color: #DDB88C;
+    color: #140E11;
   }
 }
 
