@@ -23,7 +23,7 @@ export default function GalleryPage({ isSection = false }) {
         
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
-          <div className="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-brand-gold-light text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] sm:tracking-[0.24em] mb-3">
+          <div className="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-[#E95E92] text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] sm:tracking-[0.24em] mb-3">
             <InstagramIcon className="w-3.5 h-3.5 text-brand-pink" />
             <span>CLIENT TRANSFORMATIONS</span>
           </div>

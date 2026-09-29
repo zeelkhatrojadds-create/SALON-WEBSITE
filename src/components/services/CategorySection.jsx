@@ -23,16 +23,16 @@ export default function CategorySection({
       case 'hair':
         return <Scissors className="w-5 h-5 text-brand-pink" />;
       case 'skin':
-        return <Sparkles className="w-5 h-5 text-amber-400" />;
+        return <Sparkles className="w-5 h-5 text-brand-pink" />;
       case 'nails':
-        return <Hand className="w-5 h-5 text-pink-400" />;
+        return <Hand className="w-5 h-5 text-brand-pink" />;
       case 'makeup':
-        return <Palette className="w-5 h-5 text-purple-400" />;
+        return <Palette className="w-5 h-5 text-brand-pink" />;
       case 'spa':
-        return <Flower2 className="w-5 h-5 text-emerald-400" />;
+        return <Flower2 className="w-5 h-5 text-brand-pink" />;
       case 'waxing':
       default:
-        return <Sparkle className="w-5 h-5 text-blue-400" />;
+        return <Sparkle className="w-5 h-5 text-brand-pink" />;
     }
   };
 
@@ -64,7 +64,7 @@ export default function CategorySection({
       {/* Category Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 sm:mb-10">
         <div className="space-y-2 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/5 border border-white/10 text-brand-gold-light text-[11px] font-bold uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/5 border border-white/10 text-[#E95E92] text-[11px] font-bold uppercase tracking-wider">
             {getCategoryIcon(category.id)}
             <span>{category.name}</span>
             <span className="text-white/40">•</span>

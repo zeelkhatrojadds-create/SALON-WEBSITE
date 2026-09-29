@@ -53,7 +53,7 @@ export default function HomePage({ defaultSection = null }) {
       {/* 3. BOOK APPOINTMENT CTA BANNER (id="booking") */}
       <section id="booking" className="w-full relative border-t border-white/10 py-16 sm:py-24 bg-gradient-to-br from-[#1C1418] via-[#24171E] to-[#140E11]">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/15 text-brand-gold-light text-xs font-bold uppercase tracking-[0.2em]">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/15 text-[#E95E92] text-xs font-bold uppercase tracking-[0.2em]">
             <Sparkles className="w-4 h-4 text-brand-pink" />
             <span>INSTANT RESERVATION</span>
           </div>

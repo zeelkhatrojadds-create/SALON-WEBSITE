@@ -36,7 +36,7 @@ export default function Footer() {
                 href="https://instagram.com"
                 target="_blank"
                 rel="noreferrer"
-                className="w-10 h-10 rounded-full bg-white/5 hover:bg-[#DDB88C] hover:text-[#140E11] text-white flex items-center justify-center transition-all border border-white/10"
+                className="w-10 h-10 rounded-full bg-white/5 hover:bg-[#D83A75] hover:text-white text-white flex items-center justify-center transition-all border border-white/10"
                 aria-label="Instagram"
               >
                 <InstagramIcon className="w-4 h-4" />
@@ -45,7 +45,7 @@ export default function Footer() {
                 href="https://facebook.com"
                 target="_blank"
                 rel="noreferrer"
-                className="w-10 h-10 rounded-full bg-white/5 hover:bg-[#DDB88C] hover:text-[#140E11] text-white flex items-center justify-center transition-all border border-white/10"
+                className="w-10 h-10 rounded-full bg-white/5 hover:bg-[#D83A75] hover:text-white text-white flex items-center justify-center transition-all border border-white/10"
                 aria-label="Facebook"
               >
                 <FacebookIcon className="w-4 h-4" />
@@ -55,7 +55,7 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div className="lg:col-span-2 space-y-3">
-            <h4 className="font-serif font-semibold text-[#DDB88C] text-sm sm:text-base tracking-wide">
+            <h4 className="font-serif font-semibold text-[#E95E92] text-sm sm:text-base tracking-wide">
               Quick Links
             </h4>
             <ul className="space-y-2 text-xs sm:text-sm text-white/70">
@@ -70,7 +70,7 @@ export default function Footer() {
                       window.history.pushState(null, '', '/#home');
                     }
                   }} 
-                  className="hover:text-[#DDB88C] transition-colors cursor-pointer"
+                  className="hover:text-[#E95E92] transition-colors cursor-pointer"
                 >
                   Home
                 </a>
@@ -87,7 +87,7 @@ export default function Footer() {
                       window.history.pushState(null, '', '/#services');
                     }
                   }} 
-                  className="hover:text-[#DDB88C] transition-colors cursor-pointer"
+                  className="hover:text-[#E95E92] transition-colors cursor-pointer"
                 >
                   All Services
                 </a>
@@ -95,7 +95,7 @@ export default function Footer() {
               <li>
                 <Link 
                   to="/book-appointment" 
-                  className="hover:text-[#DDB88C] transition-colors cursor-pointer"
+                  className="hover:text-[#E95E92] transition-colors cursor-pointer"
                 >
                   Book Appointment
                 </Link>
@@ -112,7 +112,7 @@ export default function Footer() {
                       window.history.pushState(null, '', '/#gallery');
                     }
                   }} 
-                  className="hover:text-[#DDB88C] transition-colors cursor-pointer"
+                  className="hover:text-[#E95E92] transition-colors cursor-pointer"
                 >
                   Gallery Portfolio
                 </a>
@@ -129,7 +129,7 @@ export default function Footer() {
                       window.history.pushState(null, '', '/#about');
                     }
                   }} 
-                  className="hover:text-[#DDB88C] transition-colors cursor-pointer"
+                  className="hover:text-[#E95E92] transition-colors cursor-pointer"
                 >
                   About Us
                 </a>
@@ -146,7 +146,7 @@ export default function Footer() {
                       window.history.pushState(null, '', '/#contact');
                     }
                   }} 
-                  className="hover:text-[#DDB88C] transition-colors cursor-pointer"
+                  className="hover:text-[#E95E92] transition-colors cursor-pointer"
                 >
                   Contact & Directions
                 </a>
@@ -156,7 +156,7 @@ export default function Footer() {
 
           {/* Salon Categories */}
           <div className="lg:col-span-2 space-y-3">
-            <h4 className="font-serif font-semibold text-[#DDB88C] text-sm sm:text-base tracking-wide">
+            <h4 className="font-serif font-semibold text-[#E95E92] text-sm sm:text-base tracking-wide">
               Treatments
             </h4>
             <ul className="space-y-2 text-xs sm:text-sm text-white/70">
@@ -164,7 +164,7 @@ export default function Footer() {
                 <li key={cat.id}>
                   <Link
                     to={`/services?category=${cat.id}`}
-                    className="hover:text-[#DDB88C] transition-colors"
+                    className="hover:text-[#E95E92] transition-colors"
                   >
                     {cat.name}
                   </Link>
@@ -175,23 +175,23 @@ export default function Footer() {
 
           {/* Contact & Hours */}
           <div className="sm:col-span-2 lg:col-span-4 space-y-3.5">
-            <h4 className="font-serif font-semibold text-[#DDB88C] text-sm sm:text-base tracking-wide">
+            <h4 className="font-serif font-semibold text-[#E95E92] text-sm sm:text-base tracking-wide">
               Ottawa Salon Studio
             </h4>
             <div className="space-y-2.5 text-xs sm:text-sm text-white/75">
               <div className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 text-[#DDB88C] flex-shrink-0 mt-0.5" />
+                <MapPin className="w-4 h-4 text-[#E95E92] flex-shrink-0 mt-0.5" />
                 <span>{SALON_INFO.address}, {SALON_INFO.city}</span>
               </div>
               <div className="flex items-center gap-2.5">
-                <Phone className="w-4 h-4 text-[#DDB88C] flex-shrink-0" />
-                <a href={`tel:${SALON_INFO.phone}`} className="hover:text-[#DDB88C] transition-colors">
+                <Phone className="w-4 h-4 text-[#E95E92] flex-shrink-0" />
+                <a href={`tel:${SALON_INFO.phone}`} className="hover:text-[#E95E92] transition-colors">
                   {SALON_INFO.phone}
                 </a>
               </div>
               <div className="flex items-center gap-2.5">
-                <Mail className="w-4 h-4 text-[#DDB88C] flex-shrink-0" />
-                <a href={`mailto:${SALON_INFO.email}`} className="hover:text-[#DDB88C] transition-colors">
+                <Mail className="w-4 h-4 text-[#E95E92] flex-shrink-0" />
+                <a href={`mailto:${SALON_INFO.email}`} className="hover:text-[#E95E92] transition-colors">
                   {SALON_INFO.email}
                 </a>
               </div>
@@ -199,7 +199,7 @@ export default function Footer() {
 
             {/* Newsletter Subscription */}
             <div className="pt-2">
-              <span className="text-[11px] sm:text-xs font-semibold text-[#DDB88C] uppercase tracking-wider block mb-2">
+              <span className="text-[11px] sm:text-xs font-semibold text-[#E95E92] uppercase tracking-wider block mb-2">
                 Join VIP Club (10% Off First Visit)
               </span>
               <form onSubmit={handleSubscribe} className="flex items-center gap-2">
@@ -209,11 +209,11 @@ export default function Footer() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
                   required
-                  className="w-full min-h-[44px] bg-white/5 text-white placeholder-white/40 text-xs px-3.5 py-2 rounded-full border border-white/15 focus:outline-none focus:border-[#DDB88C]"
+                  className="w-full min-h-[44px] bg-white/5 text-white placeholder-white/40 text-xs px-3.5 py-2 rounded-full border border-white/15 focus:outline-none focus:border-[#E95E92]"
                 />
                 <button
                   type="submit"
-                  className="min-h-[44px] bg-[#DDB88C] hover:bg-[#E8C59A] text-[#140E11] px-4 py-2 rounded-full text-xs font-semibold flex items-center justify-center gap-1 flex-shrink-0 transition-colors cursor-pointer"
+                  className="min-h-[44px] bg-[#D83A75] hover:bg-[#c42f65] text-white px-4 py-2 rounded-full text-xs font-semibold flex items-center justify-center gap-1 flex-shrink-0 transition-colors cursor-pointer shadow-md shadow-[#D83A75]/30"
                   aria-label="Subscribe"
                 >
                   <Send className="w-4 h-4" />
@@ -233,17 +233,17 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between text-[11px] sm:text-xs text-white/50 gap-3 text-center sm:text-left">
-          <p>© {new Date().getFullYear()} LUMÉ BEAUTY STUDIO — Women's Beauty Studio Ottawa. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} GLAM GIRL BY JANKI — Women's Beauty Studio Ottawa. All rights reserved.</p>
           <div className="flex items-center justify-center gap-4">
             <Link 
               to="/admin" 
-              className="text-white/40 hover:text-[#DDB88C] transition-colors font-medium hover:underline"
+              className="text-white/40 hover:text-[#E95E92] transition-colors font-medium hover:underline"
             >
               🔒 Staff Portal
             </Link>
             <div className="flex items-center gap-1">
               <span>Crafted with</span>
-              <Heart className="w-3.5 h-3.5 text-[#DDB88C] fill-[#DDB88C]" />
+              <Heart className="w-3.5 h-3.5 text-[#E95E92] fill-[#E95E92]" />
               <span>for Ottawa's beautiful community</span>
             </div>
           </div>

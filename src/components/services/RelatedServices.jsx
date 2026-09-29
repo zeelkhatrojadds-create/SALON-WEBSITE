@@ -16,7 +16,7 @@ export default function RelatedServices({ currentServiceId, category, categoryNa
     <section className="mt-14 sm:mt-20 pt-10 sm:pt-14 border-t border-white/10">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-brand-gold-light text-xs font-bold uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[#E95E92] text-xs font-bold uppercase tracking-wider mb-2">
             <Sparkles className="w-3 h-3 text-brand-pink" />
             <span>MORE IN {categoryName?.toUpperCase()}</span>
           </div>

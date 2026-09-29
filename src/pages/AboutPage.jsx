@@ -33,7 +33,7 @@ export default function AboutPage({ isSection = false }) {
         
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16">
-          <div className="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-brand-gold-light text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] sm:tracking-[0.24em] mb-3 sm:mb-4">
+          <div className="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-[#E95E92] text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] sm:tracking-[0.24em] mb-3 sm:mb-4">
             <Sparkles className="w-3.5 h-3.5 text-brand-pink" />
             <span>OUR HERITAGE & PHILOSOPHY</span>
           </div>
@@ -64,7 +64,7 @@ export default function AboutPage({ isSection = false }) {
                 <span>450 Bank St, Ottawa</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <Star className="w-4 h-4 text-brand-gold-light flex-shrink-0" />
+                <Star className="w-4 h-4 text-[#E95E92] flex-shrink-0" />
                 <span>4.9 Star Rated (320+ Reviews)</span>
               </div>
             </div>
@@ -146,7 +146,7 @@ export default function AboutPage({ isSection = false }) {
                       Owner & Main Artist
                     </div>
 
-                    <div className="inline-flex items-center gap-1.5 text-[11px] text-brand-gold-light font-medium mt-1">
+                    <div className="inline-flex items-center gap-1.5 text-[11px] text-[#E95E92] font-medium mt-1">
                       <CheckCircle2 className="w-3.5 h-3.5 text-brand-pink flex-shrink-0" />
                       <span>Professional Beauty Specialist</span>
                     </div>
@@ -163,7 +163,7 @@ export default function AboutPage({ isSection = false }) {
                     </span>
                     <span>•</span>
                     <span className="flex items-center gap-1">
-                      <Sparkles className="w-3.5 h-3.5 text-brand-gold-light" />
+                      <Sparkles className="w-3.5 h-3.5 text-[#E95E92]" />
                       Bespoke Beauty Rituals
                     </span>
                   </div>

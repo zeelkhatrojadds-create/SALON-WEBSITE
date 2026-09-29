@@ -29,7 +29,7 @@ export default function FeaturedRituals() {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-6">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-brand-gold-light text-xs font-bold uppercase tracking-[0.24em] mb-3">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-[#E95E92] text-xs font-bold uppercase tracking-[0.24em] mb-3">
               <Sparkles className="w-3.5 h-3.5 text-brand-pink" />
               <span>SIGNATURE EXPERIENCES</span>
             </div>

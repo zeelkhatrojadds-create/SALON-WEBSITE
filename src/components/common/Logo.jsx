@@ -16,12 +16,12 @@ export default function Logo({ className = '', size = 'default' }) {
               : size === 'sm' 
                 ? 'w-7 h-7 sm:w-8 sm:h-8' 
                 : 'w-8 h-8 sm:w-10 sm:h-10'
-          } text-[#DDB88C] transition-transform group-hover:scale-105 duration-300`}
+          } text-[#E95E92] transition-transform group-hover:scale-105 duration-300`}
         >
           {/* Central Lotus Petal */}
           <path 
             d="M25 8C25 8 19 19 25 32C31 19 25 8 25 8Z" 
-            stroke="#DDB88C" 
+            stroke="#E95E92" 
             strokeWidth="1.8" 
             strokeLinecap="round" 
             strokeLinejoin="round" 
@@ -29,7 +29,7 @@ export default function Logo({ className = '', size = 'default' }) {
           {/* Left Inner Petal */}
           <path 
             d="M25 32C19 28 14 18 16 12C20 16 23 24 25 32Z" 
-            stroke="#DDB88C" 
+            stroke="#E95E92" 
             strokeWidth="1.6" 
             strokeLinecap="round" 
             strokeLinejoin="round" 
@@ -37,7 +37,7 @@ export default function Logo({ className = '', size = 'default' }) {
           {/* Right Inner Petal */}
           <path 
             d="M25 32C31 28 36 18 34 12C30 16 27 24 25 32Z" 
-            stroke="#DDB88C" 
+            stroke="#E95E92" 
             strokeWidth="1.6" 
             strokeLinecap="round" 
             strokeLinejoin="round" 
@@ -45,7 +45,7 @@ export default function Logo({ className = '', size = 'default' }) {
           {/* Left Outer Petal */}
           <path 
             d="M25 34C16 33 9 25 10 18C15 22 20 28 25 34Z" 
-            stroke="#DDB88C" 
+            stroke="#E95E92" 
             strokeWidth="1.4" 
             strokeLinecap="round" 
             strokeLinejoin="round" 
@@ -53,7 +53,7 @@ export default function Logo({ className = '', size = 'default' }) {
           {/* Right Outer Petal */}
           <path 
             d="M25 34C34 33 41 25 40 18C35 22 30 28 25 34Z" 
-            stroke="#DDB88C" 
+            stroke="#E95E92" 
             strokeWidth="1.4" 
             strokeLinecap="round" 
             strokeLinejoin="round" 
@@ -61,7 +61,7 @@ export default function Logo({ className = '', size = 'default' }) {
           {/* Base Curved Line */}
           <path 
             d="M12 36C18 40 32 40 38 36" 
-            stroke="#DDB88C" 
+            stroke="#E95E92" 
             strokeWidth="1.5" 
             strokeLinecap="round" 
           />
@@ -79,7 +79,7 @@ export default function Logo({ className = '', size = 'default' }) {
         }`}>
           GLAM GIRL
         </span>
-        <span className="font-sans uppercase tracking-[0.32em] text-[8px] sm:text-[9px] font-semibold text-[#DDB88C] -mt-0.5 truncate">
+        <span className="font-sans uppercase tracking-[0.32em] text-[8px] sm:text-[9px] font-semibold text-[#E95E92] -mt-0.5 truncate">
           BY JANKI
         </span>
       </div>
