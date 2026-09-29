@@ -31,43 +31,8 @@ const notifySubscribers = (event, data) => {
   }
 };
 
-// Initial Seed for Appointments if empty
-const DEFAULT_APPOINTMENTS = [
-  {
-    id: 'GLFY-842910',
-    customerName: 'Sarah Tremblay',
-    phone: '6135550199',
-    email: 'sarah.tremblay@example.ca',
-    service: 'Hair Spa',
-    serviceId: 'hair-spa',
-    servicePrice: 85,
-    serviceDuration: '60 mins',
-    date: new Date().toISOString().split('T')[0],
-    time: '11:00 AM',
-    notes: 'Requested organic botanical oils',
-    status: 'Confirmed',
-    isAutoAccepted: true,
-    slotConflict: false,
-    submittedAt: new Date().toLocaleString('en-CA', { timeZone: 'America/Toronto' })
-  },
-  {
-    id: 'GLFY-719302',
-    customerName: 'Elena Rostova',
-    phone: '6135550144',
-    email: 'elena.r@example.com',
-    service: 'Balayage & Hair Colour',
-    serviceId: 'hair-colour-balayage',
-    servicePrice: 120,
-    serviceDuration: '120 mins',
-    date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
-    time: '02:00 PM',
-    notes: 'Caramel blonde balayage touch-up',
-    status: 'Confirmed',
-    isAutoAccepted: true,
-    slotConflict: false,
-    submittedAt: new Date().toLocaleString('en-CA', { timeZone: 'America/Toronto' })
-  }
-];
+// Initial Seed for Appointments (empty for clean fresh availability state)
+const DEFAULT_APPOINTMENTS = [];
 
 class SalonDatabase {
   constructor() {
@@ -97,7 +62,6 @@ class SalonDatabase {
 
     // 3. Seed Appointments if missing
     if (!localStorage.getItem(DB_KEYS.APPOINTMENTS)) {
-      // Check legacy key first
       const legacy = localStorage.getItem('girl-looked-for-you-appointments');
       if (legacy) {
         localStorage.setItem(DB_KEYS.APPOINTMENTS, legacy);
@@ -109,7 +73,7 @@ class SalonDatabase {
     // 4. Seed Settings if missing
     if (!localStorage.getItem(DB_KEYS.SETTINGS)) {
       localStorage.setItem(DB_KEYS.SETTINGS, JSON.stringify({
-        salonName: import.meta.env.VITE_SALON_NAME || 'GIRL LOOKED FOR YOU',
+        salonName: import.meta.env.VITE_SALON_NAME || 'GLAM GIRL BY JANKI',
         whatsappPhone: import.meta.env.VITE_WHATSAPP_PHONE_NUMBER || '+918320708028',
         phone: SALON_INFO.phone,
         email: SALON_INFO.email,
@@ -126,7 +90,8 @@ class SalonDatabase {
 
   getAppointments() {
     try {
-      const data = localStorage.getItem(DB_KEYS.APPOINTMENTS);
+      // Check primary key first, fallback to legacy key
+      const data = localStorage.getItem(DB_KEYS.APPOINTMENTS) || localStorage.getItem('girl-looked-for-you-appointments');
       return data ? JSON.parse(data) : [];
     } catch (e) {
       console.warn('Error reading appointments:', e);
@@ -135,17 +100,17 @@ class SalonDatabase {
   }
 
   /**
-   * Check if a specific Date and Time slot is currently free or occupied by another active service
+   * Check if a specific Date and Time slot is currently free or occupied
    * Returns { available: boolean, conflict: object | null }
    */
   checkSlotAvailability(date, time) {
     const appointments = this.getAppointments();
     
-    // Find active appointments on the same date & time (excluding cancelled ones)
+    // Match exact Date + Time (excluding cancelled bookings)
     const conflict = appointments.find(
       (a) =>
-        a.date === date &&
-        a.time === time &&
+        String(a.date).trim() === String(date).trim() &&
+        String(a.time).trim() === String(time).trim() &&
         a.status !== 'Cancelled'
     );
 
@@ -153,6 +118,16 @@ class SalonDatabase {
       available: !conflict,
       conflict: conflict || null
     };
+  }
+
+  /**
+   * Reusable helper method: isSlotBooked(date, time)
+   * Returns true ONLY if date + time match an active booking
+   */
+  isSlotBooked(date, time) {
+    if (!date || !time) return false;
+    const { available } = this.checkSlotAvailability(date, time);
+    return !available;
   }
 
   /**

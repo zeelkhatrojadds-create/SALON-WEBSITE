@@ -86,7 +86,8 @@ export default function BookingPage() {
   };
 
   const [selectedDate, setSelectedDate] = useState(tomorrowStr());
-  const [selectedTime, setSelectedTime] = useState('10:00 AM');
+  const [selectedTime, setSelectedTime] = useState('');
+  const [slotErrorMessage, setSlotErrorMessage] = useState('');
   
   const [formData, setFormData] = useState({
     name: '',
@@ -101,17 +102,27 @@ export default function BookingPage() {
   const [savedAppointments, setSavedAppointments] = useState([]);
   const [showSavedModal, setShowSavedModal] = useState(false);
 
-  // Load saved appointments from localStorage
+  // Load saved appointments from localStorage & subscribe to live database changes
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem('girl-looked-for-you-appointments');
-      if (stored) {
-        setSavedAppointments(JSON.parse(stored));
-      }
-    } catch (err) {
-      console.warn('LocalStorage load error:', err);
-    }
+    const syncBookings = () => {
+      setSavedAppointments(salonDB.getAppointments());
+    };
+    syncBookings();
+    const unsub = salonDB.subscribe(syncBookings);
+    return () => unsub();
   }, []);
+
+  // Handler for changing date: Clears previously selected time slot and error message
+  const handleDateChange = (newDate) => {
+    setSelectedDate(newDate);
+    setSelectedTime(''); // Clear time selection on date change
+    setSlotErrorMessage('');
+  };
+
+  // Reusable helper: isSlotBooked(date, time)
+  const isSlotBooked = (date, time) => {
+    return salonDB.isSlotBooked(date, time);
+  };
 
   // Pre-fill service & stylist from URL query parameters
   useEffect(() => {
@@ -171,10 +182,20 @@ export default function BookingPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Submit Handler
+  // Submit Handler with Double Booking Protection
   const handleFinalSubmit = (e) => {
     if (e) e.preventDefault();
     setIsSubmitting(true);
+    setSlotErrorMessage('');
+
+    // Double Booking Protection: Re-check localStorage before confirming
+    if (isSlotBooked(selectedDate, selectedTime)) {
+      setIsSubmitting(false);
+      setSlotErrorMessage("Sorry, this time slot was just booked. Please select another available time.");
+      setSelectedTime(''); // Clear invalid selection
+      setCurrentStep(4); // Jump back to Time Selection step
+      return;
+    }
 
     const refCode = generateBookingReference();
 
@@ -196,20 +217,12 @@ export default function BookingPage() {
       phone: formData.phone.trim(),
       email: formData.email.trim(),
       notes: formData.notes.trim(),
+      status: 'Confirmed',
       submittedAt: new Date().toLocaleString()
     };
 
-    // Save to Database
-    const savedRecord = salonDB.addAppointment(bookingPayload);
-    
-    // Save to localStorage
-    try {
-      const updated = [bookingPayload, ...savedAppointments.filter(a => a.id !== refCode)];
-      localStorage.setItem('girl-looked-for-you-appointments', JSON.stringify(updated));
-      setSavedAppointments(updated);
-    } catch (err) {
-      console.warn('LocalStorage save error:', err);
-    }
+    // Save to Salon Database
+    salonDB.addAppointment(bookingPayload);
 
     // Auto-trigger WhatsApp message dispatch
     try {
@@ -554,7 +567,7 @@ export default function BookingPage() {
                   type="date"
                   min={new Date().toISOString().split('T')[0]}
                   value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
+                  onChange={(e) => handleDateChange(e.target.value)}
                   className="w-full max-w-xs mx-auto py-3 px-4 bg-white/5 border border-white/20 rounded-xl text-center text-sm font-semibold text-white focus:outline-none focus:border-brand-pink cursor-pointer"
                 />
               </div>
@@ -598,25 +611,64 @@ export default function BookingPage() {
             <div className="text-center space-y-2">
               <span className="text-brand-pink text-xs font-bold uppercase tracking-[0.2em]">Step 4 of 6</span>
               <h2 className="font-serif text-2xl sm:text-4xl font-bold text-white">Select Time</h2>
-              <p className="text-xs sm:text-sm text-white/60">Choose an available time slot for your appointment.</p>
+              <p className="text-xs sm:text-sm text-white/60">
+                Choose an available time slot for <strong className="text-white font-semibold">{new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</strong>.
+              </p>
             </div>
+
+            {/* Double Booking Warning Banner */}
+            {slotErrorMessage && (
+              <div className="p-4 rounded-2xl bg-red-500/20 border border-red-500/40 text-red-200 text-xs sm:text-sm flex items-center gap-3 animate-fade-in">
+                <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
+                <span>{slotErrorMessage}</span>
+              </div>
+            )}
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {TIME_SLOTS.map((slot) => {
+                const booked = isSlotBooked(selectedDate, slot);
                 const isSelected = selectedTime === slot;
+
+                if (booked) {
+                  return (
+                    <button
+                      key={slot}
+                      type="button"
+                      disabled={true}
+                      className="py-3.5 px-4 rounded-2xl text-xs sm:text-sm font-semibold opacity-50 bg-red-950/20 border border-red-500/20 text-red-300 cursor-not-allowed flex items-center justify-between"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-3.5 h-3.5 text-red-400/60" />
+                        <span className="line-through">{slot}</span>
+                      </div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider bg-red-500/20 px-2 py-0.5 rounded-full border border-red-500/30">
+                        BOOKED
+                      </span>
+                    </button>
+                  );
+                }
+
                 return (
                   <button
                     key={slot}
                     type="button"
-                    onClick={() => setSelectedTime(slot)}
-                    className={`py-3.5 px-4 rounded-2xl text-xs sm:text-sm font-semibold transition-all cursor-pointer flex items-center justify-center gap-2 border ${
+                    onClick={() => {
+                      setSelectedTime(slot);
+                      setSlotErrorMessage('');
+                    }}
+                    className={`py-3.5 px-4 rounded-2xl text-xs sm:text-sm font-semibold transition-all cursor-pointer flex items-center justify-between border ${
                       isSelected
                         ? 'bg-brand-pink text-white border-brand-pink shadow-lg shadow-brand-pink/30 scale-105'
                         : 'bg-[#1C1418] text-white/80 border-white/10 hover:bg-white/10 hover:text-white'
                     }`}
                   >
-                    <Clock className="w-3.5 h-3.5 flex-shrink-0" />
-                    <span>{slot}</span>
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-3.5 h-3.5" />
+                      <span>{slot}</span>
+                    </div>
+                    <span className={`text-[10px] font-medium ${isSelected ? 'text-white font-bold' : 'text-emerald-400'}`}>
+                      {isSelected ? 'Selected ✓' : 'Available'}
+                    </span>
                   </button>
                 );
               })}
@@ -634,8 +686,9 @@ export default function BookingPage() {
 
               <button
                 type="button"
+                disabled={!selectedTime || isSlotBooked(selectedDate, selectedTime)}
                 onClick={() => setCurrentStep(5)}
-                className="px-8 py-3.5 rounded-full bg-brand-pink hover:bg-brand-pink-hover text-white font-bold text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-brand-pink/30 transition-all cursor-pointer flex items-center gap-2"
+                className="px-8 py-3.5 rounded-full bg-brand-pink hover:bg-brand-pink-hover disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-brand-pink/30 transition-all cursor-pointer flex items-center gap-2"
               >
                 <span>Continue to Details</span>
                 <ArrowRight className="w-4 h-4" />
