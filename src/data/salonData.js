@@ -14,7 +14,7 @@ export const CATEGORIES = [
     name: 'Waxing',
     slug: 'waxing',
     icon: 'Sparkle',
-    count: 9,
+    count: 19,
     description: 'Gentle stripless hard wax & warm honey wax for smooth, hair-free skin.'
   },
   {

@@ -131,16 +131,217 @@ export const ALL_SERVICES = [
     description: 'Complete facial threading covering brows, lip, chin, cheeks, forehead, sideburns & neck.',
     features: ['Brows, lip, chin, cheeks, forehead', 'Full facial hair removal', 'Cooling cucumber compress', 'Calming aloe lotion']
   },
+  // ==========================================
+  // WAXING SERVICES (19 Items)
+  // ==========================================
   {
-    id: 'waxing',
-    name: 'Waxing',
+    id: 'eyebrows-waxing',
+    name: 'Eyebrows Waxing',
+    category: 'waxing',
+    categoryName: 'Waxing',
+    price: 10,
+    duration: '15 min',
+    image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80',
+    description: 'Precision hard wax brow shaping for clean, long-lasting arches.',
+    features: ['Hypoallergenic hard wax', 'Precision spatulas', 'Soothing azulene oil']
+  },
+  {
+    id: 'upperlip-waxing',
+    name: 'Upperlip Waxing',
+    category: 'waxing',
+    categoryName: 'Waxing',
+    price: 6,
+    duration: '10 min',
+    image: 'https://images.unsplash.com/photo-1512290900672-1f02e60938c5?auto=format&fit=crop&w=800&q=80',
+    description: 'Fast, gentle depilatory waxing for upper lip hair.',
+    features: ['Sensitive skin wax', 'Quick removal', 'Cooling after-wax balm']
+  },
+  {
+    id: 'forehead-waxing',
+    name: 'Forehead Waxing',
+    category: 'waxing',
+    categoryName: 'Waxing',
+    price: 6,
+    duration: '10 min',
+    image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80',
+    description: 'Forehead and hairline smooth waxing.',
+    features: ['Clean hairline', 'Gentle pull', 'Hydrating finish']
+  },
+  {
+    id: 'chin-waxing',
+    name: 'Chin Waxing',
+    category: 'waxing',
+    categoryName: 'Waxing',
+    price: 8,
+    duration: '10 min',
+    image: 'https://images.unsplash.com/photo-1512290900672-1f02e60938c5?auto=format&fit=crop&w=800&q=80',
+    description: 'Chin area hair removal using gentle stripless wax.',
+    features: ['Root elimination', 'Aloe soothing lotion', 'Smooth skin']
+  },
+  {
+    id: 'cheek-waxing',
+    name: 'Cheek Waxing',
+    category: 'waxing',
+    categoryName: 'Waxing',
+    price: 8,
+    duration: '15 min',
+    image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80',
+    description: 'Cheek peach fuzz waxing for a silky smooth finish.',
+    features: ['Peach fuzz removal', 'Zero residue', 'Calming compress']
+  },
+  {
+    id: 'sideburns-waxing',
+    name: 'Sideburns Waxing',
+    category: 'waxing',
+    categoryName: 'Waxing',
+    price: 8,
+    duration: '15 min',
+    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80',
+    description: 'Sideburn line waxing and contouring.',
+    features: ['Clean facial lines', 'Stripless wax', 'Calming oil']
+  },
+  {
+    id: 'neck-waxing',
+    name: 'Neck Waxing',
+    category: 'waxing',
+    categoryName: 'Waxing',
+    price: 8,
+    duration: '15 min',
+    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
+    description: 'Gentle neck area waxing.',
+    features: ['Stray hair removal', 'Soothing balm', 'No irritation']
+  },
+  {
+    id: 'full-face-waxing',
+    name: 'Full Face Waxing',
+    category: 'waxing',
+    categoryName: 'Waxing',
+    price: 35,
+    duration: '35 min',
+    image: 'https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=800&q=80',
+    description: 'Complete facial waxing covering forehead, brows, lip, chin, cheeks & sideburns.',
+    features: ['Full facial coverage', 'Gentle hard wax', 'Ice globe massage', 'Aloe mask']
+  },
+  {
+    id: 'under-arms-waxing',
+    name: 'Under Arms Waxing',
+    category: 'waxing',
+    categoryName: 'Waxing',
+    price: 12,
+    duration: '15 min',
+    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80',
+    description: 'Clean, smooth underarm waxing leaving skin hair-free for weeks.',
+    features: ['Root removal', 'Stripless hard wax', 'Ingrown prevention']
+  },
+  {
+    id: 'half-arms-waxing',
+    name: 'Half Arms Waxing',
+    category: 'waxing',
+    categoryName: 'Waxing',
+    price: 15,
+    duration: '25 min',
+    image: 'https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?auto=format&fit=crop&w=800&q=80',
+    description: 'Lower or upper arm waxing using honey strip wax.',
+    features: ['Elbow to wrist', 'Smooth finish', 'Botanical oil cleanse']
+  },
+  {
+    id: 'full-arms-waxing',
+    name: 'Full Arms Waxing',
     category: 'waxing',
     categoryName: 'Waxing',
     price: 25,
+    duration: '35 min',
+    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80',
+    description: 'Full arm waxing including fingers and hands.',
+    features: ['Shoulder to fingertips', 'Quick clean removal', 'Moisturizing oil']
+  },
+  {
+    id: 'lower-half-legs-waxing',
+    name: 'Lower Half Legs Waxing',
+    category: 'waxing',
+    categoryName: 'Waxing',
+    price: 25,
+    duration: '30 min',
+    image: 'https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&w=800&q=80',
+    description: 'Thorough lower leg waxing from knee down to toes.',
+    features: ['Knee to ankle coverage', 'Ingrown-free technique', 'Moisturizing lotion']
+  },
+  {
+    id: 'upper-half-legs-waxing',
+    name: 'Upper Half Legs Waxing',
+    category: 'waxing',
+    categoryName: 'Waxing',
+    price: 30,
+    duration: '30 min',
+    image: 'https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&w=800&q=80',
+    description: 'Thigh area leg waxing extending to knees.',
+    features: ['Thigh coverage', 'Soft skin formula', 'Hydrating lotion']
+  },
+  {
+    id: 'full-legs-waxing',
+    name: 'Full Legs Waxing',
+    category: 'waxing',
+    categoryName: 'Waxing',
+    price: 45,
+    duration: '45 min',
+    image: 'https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&w=800&q=80',
+    description: 'Complete leg hair removal from upper thighs down to toes.',
+    features: ['Full leg coverage', 'Warm honey wax', 'Body butter hydration']
+  },
+  {
+    id: 'half-back-waxing',
+    name: 'Half Back Waxing',
+    category: 'waxing',
+    categoryName: 'Waxing',
+    price: 20,
+    duration: '25 min',
+    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
+    description: 'Upper or lower back waxing for a clean, smooth skin feel.',
+    features: ['Targeted back area', 'Clean removal', 'Soothing lotion']
+  },
+  {
+    id: 'full-back-waxing',
+    name: 'Full Back Waxing',
+    category: 'waxing',
+    categoryName: 'Waxing',
+    price: 30,
+    duration: '35 min',
+    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
+    description: 'Complete back waxing covering shoulders down to waist.',
+    features: ['Full back coverage', 'Gentle removal', 'Skin calming balm']
+  },
+  {
+    id: 'stomach-waxing',
+    name: 'Stomach Waxing',
+    category: 'waxing',
+    categoryName: 'Waxing',
+    price: 15,
     duration: '20 min',
-    image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80',
-    description: 'Gentle stripless hard wax & warm honey wax for smooth, hair-free skin.',
-    features: ['Face & brow waxing', 'Arms & underarms waxing', 'Legs waxing', 'Soothing oil finish']
+    image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80',
+    description: 'Gentle stomach area hair removal.',
+    features: ['Abdominal area', 'Gentle wax formula', 'Cooling lotion']
+  },
+  {
+    id: 'full-front-waxing',
+    name: 'Full Front Waxing',
+    category: 'waxing',
+    categoryName: 'Waxing',
+    price: 25,
+    duration: '30 min',
+    image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80',
+    description: 'Full chest and stomach front waxing.',
+    features: ['Chest & stomach', 'Complete front coverage', 'Soothing aftercare']
+  },
+  {
+    id: 'bikini-lines-waxing',
+    name: 'Bikini Lines Waxing',
+    category: 'waxing',
+    categoryName: 'Waxing',
+    price: 20,
+    duration: '25 min',
+    image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80',
+    description: 'Tidy, hygienic bikini line waxing using ultra-gentle hard wax.',
+    features: ['Bikini line edging', 'Comfort hard wax', 'Tea tree soothing balm']
   },
   {
     id: 'facial',
