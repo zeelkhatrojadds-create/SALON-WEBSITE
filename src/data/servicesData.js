@@ -44,15 +44,92 @@ export const SERVICE_BENEFITS = [
 
 export const ALL_SERVICES = [
   {
-    id: 'threading',
-    name: 'Threading',
+    id: 'eyebrows-threading',
+    name: 'Eyebrows Threading',
     category: 'threading',
     categoryName: 'Threading',
-    price: 15,
+    price: 10,
     duration: '15 min',
     image: 'https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=800&q=80',
-    description: 'Precision eyebrow, upper lip, chin & full face cotton thread shaping.',
-    features: ['Eyebrow shaping', 'Upper lip threading', 'Full face hair removal', 'Aloe vera soothing gel']
+    description: 'Precision cotton thread shaping for clean, symmetrical eyebrow arches.',
+    features: ['Custom brow mapping', 'Cotton thread shaping', 'Aloe vera gel']
+  },
+  {
+    id: 'upperlip-threading',
+    name: 'Upperlip Threading',
+    category: 'threading',
+    categoryName: 'Threading',
+    price: 6,
+    duration: '10 min',
+    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80',
+    description: 'Quick, gentle cotton thread hair removal for the upper lip.',
+    features: ['Sanitized thread', 'Fast & precise', 'Soothing rosewater']
+  },
+  {
+    id: 'forehead-threading',
+    name: 'Forehead Threading',
+    category: 'threading',
+    categoryName: 'Threading',
+    price: 6,
+    duration: '10 min',
+    image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80',
+    description: 'Hairline and forehead hair removal for a smooth, radiant face.',
+    features: ['Precision hairline', 'Gentle thread pull', 'Cooling lotion']
+  },
+  {
+    id: 'chin-threading',
+    name: 'Chin Threading',
+    category: 'threading',
+    categoryName: 'Threading',
+    price: 8,
+    duration: '10 min',
+    image: 'https://images.unsplash.com/photo-1512290900672-1f02e60938c5?auto=format&fit=crop&w=800&q=80',
+    description: 'Targeted chin hair threading with anti-irritation soothing balm.',
+    features: ['Root hair removal', 'Chin shaping', 'Aloe soothing']
+  },
+  {
+    id: 'cheek-threading',
+    name: 'Cheek Threading',
+    category: 'threading',
+    categoryName: 'Threading',
+    price: 8,
+    duration: '15 min',
+    image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80',
+    description: 'Gentle cheek peach fuzz removal leaving skin soft and makeup-ready.',
+    features: ['Peach fuzz removal', 'Smooth finish', 'Hydrating compress']
+  },
+  {
+    id: 'sideburns-threading',
+    name: 'Sideburns Threading',
+    category: 'threading',
+    categoryName: 'Threading',
+    price: 8,
+    duration: '15 min',
+    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80',
+    description: 'Clean sideburns contouring and hair removal.',
+    features: ['Sideburn contour', 'Crisp facial line', 'Aloe gel seal']
+  },
+  {
+    id: 'neck-threading',
+    name: 'Neck Threading',
+    category: 'threading',
+    categoryName: 'Threading',
+    price: 8,
+    duration: '15 min',
+    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
+    description: 'Neck area stray hair threading for a clean, elegant look.',
+    features: ['Neck hair removal', 'Skin calming balm', 'Zero redness formula']
+  },
+  {
+    id: 'full-face-threading',
+    name: 'Full Face Threading',
+    category: 'threading',
+    categoryName: 'Threading',
+    price: 35,
+    duration: '30 min',
+    image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80',
+    description: 'Complete facial threading covering brows, lip, chin, cheeks, forehead, sideburns & neck.',
+    features: ['Brows, lip, chin, cheeks, forehead', 'Full facial hair removal', 'Cooling cucumber compress', 'Calming aloe lotion']
   },
   {
     id: 'waxing',

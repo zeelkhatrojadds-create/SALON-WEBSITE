@@ -6,7 +6,7 @@ export const CATEGORIES = [
     name: 'Threading',
     slug: 'threading',
     icon: 'Feather',
-    count: 5,
+    count: 8,
     description: 'Precision cotton thread shaping for eyebrows, upper lip, chin & full face.'
   },
   {
