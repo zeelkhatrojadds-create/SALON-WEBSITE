@@ -22,7 +22,7 @@ export const CATEGORIES = [
     name: 'Facial',
     slug: 'facial',
     icon: 'Sparkles',
-    count: 7,
+    count: 10,
     description: '24K Gold, Hydra-Glow, Ayurvedic Kumkumadi & deep cleansing facials.'
   },
   {

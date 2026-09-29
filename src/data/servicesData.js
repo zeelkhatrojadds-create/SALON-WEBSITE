@@ -346,6 +346,9 @@ export const ALL_SERVICES = [
   // ==========================================
   // FACIAL SERVICES
   // ==========================================
+  // ==========================================
+  // FACIAL SERVICES (10 Items)
+  // ==========================================
   {
     id: 'mini-facial',
     name: 'Mini-Facial',
@@ -354,8 +357,8 @@ export const ALL_SERVICES = [
     price: 20,
     duration: '25 min',
     image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
-    description: 'Quick refreshing facial treatment featuring scrub exfoliation, warm steaming, and blackheads extraction.',
-    features: ['Scrub exfoliation', 'Warm steaming', 'Blackheads extraction', 'Soothing mist']
+    description: 'Quick refreshing facial treatment featuring scrub, steaming, and blackheads extraction.',
+    features: ['Scrubbing & exfoliation', 'Warm steaming', 'Blackhead extraction', 'Soothing hydration']
   },
   {
     id: 'express-facial',
@@ -365,63 +368,96 @@ export const ALL_SERVICES = [
     price: 40,
     duration: '35 min',
     image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80',
-    description: 'Rejuvenating express facial featuring deep cleansing, gentle scrubbing, and a relaxing face massage.',
-    features: ['Cleansing', 'Scrubbing', 'Relaxing face massage', 'Hydration seal']
+    description: 'Rejuvenating express facial including cleansing, scrubbing, and a relaxing face massage.',
+    features: ['Cleansing', 'Scrubbing', 'Relaxing face massage', 'Hydration mask']
   },
   {
-    id: 'classic-facial',
-    name: 'Classic Facial',
+    id: 'herbal-facial',
+    name: 'Herbal Facial',
+    category: 'facial',
+    categoryName: 'Facial',
+    price: 60,
+    duration: '50 min',
+    image: 'https://images.unsplash.com/photo-1512290900672-1f02e60938c5?auto=format&fit=crop&w=800&q=80',
+    description: 'Natural skincare with plant-based ingredients for sensitive and pure skin care.',
+    features: ['Plant-based ingredients', 'Botanical cleansing', 'Herbal face pack', 'Natural glow']
+  },
+  {
+    id: 'fruit-facial',
+    name: 'Fruit Facial',
     category: 'facial',
     categoryName: 'Facial',
     price: 65,
     duration: '50 min',
+    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
+    description: 'Refreshing skincare infused with fruity goodness to nourish and brighten your skin.',
+    features: ['Fresh fruit extracts', 'Deep vitamin nourishment', 'Fruity glow mask', 'Skin softening']
+  },
+  {
+    id: 'oxy-glow-facial',
+    name: 'Oxy Glow Facial',
+    category: 'facial',
+    categoryName: 'Facial',
+    price: 70,
+    duration: '60 min',
     image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80',
-    description: 'Essential refreshing facial featuring double cleanse, exfoliation, steam, and customized hydration mask.',
-    features: ['Double cleanse', 'Enzyme exfoliation', 'Warm towel steam', 'Custom soothing mask']
+    description: 'Rejuvenating skin treatment for a radiant, oxygenated glow.',
+    features: ['Oxygen infusion boost', 'Pore detoxifying', 'Radiant skin glow', 'Cellular revival']
+  },
+  {
+    id: 'golden-glow-facial',
+    name: 'Golden Glow Facial',
+    category: 'facial',
+    categoryName: 'Facial',
+    price: 70,
+    duration: '60 min',
+    image: 'https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=800&q=80',
+    description: 'Illuminating skincare featuring gold essence for glowing, luminous skin.',
+    features: ['Gold serum massage', 'Illuminating glow pack', 'Skin polishing', 'Luminous finish']
+  },
+  {
+    id: 'diamond-dust-facial',
+    name: 'Diamond Dust Facial',
+    category: 'facial',
+    categoryName: 'Facial',
+    price: 70,
+    duration: '60 min',
+    image: 'https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=800&q=80',
+    description: 'Luxurious skincare with micro-diamond dust for an ultra-radiant complexion.',
+    features: ['Micro-diamond polishing', 'Complexion brightening', 'Luxury glow mask', 'Skin smoothing']
   },
   {
     id: 'deep-cleansing-facial',
     name: 'Deep Cleansing Facial',
     category: 'facial',
     categoryName: 'Facial',
-    price: 85,
+    price: 80,
     duration: '60 min',
     image: 'https://images.unsplash.com/photo-1512290900672-1f02e60938c5?auto=format&fit=crop&w=800&q=80',
-    description: 'Pore decongesting treatment with gentle extractions, purifying clay mask, and antibacterial therapy.',
-    features: ['Pore unclogging steam', 'Manual comedone extraction', 'Purifying clay mask', 'High frequency therapy']
+    description: 'Purifying skincare for a fresh, deeply cleansed, and decongested feel.',
+    features: ['Pore decongesting steam', 'Deep extraction', 'Purifying mask', 'Antibacterial therapy']
   },
   {
-    id: 'hydrating-facial',
-    name: 'Hydrating Facial',
+    id: 'advanced-brightening-facial',
+    name: 'Advanced Brightening Facial',
     category: 'facial',
     categoryName: 'Facial',
     price: 80,
     duration: '60 min',
-    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
-    description: 'Quenches dry skin with hyaluronic acid infusions and a soothing rosewater hydro-jelly mask.',
-    features: ['Hyaluronic multi-layer serum', 'Hydro-jelly mask', 'Cryo-globe massage', 'Barrier renewal cream']
-  },
-  {
-    id: 'brightening-kumkumadi-facial',
-    name: 'Brightening Kumkumadi Facial',
-    category: 'facial',
-    categoryName: 'Facial',
-    price: 95,
-    duration: '60 min',
     image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80',
-    description: 'Ayurvedic Kumkumadi and botanical alpha-arbutin treatment to diminish sunspots and restore luminous glow.',
-    features: ['Sandalwood exfoliation', 'Kumkumadi oil lymphatic massage', 'Brightening botanical pack', 'Sun defense seal']
+    description: 'Skin-brightening treatment targeting dullness for a luminous, even look.',
+    features: ['Alpha-arbutin serum', 'Targeted spot lightening', 'Brightening mask', 'UV defense']
   },
   {
-    id: '24k-gold-hydra-facial',
-    name: '24K Gold & Hydra-Glow Facial',
+    id: 'special-glam-girl-facial',
+    name: 'Special Glam Girl Facial',
     category: 'facial',
     categoryName: 'Facial',
-    price: 135,
+    price: 120,
     duration: '75 min',
     image: 'https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=800&q=80',
-    description: 'Luxurious 24K pure gold leaf facial that improves cellular renewal and leaves skin royally radiant.',
-    features: ['24K gold foil application', 'Gold serum ionization', 'Lymphatic face massage', 'Illuminating gold mask']
+    description: 'Signature luxury treatment featuring a full facial, hot towel treatment, and relaxing back massage.',
+    features: ['Full signature facial', 'Hot towel treatment', 'Relaxing back massage', 'Hydrating face pack', 'Royal pampering']
   },
   {
     id: 'massage',
