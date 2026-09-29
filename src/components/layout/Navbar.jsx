@@ -102,15 +102,15 @@ export default function Navbar() {
       <header 
         className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${
           isScrolled 
-            ? 'bg-[#0E0C0D]/95 backdrop-blur-md shadow-2xl border-b border-white/10 py-3 sm:py-3.5' 
+            ? 'bg-[#0D0B0B]/95 backdrop-blur-md shadow-2xl border-b border-white/10 h-[76px] flex items-center' 
             : activeSection === 'home' && !isDetailPage
-              ? 'bg-gradient-to-b from-[#0E0C0D]/90 via-[#0E0C0D]/60 to-transparent py-3 sm:py-5'
-              : 'bg-[#0E0C0D]/95 backdrop-blur-md border-b border-white/10 py-3 sm:py-4'
+              ? 'bg-gradient-to-b from-[#0D0B0B]/90 via-[#0D0B0B]/60 to-transparent h-[84px] flex items-center'
+              : 'bg-[#0D0B0B]/95 backdrop-blur-md border-b border-white/10 h-[76px] flex items-center'
         }`}
       >
-        {/* Full-width responsive header */}
+        {/* Full-width responsive header container */}
         <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 mx-auto">
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center justify-between gap-4">
             
             {/* Left: Brand Logo */}
             <div className="min-w-0 flex-1 sm:flex-initial">
@@ -132,46 +132,36 @@ export default function Navbar() {
                     key={link.name}
                     href={`/#${link.id}`}
                     onClick={(e) => handleNavClick(e, link)}
-                    className={`relative text-xs lg:text-sm font-medium tracking-wider uppercase transition-colors py-1.5 cursor-pointer ${
+                    className={`relative font-sans text-xs lg:text-[14px] font-medium tracking-widest uppercase transition-colors py-1 cursor-pointer ${
                       isActive
-                        ? 'text-[#DDB88C] font-semibold'
-                        : 'text-white/80 hover:text-white'
+                        ? 'text-[#DDB88C]'
+                        : 'text-[#E5DDD8]/80 hover:text-white'
                     }`}
                   >
                     <span>{link.name}</span>
                     {isActive && (
-                      <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#DDB88C] rounded-full transition-all duration-300 shadow-sm" />
+                      <span className="absolute -bottom-1 left-0 right-0 h-[2px] bg-[#DDB88C] rounded-full transition-all duration-300" />
                     )}
                   </a>
                 );
               })}
             </nav>
 
-            {/* Right Actions: Search Trigger & Book Appointment Button */}
-            <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
-              {/* Search Trigger */}
-              <button
-                onClick={() => setIsSearchModalOpen(true)}
-                className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-white/80 hover:text-[#DDB88C] hover:bg-white/10 rounded-full transition-colors cursor-pointer"
-                aria-label="Search services"
-                title="Search salon services"
-              >
-                <Search className="w-4 h-4 sm:w-5 sm:h-5" />
-              </button>
-
-              {/* Desktop Book Appointment Button (Gold Champagne Fill matching mockup) */}
+            {/* Right Actions: Book Appointment CTA */}
+            <div className="flex items-center space-x-3 sm:space-x-4 flex-shrink-0">
+              {/* Desktop Book Appointment Button */}
               <Link
                 to="/book-appointment"
-                className="hidden lg:inline-flex items-center gap-2 bg-[#DDB88C] hover:bg-[#E8C59A] text-[#140E11] text-xs font-semibold px-5 xl:px-6 py-2.5 rounded-full shadow-lg shadow-[#DDB88C]/20 hover:scale-102 transition-all duration-200 cursor-pointer"
+                className="hidden sm:inline-flex items-center gap-2 bg-[#DDB88C] hover:bg-[#E8C59A] text-[#120E10] text-xs font-semibold uppercase tracking-wider px-5 xl:px-6 py-2.5 rounded-full shadow-lg shadow-[#DDB88C]/20 hover:scale-102 transition-all duration-200 cursor-pointer"
               >
                 <Calendar className="w-3.5 h-3.5" />
-                <span>Book Appointment</span>
+                <span>BOOK APPOINTMENT</span>
               </Link>
 
               {/* Mobile Hamburger Menu Trigger */}
               <button
                 onClick={() => setIsMobileMenuOpen(true)}
-                className="md:hidden w-9 h-9 flex items-center justify-center text-white hover:text-[#DDB88C] hover:bg-white/10 rounded-full transition-colors cursor-pointer"
+                className="md:hidden w-10 h-10 flex items-center justify-center text-white hover:text-[#DDB88C] hover:bg-white/10 rounded-full transition-colors cursor-pointer"
                 aria-label="Open menu"
               >
                 <Menu className="w-5 h-5" />
