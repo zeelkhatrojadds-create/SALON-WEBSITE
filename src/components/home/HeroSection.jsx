@@ -67,12 +67,12 @@ export default function HeroSection() {
 
         {/* RIGHT COLUMN: Vertically Centered Integrated Salon Portrait (52% on Desktop) */}
         <div className="lg:col-span-6 xl:col-span-6 relative flex items-center justify-center lg:justify-end">
-          <div className="relative w-full max-w-lg lg:max-w-none h-[340px] sm:h-[420px] lg:h-[78vh] lg:max-h-[700px] rounded-2xl sm:rounded-3xl lg:rounded-[32px] overflow-hidden border border-white/10 bg-[#161214] shadow-2xl group">
+          <div className="relative w-full max-w-lg lg:max-w-none aspect-[4/5] sm:aspect-[3/4] lg:aspect-[4/5] lg:max-h-[680px] rounded-2xl sm:rounded-3xl lg:rounded-[32px] overflow-hidden border border-white/10 bg-[#161214] shadow-2xl group">
             <img
               src={jankiPhoto || "/janki-khatroja.jpg"}
               alt="Janki Khatroja — Owner & Master Beauty Specialist"
               onLoad={() => setImageLoaded(true)}
-              className={`w-full h-full object-cover object-center transition-opacity duration-700 ease-out ${
+              className={`w-full h-full object-cover object-top transition-opacity duration-700 ease-out ${
                 imageLoaded ? 'opacity-100' : 'opacity-90'
               }`}
               loading="eager"
