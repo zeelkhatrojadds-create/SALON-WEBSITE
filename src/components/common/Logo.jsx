@@ -70,17 +70,17 @@ export default function Logo({ className = '', size = 'default' }) {
 
       {/* Brand Name & Subtitle */}
       <div className="flex flex-col min-w-0">
-        <span className={`font-serif font-semibold tracking-[0.08em] text-white transition-colors truncate ${
+        <span className={`font-serif font-semibold tracking-[0.06em] text-white transition-colors truncate ${
           size === 'lg' 
             ? 'text-xl sm:text-2xl md:text-3xl' 
             : size === 'sm' 
               ? 'text-sm sm:text-base' 
               : 'text-base sm:text-lg md:text-xl'
         }`}>
-          LUMÉ
+          GLAM GIRL
         </span>
-        <span className="font-sans uppercase tracking-[0.28em] text-[8px] sm:text-[9px] font-medium text-[#DDB88C] -mt-0.5 truncate">
-          BEAUTY STUDIO
+        <span className="font-sans uppercase tracking-[0.32em] text-[8px] sm:text-[9px] font-semibold text-[#DDB88C] -mt-0.5 truncate">
+          BY JANKI
         </span>
       </div>
     </Link>

@@ -264,7 +264,7 @@ export const TESTIMONIALS = [
     role: 'Ottawa Local, Kanata',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
     rating: 5,
-    text: 'Girl Looked For You is truly the best salon experience in Ottawa! The balayage and gold facial made me feel so pampered and confident for my sister’s wedding.',
+    text: 'Glam Girl by Janki is truly the best salon experience in Ottawa! The balayage and gold facial made me feel so pampered and confident for my sister’s wedding.',
     date: '2 weeks ago',
     service: 'Luxe Balayage & Gold Facial'
   },
@@ -274,7 +274,7 @@ export const TESTIMONIALS = [
     role: 'ByWard Market Resident',
     avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80',
     rating: 5,
-    text: 'The ambience is pure luxury yet so warm and welcoming. My haircut and gel manicure lasted weeks with zero chipping. The staff are true artisans!',
+    text: 'The ambience is pure luxury yet so warm and welcoming. My haircut and gel manicure by Janki lasted weeks with zero chipping. A true artist!',
     date: '1 month ago',
     service: 'Signature Haircut & Gel Manicure'
   },
@@ -284,7 +284,7 @@ export const TESTIMONIALS = [
     role: 'Nepean, Ottawa',
     avatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=200&q=80',
     rating: 5,
-    text: 'Finally found an Ottawa salon that does perfect eyebrow threading and herbal hair spa! The team takes such good care of you from the moment you step in.',
+    text: 'Finally found an Ottawa salon that does perfect eyebrow threading and herbal hair spa! Janki Khatroja takes such good care of you from the moment you step in.',
     date: '3 weeks ago',
     service: 'Herbal Hair Spa & Threading'
   }
@@ -337,7 +337,7 @@ export const GALLERY_ITEMS = [
 
 export const FAQS = [
   {
-    question: 'How do I book an appointment at Girl Looked For You?',
+    question: 'How do I book an appointment at Glam Girl by Janki?',
     answer: 'You can easily book online by clicking the "Book Appointment" button, selecting your desired service, date, and preferred time slot. You will receive an instant confirmation summary.'
   },
   {
@@ -350,7 +350,7 @@ export const FAQS = [
   },
   {
     question: 'Do you offer bridal makeup trials and group bookings?',
-    answer: 'Yes! We offer customized bridal packages that include trials, bridal hair couture, HD makeup, draping, and group styling for bridesmaids and family.'
+    answer: 'Yes! Janki Khatroja offers customized bridal packages that include trials, bridal hair couture, HD makeup, draping, and group styling for bridesmaids and family.'
   },
   {
     question: 'What is your cancellation or rescheduling policy?',
@@ -359,12 +359,12 @@ export const FAQS = [
 ];
 
 export const SALON_INFO = {
-  name: 'Girl Looked For You',
-  subtitle: 'Girls Salon',
+  name: 'GLAM GIRL BY JANKI',
+  subtitle: 'Women\'s Beauty Studio by Janki Khatroja',
   address: '450 Bank Street, Suite 201',
   city: 'Ottawa, ON K2P 1Y9',
   phone: '(613) 555-GLOW (4569)',
-  email: 'hello@girllookedforyou.ca',
+  email: 'hello@glamgirlbyjanki.ca',
   hours: [
     { days: 'Monday – Friday', time: '9:30 AM – 7:30 PM' },
     { days: 'Saturday', time: '9:00 AM – 7:00 PM' },
