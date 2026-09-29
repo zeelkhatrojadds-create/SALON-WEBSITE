@@ -67,20 +67,20 @@ export default function HeroSection() {
 
         {/* RIGHT COLUMN: Vertically Centered Integrated Salon Portrait (52% on Desktop) */}
         <div className="lg:col-span-6 xl:col-span-6 relative flex items-center justify-center lg:justify-end">
-          <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-none h-[280px] sm:h-[360px] lg:h-[54vh] lg:max-h-[460px] xl:max-h-[520px] aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden border border-white/10 bg-[#161214] shadow-2xl group">
+          <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-[460px] aspect-[3/4] sm:aspect-[2/3] lg:aspect-[3/4] max-h-[520px] xl:max-h-[580px] rounded-2xl sm:rounded-3xl overflow-hidden border border-white/10 bg-[#161214] shadow-2xl group">
             <img
               src={jankiPhoto || "/janki-khatroja.jpg"}
               alt="Janki Khatroja — Owner & Master Beauty Specialist"
               onLoad={() => setImageLoaded(true)}
-              className={`w-full h-full object-cover object-top transition-opacity duration-700 ease-out ${
+              className={`w-full h-full object-cover object-center transition-opacity duration-700 ease-out ${
                 imageLoaded ? 'opacity-100' : 'opacity-90'
               }`}
               loading="eager"
             />
             
             {/* Dark Vignette Overlay for Seamless Integration with #0D0B0B Background */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0D0B0B]/80 via-transparent to-transparent pointer-events-none hidden lg:block" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0D0B0B]/80 via-transparent to-transparent pointer-events-none lg:hidden" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0D0B0B]/70 via-transparent to-transparent pointer-events-none hidden lg:block" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0D0B0B]/70 via-transparent to-transparent pointer-events-none lg:hidden" />
 
             {/* Subtle Artist Tag */}
             <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 bg-black/75 backdrop-blur-md px-3.5 py-1 sm:px-4 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-medium text-white shadow-lg border border-white/15 flex items-center gap-2">
