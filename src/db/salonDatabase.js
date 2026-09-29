@@ -131,32 +131,21 @@ class SalonDatabase {
   }
 
   /**
-   * Add a new appointment with smart Auto-Accept logic
+   * Add a new appointment with default Pending Owner Confirmation status
    */
   addAppointment(bookingData) {
     const appointments = this.getAppointments();
     const { available, conflict } = this.checkSlotAvailability(bookingData.date, bookingData.time);
 
-    let status = 'Confirmed';
-    let isAutoAccepted = true;
-    let slotConflict = false;
-
-    if (!available) {
-      // Another client service is currently in working progress for this slot
-      status = 'Pending';
-      isAutoAccepted = false;
-      slotConflict = true;
-    }
-
-    const bookingId = bookingData.id || `GLFY-${Math.floor(100000 + Math.random() * 900000)}`;
+    const bookingId = bookingData.id || `GGJ-${Math.floor(100000 + Math.random() * 900000)}`;
 
     const newBooking = {
       ...bookingData,
       id: bookingId,
-      status,
-      isAutoAccepted,
-      slotConflict,
-      conflictingWith: slotConflict ? (conflict?.customerName || 'Active Guest') : null,
+      status: bookingData.status || 'Pending',
+      isAutoAccepted: false,
+      slotConflict: !available,
+      conflictingWith: !available ? (conflict?.customerName || 'Active Guest') : null,
       submittedAt: new Date().toLocaleString('en-CA', { timeZone: 'America/Toronto' })
     };
 

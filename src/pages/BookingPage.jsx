@@ -217,7 +217,7 @@ export default function BookingPage() {
       phone: formData.phone.trim(),
       email: formData.email.trim(),
       notes: formData.notes.trim(),
-      status: 'Confirmed',
+      status: 'Pending',
       submittedAt: new Date().toLocaleString()
     };
 
@@ -874,31 +874,58 @@ export default function BookingPage() {
         )}
 
         {/* ========================================================================= */}
-        {/* STEP 7: CONFIRMATION & SUCCESS STATE */}
+        {/* STEP 7: CONFIRMATION & PENDING OWNER APPROVAL STATE */}
         {/* ========================================================================= */}
         {currentStep === 7 && confirmedBooking && (
           <div className="max-w-2xl mx-auto text-center space-y-6 py-6 animate-fade-in">
-            <div className="w-20 h-20 rounded-full bg-emerald-500/20 text-emerald-400 border-2 border-emerald-500/40 flex items-center justify-center mx-auto shadow-inner">
-              <CheckCircle className="w-10 h-10" />
-            </div>
+            {/* Live Status Icon */}
+            {confirmedBooking.status === 'Confirmed' ? (
+              <div className="w-20 h-20 rounded-full bg-emerald-500/20 text-emerald-400 border-2 border-emerald-500/40 flex items-center justify-center mx-auto shadow-inner">
+                <CheckCircle className="w-10 h-10" />
+              </div>
+            ) : (
+              <div className="w-20 h-20 rounded-full bg-amber-500/20 text-amber-400 border-2 border-amber-500/40 flex items-center justify-center mx-auto shadow-inner">
+                <Clock className="w-10 h-10 animate-pulse" />
+              </div>
+            )}
 
             <div className="space-y-2">
-              <span className="inline-block px-4 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-bold text-xs uppercase tracking-widest border border-emerald-500/30">
-                ✓ Appointment Request Created
-              </span>
+              {confirmedBooking.status === 'Confirmed' ? (
+                <span className="inline-block px-4 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-bold text-xs uppercase tracking-widest border border-emerald-500/30">
+                  ✓ Appointment Confirmed by Owner
+                </span>
+              ) : (
+                <span className="inline-block px-4 py-1 rounded-full bg-amber-500/20 text-amber-300 font-bold text-xs uppercase tracking-widest border border-amber-500/30">
+                  ⏳ Booking Request Submitted — Awaiting Owner Approval
+                </span>
+              )}
+
               <h2 className="font-serif text-3xl sm:text-5xl font-bold text-white">
-                Booking Confirmed!
+                {confirmedBooking.status === 'Confirmed' ? 'Booking Confirmed!' : 'Request Received!'}
               </h2>
               <p className="text-white/70 text-xs sm:text-sm max-w-md mx-auto">
-                Thank you, <strong>{confirmedBooking.customerName}</strong>! Your appointment has been registered with Janki Khatroja.
+                Thank you, <strong>{confirmedBooking.customerName}</strong>! Your appointment request for <strong>{confirmedBooking.service}</strong> has been sent to salon owner <strong>Janki Khatroja</strong>.
               </p>
             </div>
 
-            {/* Voucher Details */}
+            {/* Voucher / Ticket Details */}
             <div className="bg-[#1C1418] border border-white/15 rounded-3xl p-6 sm:p-8 text-left space-y-4 shadow-2xl max-w-lg mx-auto">
               <div className="flex items-center justify-between pb-3 border-b border-white/10">
-                <span className="text-xs text-white/50 uppercase font-bold tracking-wider">Booking Reference</span>
-                <span className="font-mono font-bold text-brand-pink text-base sm:text-lg">{confirmedBooking.referenceCode}</span>
+                <div>
+                  <span className="text-xs text-white/50 uppercase font-bold tracking-wider block">Booking Reference</span>
+                  <span className="font-mono font-bold text-brand-pink text-base sm:text-lg">{confirmedBooking.referenceCode}</span>
+                </div>
+                <div>
+                  {confirmedBooking.status === 'Confirmed' ? (
+                    <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold border border-emerald-500/30">
+                      ✓ Confirmed
+                    </span>
+                  ) : (
+                    <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold border border-amber-500/30 animate-pulse">
+                      ⏳ Pending Owner Confirmation
+                    </span>
+                  )}
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3 text-xs sm:text-sm">
@@ -915,7 +942,7 @@ export default function BookingPage() {
                   <span className="font-bold text-white">{confirmedBooking.date}</span>
                 </div>
                 <div>
-                  <span className="text-white/50 block text-[11px]">Time</span>
+                  <span className="text-white/50 block text-[11px]">Time Slot</span>
                   <span className="font-bold text-white">{confirmedBooking.time}</span>
                 </div>
                 <div>
@@ -930,7 +957,7 @@ export default function BookingPage() {
 
               <div className="pt-3 border-t border-white/10 text-[11px] text-white/50 flex items-center justify-between">
                 <span>Location: 450 Bank St, Ottawa, ON</span>
-                <span>Saved to browser storage</span>
+                <span>Status: {confirmedBooking.status || 'Pending'}</span>
               </div>
             </div>
 
@@ -949,7 +976,7 @@ export default function BookingPage() {
                 onClick={() => setShowSavedModal(true)}
                 className="w-full sm:w-auto px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-wider transition-all cursor-pointer"
               >
-                View Booking
+                View Status in My Bookings
               </button>
 
               <button
@@ -978,7 +1005,7 @@ export default function BookingPage() {
             <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
               <div>
                 <h3 className="font-serif font-bold text-lg text-white">Your Saved Bookings</h3>
-                <p className="text-xs text-white/50">Stored in browser localStorage</p>
+                <p className="text-xs text-white/50">Track live approval status from Janki Khatroja</p>
               </div>
               <button
                 onClick={() => setShowSavedModal(false)}
@@ -999,16 +1026,31 @@ export default function BookingPage() {
                       </div>
                       <div className="font-bold text-sm text-white">{app.service}</div>
                       <div className="text-white/60">Artist: {app.stylist || 'Janki Khatroja'} | Guest: {app.customerName}</div>
+                      
+                      {/* Live Approval Status Tag */}
+                      <div className="pt-1">
+                        {app.status === 'Confirmed' ? (
+                          <span className="inline-block px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold text-[10px] border border-emerald-500/30">
+                            ✓ Confirmed by Owner
+                          </span>
+                        ) : app.status === 'Cancelled' ? (
+                          <span className="inline-block px-2.5 py-0.5 rounded-full bg-red-500/20 text-red-300 font-bold text-[10px] border border-red-500/30">
+                            ❌ Declined / Cancelled
+                          </span>
+                        ) : (
+                          <span className="inline-block px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold text-[10px] border border-amber-500/30 animate-pulse">
+                            ⏳ Pending Owner Confirmation
+                          </span>
+                        )}
+                      </div>
                     </div>
 
                     <button
                       onClick={() => {
-                        const updated = savedAppointments.filter(a => (a.id || a.referenceCode) !== (app.id || app.referenceCode));
-                        setSavedAppointments(updated);
-                        localStorage.setItem('girl-looked-for-you-appointments', JSON.stringify(updated));
+                        salonDB.deleteAppointment(app.id || app.referenceCode);
                       }}
                       className="p-2 text-white/40 hover:text-red-400 rounded-lg hover:bg-red-500/10 transition-colors cursor-pointer"
-                      title="Delete booking"
+                      title="Cancel / Remove Booking"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
