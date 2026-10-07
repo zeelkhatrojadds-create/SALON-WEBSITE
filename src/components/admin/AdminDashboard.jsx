@@ -10,15 +10,19 @@ import {
   AlertCircle, 
   ArrowUpRight,
   MessageCircle,
-  Plus
+  Plus,
+  Star
 } from 'lucide-react';
 import { ALL_SERVICES } from '../../data/servicesData';
+import salonDB from '../../db/salonDatabase';
 
 export default function AdminDashboard({ 
   appointments = [], 
   onNavigateTab,
   onOpenNewBookingModal 
 }) {
+  const reviewStats = salonDB.getReviewStats();
+
   // Calculate metrics
   const totalBookings = appointments.length;
   
@@ -66,7 +70,7 @@ export default function AdminDashboard({
             Salon Executive Dashboard
           </h1>
           <p className="text-[#F2ECE4]/70 text-xs sm:text-sm max-w-xl">
-            Real-time appointment schedule, revenue overview, and guest communications for Girl Looked For You.
+            Real-time appointment schedule, revenue overview, guest ratings, and studio communications.
           </p>
         </div>
 
@@ -136,21 +140,28 @@ export default function AdminDashboard({
           </div>
         </div>
 
-        {/* Metric 4: Services Active */}
-        <div className="bg-[#1C1418] rounded-2xl p-5 border border-white/10 shadow-xl space-y-3">
+        {/* Metric 4: Real-time Reviews Rating */}
+        <button
+          onClick={() => onNavigateTab?.('reviews')}
+          className="bg-[#1C1418] hover:bg-[#251A20] rounded-2xl p-5 border border-white/10 hover:border-brand-gold/40 shadow-xl space-y-3 text-left transition-colors cursor-pointer"
+        >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-white/60 uppercase tracking-wider">Service Menu</span>
-            <div className="w-10 h-10 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center border border-purple-500/20">
-              <Sparkles className="w-5 h-5" />
+            <span className="text-xs font-semibold text-white/60 uppercase tracking-wider">Client Reviews</span>
+            <div className="w-10 h-10 rounded-xl bg-brand-gold/15 text-brand-gold flex items-center justify-center border border-brand-gold/20">
+              <Star className="w-5 h-5 fill-current" />
             </div>
           </div>
           <div>
-            <div className="text-2xl sm:text-3xl font-bold font-serif text-white">{ALL_SERVICES.length}</div>
-            <p className="text-[11px] text-white/50 mt-1">
-              Active across 6 salon categories
+            <div className="text-2xl sm:text-3xl font-bold font-serif text-white flex items-center gap-2">
+              <span>{reviewStats.averageRating.toFixed(1)}</span>
+              <span className="text-xs text-brand-gold font-normal">/ 5.0 ★</span>
+            </div>
+            <p className="text-[11px] text-brand-gold-light mt-1 flex items-center justify-between">
+              <span>{reviewStats.totalReviews} verified reviews</span>
+              <span className="text-[10px] text-white/50">Manage →</span>
             </p>
           </div>
-        </div>
+        </button>
 
       </div>
 

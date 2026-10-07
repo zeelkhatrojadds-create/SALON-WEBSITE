@@ -1,146 +1,139 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Scissors, Flower2, Gem, MapPin } from 'lucide-react';
-import jankiPhoto from '../../assets/janki-khatroja.jpg';
+import { ArrowRight, ChevronDown } from 'lucide-react';
 
 export default function HeroSection() {
-  const [imageLoaded, setImageLoaded] = useState(false);
-
   return (
-    <section className="relative w-full min-h-screen lg:h-screen text-[#E5DDD8] bg-[#0D0B0B] flex flex-col justify-between pt-20 lg:pt-20 pb-0 overflow-hidden selection:bg-[#DDB88C] selection:text-[#120E10]">
-      
-      {/* Soft Luxury Radial Ambient Lighting */}
-      <div className="absolute top-1/4 right-1/4 w-[450px] h-[450px] bg-[#3A281C]/25 rounded-full blur-[140px] pointer-events-none -mt-16" />
-      <div className="absolute bottom-1/3 left-12 w-[350px] h-[350px] bg-[#2A1D15]/30 rounded-full blur-[120px] pointer-events-none" />
+    <section
+      id="home"
+      className="relative w-full min-h-[100svh] h-[100svh] text-[#F7F1E8] flex flex-col justify-between overflow-hidden bg-[#100C0D]"
+    >
+      {/* ========================================================================= */}
+      {/* LAYER 0: RESPONSIVE HIGH-PERFORMANCE WEBP FACIAL ATELIER PHOTOGRAPH       */}
+      {/* ========================================================================= */}
+      <div className="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none bg-[#100C0D]">
+        <picture className="w-full h-full block">
+          <source
+            type="image/webp"
+            srcSet="/facial-atelier-clean-480.webp 480w, /facial-atelier-clean-768.webp 768w, /facial-atelier-clean-1200.webp 1200w, /facial-atelier-clean-1920.webp 1920w"
+            sizes="100vw"
+          />
+          <img
+            src="/facial-atelier-clean-1200.webp"
+            alt="GLAM GIRL Luxury Facial Treatment Atelier Ottawa"
+            width="1920"
+            height="1080"
+            fetchPriority="high"
+            decoding="async"
+            loading="eager"
+            className="w-full h-full object-cover object-center"
+          />
+        </picture>
+      </div>
 
-      {/* Main Container: Split 48% Left / 52% Right on Desktop */}
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 flex-1 grid grid-cols-1 lg:grid-cols-12 items-center gap-6 lg:gap-10 relative z-10 py-2 sm:py-4 lg:py-4">
-        
-        {/* LEFT COLUMN (48% on Desktop) */}
-        <div className="lg:col-span-6 xl:col-span-6 space-y-4 sm:space-y-5 lg:space-y-5 text-center lg:text-left flex flex-col justify-center">
-          
-          {/* Location Label with Thin Decorative Lines */}
-          <div className="inline-flex items-center justify-center lg:justify-start gap-2.5 text-[#E95E92]">
-            <span className="w-7 sm:w-9 h-[1px] bg-[#E95E92]/40 inline-block"></span>
-            <span className="font-sans text-[11px] sm:text-xs lg:text-[13px] font-medium tracking-[0.18em] uppercase text-[#E95E92]">
-              OTTAWA • WOMEN'S BEAUTY STUDIO
+      {/* ========================================================================= */}
+      {/* LAYER 1: SPECIFIED SUBTLE READING GRADIENT (KEEPS SCENE SHARP & NATURAL)  */}
+      {/* ========================================================================= */}
+      <div 
+        className="absolute inset-0 z-10 pointer-events-none"
+        style={{
+          background: 'linear-gradient(90deg, rgba(16,12,13,0.88) 0%, rgba(16,12,13,0.6) 45%, rgba(16,12,13,0.2) 75%, transparent 100%)'
+        }}
+      />
+
+      {/* ========================================================================= */}
+      {/* LAYER 2: HERO CONTENT (BALANCED SPACING FOR DESKTOP & MOBILE)             */}
+      {/* ========================================================================= */}
+      <div className="relative z-20 flex-1 flex flex-col justify-center w-full max-w-[1500px] mx-auto px-5 sm:px-[6%] lg:px-[7%] pt-[72px] sm:pt-[84px] pb-10 sm:pb-16">
+        <div className="w-full max-w-[540px] text-left flex flex-col items-start">
+
+          {/* 1. EYEBROW: FACIAL • SKIN • BEAUTY */}
+          <div className="flex items-center gap-3 mb-5 sm:mb-[24px]">
+            <span className="text-[11px] sm:text-[11.5px] font-bold uppercase tracking-[3px] text-[#DDB88C]">
+              FACIAL • SKIN • BEAUTY
             </span>
-            <span className="w-7 sm:w-9 h-[1px] bg-[#E95E92]/40 inline-block"></span>
+            <span className="w-6 sm:w-8 h-px bg-[#DDB88C]/60" />
           </div>
 
-          {/* Controlled 3-Line Headline matching specs */}
-          <h1 className="font-serif font-normal tracking-[-0.03em] text-white leading-[0.98] sm:leading-[1.0] text-[34px] sm:text-[44px] lg:text-[clamp(42px,3.8vw,62px)] xl:text-[clamp(48px,4vw,68px)] flex flex-col space-y-0.5">
-            <span className="block">Your Beauty.</span>
-            <span className="block">Your Confidence.</span>
-            <span className="font-script text-[#E95E92] font-normal leading-[1.05] inline-block pt-1 text-[40px] sm:text-[50px] lg:text-[clamp(48px,4.2vw,70px)] xl:text-[clamp(54px,4.5vw,76px)]">
-              Your Moment.
-            </span>
+          {/* 3. MAIN HEADING: The Art of Luminous Skin. */}
+          <h1 
+            className="font-serif font-normal mb-5 sm:mb-[28px] drop-shadow-[0_4px_24px_rgba(0,0,0,0.85)]"
+            style={{
+              fontSize: 'clamp(34px, 7vw, 74px)',
+              lineHeight: '1.0',
+              letterSpacing: '-1px',
+              maxWidth: '540px'
+            }}
+          >
+            <span className="block text-[#F7F1E8]">The Art of</span>
+            <span className="block italic text-[#CFA46A]">Luminous Skin.</span>
           </h1>
 
-          {/* Supporting Description */}
-          <p className="font-sans text-[#E5DDD8]/85 text-xs sm:text-sm lg:text-[15px] xl:text-base leading-[1.5] max-w-[440px] mx-auto lg:mx-0 font-normal">
-            Personalized beauty experiences designed to help you feel confident, beautiful, and completely yourself.
+          {/* 4. DESCRIPTION */}
+          <p 
+            className="font-body font-normal mb-6 sm:mb-[30px] drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]"
+            style={{
+              maxWidth: '480px',
+              fontSize: 'clamp(14px, 1.2vw, 17.5px)',
+              lineHeight: '1.6',
+              color: 'rgba(247, 241, 232, 0.82)'
+            }}
+          >
+            Personalized facial rituals designed to cleanse, nourish, refresh, and reveal your skin's natural radiance.
           </p>
 
-          {/* Touch-Friendly Action Buttons */}
-          <div className="pt-1 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-3.5">
+          {/* 5. BUTTONS — stack vertically on mobile, row on sm+ */}
+          <div className="flex flex-col xs:flex-row sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
             {/* Primary Button */}
             <Link
-              to="/book-appointment"
-              className="w-full sm:w-auto h-[48px] sm:h-[52px] inline-flex items-center justify-center gap-2 bg-[#D83A75] hover:bg-[#c42f65] text-white text-xs sm:text-sm font-bold uppercase tracking-wider px-7 rounded-full shadow-lg shadow-[#D83A75]/30 hover:shadow-xl hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-[#D83A75] focus:ring-offset-2 focus:ring-offset-[#0D0B0B] active:scale-98 transition-all duration-200 cursor-pointer"
+              to="/book-appointment?category=facial"
+              className="inline-flex items-center justify-center gap-2.5 px-5 sm:px-7 h-[50px] sm:h-[54px] rounded-full bg-gradient-to-r from-[#CFA46A] via-[#E5C492] to-[#CFA46A] hover:from-[#E5C492] hover:to-[#CFA46A] text-[#100C0D] text-[11px] font-extrabold uppercase tracking-widest whitespace-nowrap shadow-[0_4px_22px_rgba(207,164,106,0.35)] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer w-full sm:w-auto"
             >
-              <span>BOOK YOUR APPOINTMENT</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>BOOK FACIAL APPOINTMENT</span>
+              <ArrowRight className="w-4 h-4 stroke-[2.5] flex-shrink-0" />
             </Link>
 
             {/* Secondary Button */}
             <Link
-              to="/services"
-              className="w-full sm:w-auto h-[48px] sm:h-[52px] inline-flex items-center justify-center gap-2 bg-transparent hover:bg-white/5 text-[#E5DDD8] hover:text-white text-xs sm:text-sm font-medium uppercase tracking-wider px-7 rounded-full border border-white/25 hover:border-[#E95E92] focus:outline-none focus:ring-2 focus:ring-[#E95E92] focus:ring-offset-2 focus:ring-offset-[#0D0B0B] transition-all duration-200 cursor-pointer backdrop-blur-sm"
+              to="/services?category=facial"
+              className="inline-flex items-center justify-center gap-2.5 px-5 sm:px-7 h-[50px] sm:h-[54px] rounded-full bg-[#100C0D]/60 hover:bg-[#100C0D]/85 text-[#F7F1E8] hover:text-[#CFA46A] text-[11px] font-bold uppercase tracking-widest whitespace-nowrap border border-[#CFA46A]/40 hover:border-[#CFA46A] backdrop-blur-md shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer w-full sm:w-auto"
             >
-              <span>EXPLORE SERVICES</span>
-              <ArrowRight className="w-4 h-4 text-white/70" />
+              <span>EXPLORE FACIAL TREATMENTS</span>
+              <ArrowRight className="w-4 h-4 stroke-[2.5] flex-shrink-0" />
             </Link>
           </div>
 
         </div>
-
-        {/* RIGHT COLUMN: Vertically Centered Integrated Salon Portrait (52% on Desktop) */}
-        <div className="lg:col-span-6 xl:col-span-6 relative flex items-center justify-center lg:justify-end">
-          <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-[460px] aspect-[3/4] sm:aspect-[2/3] lg:aspect-[3/4] max-h-[520px] xl:max-h-[580px] rounded-2xl sm:rounded-3xl overflow-hidden border border-white/10 bg-[#161214] shadow-2xl group">
-            <img
-              src={jankiPhoto || "/janki-khatroja.jpg"}
-              alt="Janki Khatroja — Owner & Master Beauty Specialist"
-              onLoad={() => setImageLoaded(true)}
-              className={`w-full h-full object-cover object-center transition-opacity duration-700 ease-out ${
-                imageLoaded ? 'opacity-100' : 'opacity-90'
-              }`}
-              loading="eager"
-            />
-            
-            {/* Dark Vignette Overlay for Seamless Integration with #0D0B0B Background */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0D0B0B]/70 via-transparent to-transparent pointer-events-none hidden lg:block" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0D0B0B]/70 via-transparent to-transparent pointer-events-none lg:hidden" />
-
-            {/* Subtle Artist Tag */}
-            <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 bg-black/75 backdrop-blur-md px-3.5 py-1 sm:px-4 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-medium text-white shadow-lg border border-white/15 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#E95E92] animate-pulse" />
-              <span>Janki Khatroja — Founder & Master Artist</span>
-            </div>
-          </div>
-        </div>
-
       </div>
 
-      {/* BOTTOM TRUST BADGES BAR */}
-      <div className="w-full bg-[#080708]/90 border-t border-white/10 py-3.5 sm:py-4 relative z-10 backdrop-blur-md mt-auto">
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 xl:px-16">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-0 divide-x-0 md:divide-x divide-white/10 text-center">
-            
-            {/* Feature 1 */}
-            <div className="flex flex-col items-center gap-1.5 px-2 py-0.5">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-[#E95E92]/40 bg-[#1A1417] flex items-center justify-center text-[#E95E92]">
-                <Scissors className="w-4 h-4" />
-              </div>
-              <span className="text-[11px] sm:text-xs font-medium text-white/90">
-                Professional Stylists
-              </span>
-            </div>
-
-            {/* Feature 2 */}
-            <div className="flex flex-col items-center gap-1.5 px-2 py-0.5">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-[#E95E92]/40 bg-[#1A1417] flex items-center justify-center text-[#E95E92]">
-                <Flower2 className="w-4 h-4" />
-              </div>
-              <span className="text-[11px] sm:text-xs font-medium text-white/90">
-                Personalized Care
-              </span>
-            </div>
-
-            {/* Feature 3 */}
-            <div className="flex flex-col items-center gap-1.5 px-2 py-0.5">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-[#E95E92]/40 bg-[#1A1417] flex items-center justify-center text-[#E95E92]">
-                <Gem className="w-4 h-4" />
-              </div>
-              <span className="text-[11px] sm:text-xs font-medium text-white/90">
-                Premium Products
-              </span>
-            </div>
-
-            {/* Feature 4 */}
-            <div className="flex flex-col items-center gap-1.5 px-2 py-0.5">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-[#E95E92]/40 bg-[#1A1417] flex items-center justify-center text-[#E95E92]">
-                <MapPin className="w-4 h-4" />
-              </div>
-              <span className="text-[11px] sm:text-xs font-medium text-white/90">
-                Ottawa's Beauty Destination
-              </span>
-            </div>
-
+      {/* ========================================================================= */}
+      {/* LAYER 4: BOTTOM FLOATING TRANSPARENT HERO INFO BAR                         */}
+      {/* ========================================================================= */}
+      <div className="absolute bottom-0 left-0 right-0 z-20 w-full py-2.5 bg-gradient-to-t from-black/75 via-black/35 to-transparent">
+        <div className="max-w-7xl mx-auto w-full px-4 sm:px-8 lg:px-12 flex items-center justify-between text-[9.5px] sm:text-[10px] font-body tracking-[0.22em] uppercase text-[#F7F1E8]/80">
+          
+          {/* Left Brand Indicator */}
+          <div className="flex items-center gap-2 text-[#CFA46A]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#CFA46A]" />
+            <span className="font-semibold text-[#F7F1E8]">GLAM GIRL BY JANKI</span>
           </div>
+
+          {/* Center Scroll Prompt */}
+          <a
+            href="#services"
+            className="flex items-center gap-1.5 hover:text-[#CFA46A] transition-colors group cursor-pointer"
+          >
+            <span>SCROLL</span>
+            <ChevronDown className="w-3.5 h-3.5 text-[#CFA46A] group-hover:translate-y-0.5 transition-transform" />
+          </a>
+
+          {/* Right Location */}
+          <div className="hidden sm:block text-right text-[#F7F1E8]/70 font-semibold">
+            OTTAWA • WOMEN'S BEAUTY STUDIO
+          </div>
+
         </div>
       </div>
-
     </section>
   );
 }

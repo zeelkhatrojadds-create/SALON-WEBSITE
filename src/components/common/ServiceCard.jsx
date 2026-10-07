@@ -1,93 +1,112 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Clock, Calendar } from 'lucide-react';
+import SafeServiceImage from './SafeServiceImage';
+import ScrollReveal from '../ScrollReveal/ScrollReveal';
 
 export default function ServiceCard({ service, onQuickBook, onViewDetails }) {
-  const [imgSrc, setImgSrc] = useState(service.image);
   const navigate = useNavigate();
 
-  const handleImageError = () => {
-    setImgSrc('https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80');
-  };
+  if (!service) return null;
 
-  const handleBook = () => {
+  const categorySlug = service.category || 'threading';
+  const treatmentSlug = service.slug || service.id;
+  const detailUrl = `/services/${categorySlug}/${treatmentSlug}`;
+  const bookingUrl = `/book-appointment?service=${treatmentSlug}`;
+
+  const categoryLabel = (service.categoryName || service.category || 'HAIR CARE').toUpperCase();
+  
+  // Format price exact to reference screenshot: CAD $120.00
+  const numericPrice = Number(service.price) || 0;
+  const formattedPrice = `CAD $${numericPrice.toFixed(2)}`;
+
+  const handleBook = (e) => {
+    e.stopPropagation();
     if (onQuickBook) {
       onQuickBook(service);
     } else {
-      navigate(`/book-appointment?service=${service.id}`);
+      navigate(bookingUrl);
     }
   };
 
   return (
-    <div 
-      onClick={handleBook}
-      className="bg-[#1C1418]/90 backdrop-blur-md rounded-3xl overflow-hidden border border-white/10 shadow-2xl hover:border-brand-pink/50 hover:shadow-brand-pink/15 transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1.5 w-full cursor-pointer"
-    >
-      {/* Treatment Image Container */}
-      <div className="relative aspect-[16/10] sm:aspect-[4/3] w-full overflow-hidden bg-white/5">
-        <img
-          src={imgSrc}
-          alt={service.name}
-          onError={handleImageError}
-          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+    <ScrollReveal className="w-full">
+      <div 
+        className="group relative flex flex-col bg-white rounded-2xl border border-[#E8DFD3] hover:border-[#1E1714] overflow-hidden transition-all duration-300 shadow-xs hover:shadow-xl hover:shadow-black/5 w-full text-left"
+      >
+      {/* Top Image Container */}
+      <div className="relative aspect-[16/10] overflow-hidden bg-[#F5F0E8]">
+        <SafeServiceImage
+          service={service}
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           loading="lazy"
         />
 
-        {/* Gradient overlay on image */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1C1418] via-transparent to-black/20 opacity-80 group-hover:opacity-50 transition-opacity" />
+        {/* Top-Left Pill Badge: Category */}
+        <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-white/95 backdrop-blur-md text-[#1E1714] text-[10.5px] font-bold uppercase tracking-wider shadow-sm border border-[#E8DFD3]">
+          {categoryLabel}
+        </div>
 
-        {/* Category Pill Tag */}
-        <div className="absolute top-3 left-3">
-          <span className="bg-black/60 backdrop-blur-md text-brand-pink-muted border border-white/10 font-semibold text-[10px] sm:text-[11px] px-2.5 sm:px-3 py-1 rounded-full uppercase tracking-wider shadow-xs">
-            {service.categoryName}
-          </span>
+        {/* Top-Right Pill Badge: Duration */}
+        <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-[#140F11]/85 backdrop-blur-md text-white text-[10.5px] font-medium shadow-sm">
+          {String(service.duration || '30 MIN').endsWith('MIN') || String(service.duration || '30 MIN').endsWith('min') ? service.duration : `${service.duration} MIN`}
         </div>
       </div>
 
-      {/* Card Body */}
-      <div className="p-4 sm:p-5 lg:p-6 flex-1 flex flex-col justify-between">
+      {/* Card Body Content */}
+      <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between">
         <div>
-          {/* Treatment Title */}
-          <h3 className="font-serif font-bold text-white text-base sm:text-lg lg:text-xl leading-snug group-hover:text-brand-pink-muted transition-colors mb-1.5">
-            {service.name}
+          {/* Eyebrow & Price Header Row */}
+          <div className="flex items-baseline justify-between gap-2 mb-2">
+            <span className="text-[11px] font-bold tracking-[0.16em] uppercase text-[#D4A373]">
+              {categoryLabel}
+            </span>
+            <span className="font-serif text-base sm:text-lg font-normal text-[#1E1714] whitespace-nowrap">
+              {formattedPrice}
+            </span>
+          </div>
+
+          {/* Service Title */}
+          <h3 className="font-serif text-lg sm:text-[20px] font-bold text-[#1E1714] leading-snug group-hover:text-[#CFA46A] transition-colors mb-2">
+            <Link to={detailUrl}>
+              {service.name}
+            </Link>
           </h3>
 
-          {/* Short Description */}
-          <p className="text-white/70 text-xs sm:text-sm leading-relaxed line-clamp-2 mb-3 sm:mb-4">
+          {/* Description */}
+          <p className="text-xs sm:text-[13px] text-[#6B5E55] line-clamp-2 leading-relaxed mb-6 font-normal">
             {service.description}
           </p>
-
-          {/* Price & Duration */}
-          <div className="flex items-center justify-between text-xs py-2 border-t border-white/10 mb-3 sm:mb-4">
-            <div>
-              <span className="text-[10px] uppercase tracking-wider text-white/50 block -mb-0.5">Price</span>
-              <span className="font-serif font-bold text-white text-base sm:text-lg">
-                CA${service.price}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-1.5 text-white/70 font-medium text-[11px] sm:text-xs bg-white/5 px-2.5 sm:px-3 py-1 rounded-full border border-white/10">
-              <Clock className="w-3.5 h-3.5 text-brand-pink flex-shrink-0" />
-              <span>{service.duration}</span>
-            </div>
-          </div>
         </div>
 
-        {/* Action Button: Direct Book */}
-        <div className="pt-1">
+        {/* Card Footer Buttons Row */}
+        <div className="flex items-center justify-between gap-2 pt-4 border-t border-[#F2ECE4] mt-auto">
+          {/* Left: MORE DETAILS -> */}
+          <Link
+            to={detailUrl}
+            onClick={(e) => {
+              if (onViewDetails) {
+                e.preventDefault();
+                onViewDetails(service);
+              }
+            }}
+            className="text-[11px] font-bold uppercase tracking-wider text-[#1E1714] hover:text-[#CFA46A] transition-colors inline-flex items-center gap-1 group/btn py-2 px-1"
+          >
+            <span>MORE DETAILS</span>
+            <span className="text-xs group-hover/btn:translate-x-1 transition-transform">→</span>
+          </Link>
+
+          {/* Right: BOOK APPOINTMENT -> */}
           <button
             type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleBook();
-            }}
-            className="w-full min-h-[44px] py-2.5 px-4 rounded-full bg-brand-pink hover:bg-brand-pink-hover text-white text-xs font-bold uppercase tracking-wider shadow-md shadow-brand-pink/25 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            onClick={handleBook}
+            className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg bg-[#0F0D0E] hover:bg-[#CFA46A] text-white hover:text-[#0F0D0E] text-[11px] font-bold uppercase tracking-wider transition-all duration-200 shadow-sm cursor-pointer"
           >
-            <Calendar className="w-4 h-4 flex-shrink-0" />
-            <span>Book Appointment</span>
+            <span>BOOK APPOINTMENT</span>
+            <span className="text-xs">→</span>
           </button>
         </div>
       </div>
     </div>
-  );
+  </ScrollReveal>
+);
 }

@@ -1,42 +1,37 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Phone, Mail, Heart, Sparkles, Send } from 'lucide-react';
+import { MapPin, Mail, Heart } from 'lucide-react';
 import { InstagramIcon, FacebookIcon } from '../common/SocialIcons';
 import Logo from '../common/Logo';
-import { SALON_INFO, CATEGORIES } from '../../data/salonData';
+
+const scrollTo = (id) => {
+  const el = document.getElementById(id);
+  if (el) {
+    const pos = el.getBoundingClientRect().top + window.pageYOffset - 76;
+    window.scrollTo({ top: pos, behavior: 'smooth' });
+  }
+};
 
 export default function Footer() {
-  const [email, setEmail] = useState('');
-  const [isSubscribed, setIsSubscribed] = useState(false);
-
-  const handleSubscribe = (e) => {
-    e.preventDefault();
-    if (email.trim()) {
-      setIsSubscribed(true);
-      setEmail('');
-      setTimeout(() => setIsSubscribed(false), 5000);
-    }
-  };
-
   return (
-    <footer className="w-full bg-[#080708] text-[#E5DDD8] pt-12 sm:pt-16 pb-8 border-t border-white/10">
-      <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 mx-auto">
-        
-        {/* Main Footer Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-8 pb-10 sm:pb-12 border-b border-white/10">
-          
-          {/* Brand Info & Mission */}
-          <div className="sm:col-span-2 lg:col-span-4 space-y-3.5 sm:space-y-4">
+    <footer className="w-full bg-[#0A0809] text-[#F7F1E8]/70 pt-14 sm:pt-20 pb-8 border-t border-[#CFA46A]/15">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 xl:px-16">
+
+        {/* Main grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10 pb-10 border-b border-[#CFA46A]/10">
+
+          {/* Brand */}
+          <div className="sm:col-span-2 lg:col-span-4 space-y-4">
             <Logo size="lg" />
-            <p className="text-white/70 text-xs sm:text-sm leading-relaxed max-w-sm pt-1">
-              Ottawa’s premier luxury sanctuary dedicated to women’s beauty, certified hair couture, rejuvenating skin therapies, and flawless bridal transformations.
+            <p className="text-sm leading-relaxed max-w-sm text-[#F7F1E8]/55 pt-1">
+              Ottawa's luxury women's beauty studio. Personalized beauty experiences for every woman — from everyday glow to bridal transformations.
             </p>
-            <div className="flex items-center space-x-3 pt-1">
+            <div className="flex items-center gap-3 pt-1">
               <a
-                href="https://instagram.com"
+                href="https://instagram.com/glamgirlbyjanki"
                 target="_blank"
                 rel="noreferrer"
-                className="w-10 h-10 rounded-full bg-white/5 hover:bg-[#D83A75] hover:text-white text-white flex items-center justify-center transition-all border border-white/10"
+                className="w-10 h-10 border border-[#CFA46A]/25 flex items-center justify-center text-[#F7F1E8]/50 hover:text-[#CFA46A] hover:border-[#CFA46A]/60 transition-all"
                 aria-label="Instagram"
               >
                 <InstagramIcon className="w-4 h-4" />
@@ -45,7 +40,7 @@ export default function Footer() {
                 href="https://facebook.com"
                 target="_blank"
                 rel="noreferrer"
-                className="w-10 h-10 rounded-full bg-white/5 hover:bg-[#D83A75] hover:text-white text-white flex items-center justify-center transition-all border border-white/10"
+                className="w-10 h-10 border border-[#CFA46A]/25 flex items-center justify-center text-[#F7F1E8]/50 hover:text-[#CFA46A] hover:border-[#CFA46A]/60 transition-all"
                 aria-label="Facebook"
               >
                 <FacebookIcon className="w-4 h-4" />
@@ -53,202 +48,106 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Quick links */}
           <div className="lg:col-span-2 space-y-3">
-            <h4 className="font-serif font-semibold text-[#E95E92] text-sm sm:text-base tracking-wide">
-              Quick Links
-            </h4>
-            <ul className="space-y-2 text-xs sm:text-sm text-white/70">
+            <h4 className="font-display font-semibold text-[#CFA46A] text-sm tracking-wider uppercase">Quick Links</h4>
+            <ul className="space-y-2 text-sm text-[#F7F1E8]/55">
+              {[
+                { label: 'Home', id: 'home' },
+                { label: 'Services', id: 'services' },
+                { label: 'Gallery', id: 'gallery' },
+                { label: 'About', id: 'about' },
+                { label: 'Stay in the Glow', id: 'newsletter' },
+                { label: 'Contact', id: 'contact' },
+              ].map(({ label, id }) => (
+                <li key={id}>
+                  <a
+                    href={`/#${id}`}
+                    onClick={(e) => { e.preventDefault(); scrollTo(id); }}
+                    className="hover:text-[#CFA46A] transition-colors cursor-pointer"
+                  >
+                    {label}
+                  </a>
+                </li>
+              ))}
               <li>
-                <a 
-                  href="/#home" 
-                  onClick={(e) => {
-                    const el = document.getElementById('home');
-                    if (el) {
-                      e.preventDefault();
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                      window.history.pushState(null, '', '/#home');
-                    }
-                  }} 
-                  className="hover:text-[#E95E92] transition-colors cursor-pointer"
-                >
-                  Home
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="/#services" 
-                  onClick={(e) => {
-                    const el = document.getElementById('services');
-                    if (el) {
-                      e.preventDefault();
-                      const pos = el.getBoundingClientRect().top + window.pageYOffset - 76;
-                      window.scrollTo({ top: pos, behavior: 'smooth' });
-                      window.history.pushState(null, '', '/#services');
-                    }
-                  }} 
-                  className="hover:text-[#E95E92] transition-colors cursor-pointer"
-                >
-                  All Services
-                </a>
-              </li>
-              <li>
-                <Link 
-                  to="/book-appointment" 
-                  className="hover:text-[#E95E92] transition-colors cursor-pointer"
-                >
-                  Book Appointment
+                <Link to="/careers" className="hover:text-[#CFA46A] transition-colors">
+                  Careers & Join Us
                 </Link>
               </li>
               <li>
-                <a 
-                  href="/#gallery" 
-                  onClick={(e) => {
-                    const el = document.getElementById('gallery');
-                    if (el) {
-                      e.preventDefault();
-                      const pos = el.getBoundingClientRect().top + window.pageYOffset - 76;
-                      window.scrollTo({ top: pos, behavior: 'smooth' });
-                      window.history.pushState(null, '', '/#gallery');
-                    }
-                  }} 
-                  className="hover:text-[#E95E92] transition-colors cursor-pointer"
-                >
-                  Gallery Portfolio
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="/#about" 
-                  onClick={(e) => {
-                    const el = document.getElementById('about');
-                    if (el) {
-                      e.preventDefault();
-                      const pos = el.getBoundingClientRect().top + window.pageYOffset - 76;
-                      window.scrollTo({ top: pos, behavior: 'smooth' });
-                      window.history.pushState(null, '', '/#about');
-                    }
-                  }} 
-                  className="hover:text-[#E95E92] transition-colors cursor-pointer"
-                >
-                  About Us
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="/#contact" 
-                  onClick={(e) => {
-                    const el = document.getElementById('contact');
-                    if (el) {
-                      e.preventDefault();
-                      const pos = el.getBoundingClientRect().top + window.pageYOffset - 76;
-                      window.scrollTo({ top: pos, behavior: 'smooth' });
-                      window.history.pushState(null, '', '/#contact');
-                    }
-                  }} 
-                  className="hover:text-[#E95E92] transition-colors cursor-pointer"
-                >
-                  Contact & Directions
-                </a>
+                <Link to="/book-appointment" className="hover:text-[#CFA46A] transition-colors">
+                  Book Appointment
+                </Link>
               </li>
             </ul>
           </div>
 
-          {/* Salon Categories */}
+          {/* Services */}
           <div className="lg:col-span-2 space-y-3">
-            <h4 className="font-serif font-semibold text-[#E95E92] text-sm sm:text-base tracking-wide">
-              Treatments
-            </h4>
-            <ul className="space-y-2 text-xs sm:text-sm text-white/70">
-              {CATEGORIES.map((cat) => (
-                <li key={cat.id}>
-                  <Link
-                    to={`/services?category=${cat.id}`}
-                    className="hover:text-[#E95E92] transition-colors"
+            <h4 className="font-display font-semibold text-[#CFA46A] text-sm tracking-wider uppercase">Services</h4>
+            <ul className="space-y-2 text-sm text-[#F7F1E8]/55">
+              {['Threading', 'Waxing', 'Facial', 'Makeup', 'Henna', 'Hair', 'Massage'].map((s) => (
+                <li key={s}>
+                  <a
+                    href="/#services"
+                    onClick={(e) => { e.preventDefault(); scrollTo('services'); }}
+                    className="hover:text-[#CFA46A] transition-colors cursor-pointer"
                   >
-                    {cat.name}
-                  </Link>
+                    {s}
+                  </a>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Contact & Hours */}
-          <div className="sm:col-span-2 lg:col-span-4 space-y-3.5">
-            <h4 className="font-serif font-semibold text-[#E95E92] text-sm sm:text-base tracking-wide">
-              Ottawa Salon Studio
-            </h4>
-            <div className="space-y-2.5 text-xs sm:text-sm text-white/75">
-              <div className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 text-[#E95E92] flex-shrink-0 mt-0.5" />
-                <span>{SALON_INFO.address}, {SALON_INFO.city}</span>
+          {/* Contact */}
+          <div className="sm:col-span-2 lg:col-span-4 space-y-4">
+            <h4 className="font-display font-semibold text-[#CFA46A] text-sm tracking-wider uppercase">Contact</h4>
+            <div className="space-y-3 text-sm text-[#F7F1E8]/55">
+              <div className="flex items-start gap-3">
+                <MapPin className="w-4 h-4 text-[#CFA46A] flex-shrink-0 mt-0.5" />
+                <span>405 Euphoria Crescent,<br />Ottawa, ON K2J 7M7</span>
               </div>
-              <div className="flex items-center gap-2.5">
-                <Phone className="w-4 h-4 text-[#E95E92] flex-shrink-0" />
-                <a href={`tel:${SALON_INFO.phone}`} className="hover:text-[#E95E92] transition-colors">
-                  {SALON_INFO.phone}
+              <div className="flex items-center gap-3">
+                <span className="w-4 h-4 text-[#CFA46A] flex items-center justify-center font-bold text-xs">📞</span>
+                <a href="tel:+16162550549" className="hover:text-[#CFA46A] transition-colors">
+                  +1 (616) 255-0549
                 </a>
               </div>
-              <div className="flex items-center gap-2.5">
-                <Mail className="w-4 h-4 text-[#E95E92] flex-shrink-0" />
-                <a href={`mailto:${SALON_INFO.email}`} className="hover:text-[#E95E92] transition-colors">
-                  {SALON_INFO.email}
+              <div className="flex items-center gap-3">
+                <Mail className="w-4 h-4 text-[#CFA46A] flex-shrink-0" />
+                <a href="mailto:Glamgirlbyjanki@gmail.com" className="hover:text-[#CFA46A] transition-colors">
+                  Glamgirlbyjanki@gmail.com
+                </a>
+              </div>
+              <div className="flex items-center gap-3">
+                <InstagramIcon className="w-4 h-4 text-[#CFA46A] flex-shrink-0" />
+                <a href="https://instagram.com/glamgirlbyjanki" target="_blank" rel="noreferrer" className="hover:text-[#CFA46A] transition-colors">
+                  glamgirlbyjanki
                 </a>
               </div>
             </div>
 
-            {/* Newsletter Subscription */}
-            <div className="pt-2">
-              <span className="text-[11px] sm:text-xs font-semibold text-[#E95E92] uppercase tracking-wider block mb-2">
-                Join VIP Club (10% Off First Visit)
-              </span>
-              <form onSubmit={handleSubscribe} className="flex items-center gap-2">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  required
-                  className="w-full min-h-[44px] bg-white/5 text-white placeholder-white/40 text-xs px-3.5 py-2 rounded-full border border-white/15 focus:outline-none focus:border-[#E95E92]"
-                />
-                <button
-                  type="submit"
-                  className="min-h-[44px] bg-[#D83A75] hover:bg-[#c42f65] text-white px-4 py-2 rounded-full text-xs font-semibold flex items-center justify-center gap-1 flex-shrink-0 transition-colors cursor-pointer shadow-md shadow-[#D83A75]/30"
-                  aria-label="Subscribe"
-                >
-                  <Send className="w-4 h-4" />
-                </button>
-              </form>
-              {isSubscribed && (
-                <p className="text-[11px] text-emerald-400 mt-1.5 animate-fade-in flex items-center gap-1">
-                  <Sparkles className="w-3 h-3" />
-                  Thank you! Check your inbox for your 10% coupon code.
-                </p>
-              )}
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* Bottom Bar */}
-        <div className="pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between text-[11px] sm:text-xs text-white/50 gap-3 text-center sm:text-left">
-          <p>© {new Date().getFullYear()} GLAM GIRL BY JANKI — Women's Beauty Studio Ottawa. All rights reserved.</p>
-          <div className="flex items-center justify-center gap-4">
-            <Link 
-              to="/admin" 
-              className="text-white/40 hover:text-[#E95E92] transition-colors font-medium hover:underline"
+            <Link
+              to="/book-appointment"
+              className="inline-flex items-center gap-2 bg-[#CFA46A] hover:bg-[#E5C492] text-[#100C0D] text-xs font-bold uppercase tracking-widest px-6 py-3 transition-all duration-200 mt-2"
             >
-              🔒 Staff Portal
+              BOOK AN APPOINTMENT
             </Link>
-            <div className="flex items-center gap-1">
-              <span>Crafted with</span>
-              <Heart className="w-3.5 h-3.5 text-[#E95E92] fill-[#E95E92]" />
-              <span>for Ottawa's beautiful community</span>
-            </div>
           </div>
         </div>
 
+        {/* Bottom bar */}
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#F7F1E8]/35">
+          <p>© {new Date().getFullYear()} GLAM GIRL BY JANKI — Ottawa, Canada. All rights reserved.</p>
+          <div className="flex items-center gap-4">
+            <Link to="/admin" className="hover:text-[#CFA46A] transition-colors">Staff Portal</Link>
+            <span className="flex items-center gap-1">
+              Made with <Heart className="w-3 h-3 text-[#CFA46A] fill-[#CFA46A] mx-0.5" /> for Ottawa
+            </span>
+          </div>
+        </div>
       </div>
     </footer>
   );

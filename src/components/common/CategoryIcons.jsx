@@ -11,11 +11,20 @@ import {
   Clock, 
   Feather,
   Droplets,
-  Wand2
+  Wand2,
+  Eye,
+  PlusCircle
 } from 'lucide-react';
 
 export function CategoryIcon({ type, className = 'w-5 h-5' }) {
   switch (type) {
+    case 'signature-combo':
+      return <Sparkles className={className} />;
+    case 'lashes':
+      return <Eye className={className} />;
+    case 'addon':
+    case 'add-ons':
+      return <PlusCircle className={className} />;
     case 'threading':
       return <Feather className={className} />;
     case 'waxing':

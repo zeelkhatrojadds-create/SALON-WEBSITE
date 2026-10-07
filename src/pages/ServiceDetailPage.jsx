@@ -71,7 +71,7 @@ export default function ServiceDetailPage() {
     'Relaxing luxury salon experience'
   ];
 
-  const fallbackImage = 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=1200&q=80';
+  const fallbackImage = '/images/services/threading/07-sitara-full-face-threading.webp';
 
   return (
     <div className="min-h-screen bg-[#140E11] text-white pt-24 sm:pt-28 pb-16 sm:pb-24">

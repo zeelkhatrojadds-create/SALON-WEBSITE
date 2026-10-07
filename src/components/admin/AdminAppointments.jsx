@@ -321,6 +321,40 @@ export default function AdminAppointments({
                             <MessageCircle className="w-4 h-4" />
                           </a>
 
+                          {/* Quick Mark Completed & Dispatch Review Popup */}
+                          {booking.status !== 'Completed' ? (
+                            <button
+                              onClick={() => {
+                                onUpdateStatus(booking.id, 'Completed');
+                                if (typeof window !== 'undefined') {
+                                  window.dispatchEvent(
+                                    new CustomEvent('glfy_db_change', {
+                                      detail: { event: 'appointment_completed', data: { ...booking, status: 'Completed' } }
+                                    })
+                                  );
+                                }
+                              }}
+                              className="px-2.5 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-white border border-emerald-500/30 text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1"
+                              title="Mark Treatment Finished & Open Review Popup for Client"
+                            >
+                              <CheckCircle className="w-3.5 h-3.5" />
+                              <span>Finish & Request Review</span>
+                            </button>
+                          ) : (
+                            <a
+                              href={`https://wa.me/${cleanPhone}?text=${encodeURIComponent(
+                                `Hi ${booking.customerName}! Thank you for visiting Girl Looked For You Salon Ottawa for your ${booking.service}. We would love to hear your feedback! Please leave your review using your Booking ID: ${booking.id}`
+                              )}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="px-2.5 py-1.5 rounded-lg bg-purple-500/20 hover:bg-purple-500 text-purple-300 hover:text-white border border-purple-500/30 text-[10px] font-bold transition-colors flex items-center gap-1"
+                              title="Send WhatsApp Review Invite with Booking ID"
+                            >
+                              <Sparkles className="w-3.5 h-3.5" />
+                              <span>WhatsApp Invite</span>
+                            </a>
+                          )}
+
                           {/* Delete */}
                           <button
                             onClick={() => {

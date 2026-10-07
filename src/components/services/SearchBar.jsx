@@ -11,6 +11,7 @@ export default function SearchBar({ value, onChange, onClear, totalResults }) {
 
         <input
           type="text"
+          aria-label="Search treatments"
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="Search treatments (e.g. Haircut, Balayage, Facial, Nails)..."

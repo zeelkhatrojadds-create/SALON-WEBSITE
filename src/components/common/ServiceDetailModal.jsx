@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { X, Calendar, Clock, Star, CheckCircle, Shield, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+import SafeServiceImage from './SafeServiceImage';
+
 export default function ServiceDetailModal({ service, isOpen, onClose }) {
   const navigate = useNavigate();
 
@@ -43,9 +45,8 @@ export default function ServiceDetailModal({ service, isOpen, onClose }) {
 
         {/* Modal Hero Image */}
         <div className="relative h-60 sm:h-72 w-full flex-shrink-0">
-          <img
-            src={service.image}
-            alt={service.name}
+          <SafeServiceImage
+            service={service}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#1C1418] via-black/40 to-transparent" />
@@ -66,7 +67,9 @@ export default function ServiceDetailModal({ service, isOpen, onClose }) {
           <div className="grid grid-cols-3 gap-3 p-3 bg-white/5 rounded-2xl text-center border border-white/10">
             <div className="flex flex-col items-center justify-center">
               <span className="text-xs text-white/50">Price</span>
-              <span className="font-serif font-bold text-lg text-brand-pink-muted">${service.price} CAD</span>
+              <span className="font-serif font-bold text-lg text-brand-pink-muted">
+                ${service.price}{service.priceFrom ? '*' : ''} CAD
+              </span>
             </div>
             <div className="flex flex-col items-center justify-center border-x border-white/10">
               <span className="text-xs text-white/50">Duration</span>
@@ -119,8 +122,11 @@ export default function ServiceDetailModal({ service, isOpen, onClose }) {
           <div>
             <div className="text-[11px] uppercase tracking-wider text-white/50">Total Investment</div>
             <div className="font-serif font-bold text-xl sm:text-2xl text-brand-pink-muted">
-              ${service.price} <span className="text-xs font-sans text-white/50 font-normal">CAD (taxes incl.)</span>
+              ${service.price}{service.priceFrom ? '*' : ''} <span className="text-xs font-sans text-white/50 font-normal">CAD (taxes incl.)</span>
             </div>
+            {service.priceFrom && (
+              <div className="text-[10px] text-amber-400/90 italic -mt-0.5">* Price starts from mentioned value</div>
+            )}
           </div>
 
           <button

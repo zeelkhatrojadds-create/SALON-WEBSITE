@@ -1,44 +1,60 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Sparkles, RefreshCw, Layers, ChevronLeft, ChevronRight } from 'lucide-react';
-import { CATEGORIES } from '../data/servicesData';
+import { Link, useSearchParams } from 'react-router-dom';
+import { 
+  Sparkles, 
+  ArrowRight, 
+  Clock, 
+  Search, 
+  Check, 
+  Star,
+  MessageCircle,
+  Phone,
+  SlidersHorizontal,
+  X
+} from 'lucide-react';
 import salonDB from '../db/salonDatabase';
-import ServicesBenefits from '../components/services/ServicesBenefits';
-import CategoryFilter from '../components/services/CategoryFilter';
-import SearchBar from '../components/services/SearchBar';
+import { CATEGORIES } from '../data/servicesData';
 import ServiceCard from '../components/common/ServiceCard';
+import ScrollReveal from '../components/ScrollReveal/ScrollReveal';
 
-const ITEMS_PER_PAGE = 12;
+// Broad Category Pills matching screenshot
+const CATEGORY_PILLS = [
+  { id: 'all', label: 'ALL SERVICES', count: 72 },
+  { id: 'hair-care', label: 'HAIR CARE', count: 18, categories: ['hair-cut', 'hair-color', 'hair-treatments'] },
+  { id: 'styling', label: 'STYLING', count: 6, categories: ['hairstyling'] },
+  { id: 'skin-care', label: 'SKIN CARE', count: 12, categories: ['facial'] },
+  { id: 'massage', label: 'MASSAGE & BODY', count: 2, categories: ['massage'] },
+  { id: 'make-up', label: 'MAKE UP', count: 8, categories: ['makeup'] },
+  { id: 'nails', label: 'NAILS', count: 6, categories: ['nails'] },
+  { id: 'waxing', label: 'WAXING', count: 19, categories: ['waxing'] },
+  { id: 'bridal', label: 'BRIDAL & MEHNDI', count: 6, categories: ['henna', 'bridal'] },
+  { id: 'grooming', label: 'GROOMING & LASHES', count: 8, categories: ['threading', 'lashes'] },
+];
 
 export default function ServicesPage({ isSection = false }) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const categoryParam = searchParams.get('category') || 'all';
+  const initialCat = searchParams.get('category') || 'all';
 
   const [servicesData, setServicesData] = useState(() => salonDB.getServices());
-  const [selectedCategory, setSelectedCategory] = useState(categoryParam);
+  const [selectedCategory, setSelectedCategory] = useState(initialCat);
   const [searchQuery, setSearchQuery] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const navigate = useNavigate();
+  const [sortBy, setSortBy] = useState('recommended');
+  const [genderFilter, setGenderFilter] = useState('all');
 
-  // Subscribe to live database updates
+  // Live database subscription
   useEffect(() => {
-    setServicesData(salonDB.getServices());
-    const unsubscribe = salonDB.subscribe(() => {
+    const updateData = () => {
       setServicesData(salonDB.getServices());
-    });
+    };
+    const unsubscribe = salonDB.subscribe(updateData);
     return () => unsubscribe();
   }, []);
 
+  // Sync category param
   useEffect(() => {
-    if (categoryParam) {
-      setSelectedCategory(categoryParam);
-    }
-  }, [categoryParam]);
-
-  // Reset pagination to page 1 whenever category or search query changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [selectedCategory, searchQuery]);
+    const cat = searchParams.get('category');
+    if (cat) setSelectedCategory(cat);
+  }, [searchParams]);
 
   const handleCategoryChange = (catId) => {
     setSelectedCategory(catId);
@@ -46,229 +62,270 @@ export default function ServicesPage({ isSection = false }) {
       searchParams.delete('category');
       setSearchParams(searchParams);
     } else {
-      setSearchParams({ ...Object.fromEntries(searchParams), category: catId });
+      setSearchParams({ category: catId });
     }
   };
 
-  const handleClearAll = () => {
-    setSearchQuery('');
-    setSelectedCategory('all');
-    setSearchParams({});
-    setCurrentPage(1);
-  };
-
-  // Calculate counts per category dynamically from database
-  const categoryCounts = useMemo(() => {
-    const counts = { all: servicesData.filter(s => s.active !== false).length };
-    CATEGORIES.forEach((cat) => {
-      if (cat.id !== 'all') {
-        counts[cat.id] = servicesData.filter((s) => s.category === cat.id && s.active !== false).length;
-      }
-    });
-    return counts;
-  }, [servicesData]);
-
-  // Filter treatments by Category & Search query in real time
-  const filteredServices = useMemo(() => {
-    return servicesData.filter((service) => {
+  // Filter & Sort treatments
+  const filteredTreatments = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    
+    let list = servicesData.filter((service) => {
       if (service.active === false) return false;
 
-      const matchesCategory =
-        selectedCategory === 'all' || service.category === selectedCategory;
+      // Category matching logic
+      let matchesCategory = false;
+      if (selectedCategory === 'all') {
+        matchesCategory = true;
+      } else {
+        const pillConfig = CATEGORY_PILLS.find(p => p.id === selectedCategory || p.categories?.includes(selectedCategory));
+        if (pillConfig && pillConfig.categories) {
+          matchesCategory = pillConfig.categories.includes(service.category?.toLowerCase());
+        } else {
+          matchesCategory =
+            service.category?.toLowerCase() === selectedCategory.toLowerCase() ||
+            service.categoryName?.toLowerCase() === selectedCategory.toLowerCase();
+        }
+      }
 
-      const q = searchQuery.trim().toLowerCase();
+      // Search matching logic
       const matchesSearch =
         !q ||
         service.name.toLowerCase().includes(q) ||
         (service.categoryName && service.categoryName.toLowerCase().includes(q)) ||
-        (service.description && service.description.toLowerCase().includes(q)) ||
-        (service.features && service.features.some((f) => f.toLowerCase().includes(q)));
+        (service.description && service.description.toLowerCase().includes(q));
 
       return matchesCategory && matchesSearch;
     });
-  }, [servicesData, selectedCategory, searchQuery]);
 
-  // Pagination calculation (max 12 products per page)
-  const totalPages = Math.ceil(filteredServices.length / ITEMS_PER_PAGE);
-
-  const paginatedServices = useMemo(() => {
-    const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
-    return filteredServices.slice(startIdx, startIdx + ITEMS_PER_PAGE);
-  }, [filteredServices, currentPage]);
-
-  const startItem = filteredServices.length > 0 ? (currentPage - 1) * ITEMS_PER_PAGE + 1 : 0;
-  const endItem = Math.min(currentPage * ITEMS_PER_PAGE, filteredServices.length);
-
-  const handlePageChange = (newPage) => {
-    if (newPage < 1 || newPage > totalPages) return;
-    setCurrentPage(newPage);
-    
-    // Smooth scroll to top of services grid
-    const gridEl = document.getElementById('services-grid-top');
-    if (gridEl) {
-      const navHeight = 90;
-      const pos = gridEl.getBoundingClientRect().top + window.pageYOffset - navHeight;
-      window.scrollTo({ top: pos, behavior: 'smooth' });
+    // Sort logic
+    if (sortBy === 'price-low') {
+      list.sort((a, b) => (a.price || 0) - (b.price || 0));
+    } else if (sortBy === 'price-high') {
+      list.sort((a, b) => (b.price || 0) - (a.price || 0));
+    } else if (sortBy === 'duration') {
+      list.sort((a, b) => parseInt(a.duration || 0) - parseInt(b.duration || 0));
     }
-  };
 
-  const handleQuickBook = (service) => {
-    navigate(`/book-appointment?service=${service.id}`);
-  };
+    return list;
+  }, [servicesData, selectedCategory, searchQuery, sortBy]);
 
-  const handleViewDetails = (service) => {
-    navigate(`/book-appointment?service=${service.id}`);
-  };
+  const currentPill = CATEGORY_PILLS.find(c => c.id === selectedCategory || c.categories?.includes(selectedCategory));
+  const currentCategoryObj = CATEGORIES.find(c => c.id === selectedCategory);
 
   return (
-    <div 
-      id="services"
-      className={`w-full bg-[#140E11] text-white ${
-        isSection ? 'py-16 sm:py-24' : 'pt-24 sm:pt-28 pb-16 sm:pb-24 min-h-screen'
-      }`}
-    >
-      <div className="w-full px-3 sm:px-6 lg:px-12 xl:px-20 mx-auto">
-        
-        {/* Four-Column Trust Benefits Section */}
-        <ServicesBenefits />
+    <div className="min-h-screen bg-[#FBF8F4] text-[#1C1614] pt-20 sm:pt-24 pb-20 selection:bg-[#CFA46A] selection:text-[#100C0D]">
+      
+      {/* ========================================================================= */}
+      {/* 1. HERO BANNER - Curated Rituals for Hair & Beauty                         */}
+      {/* ========================================================================= */}
+      <div className="relative bg-gradient-to-b from-[#F5EFE6] via-[#FAF5EE] to-[#FBF8F4] pt-12 sm:pt-16 pb-12 sm:pb-16 overflow-hidden border-b border-[#E8DFD3]">
+        <div className="absolute top-0 right-1/4 w-[480px] h-[480px] bg-[#CFA46A]/8 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-[360px] h-[360px] bg-[#E8DFD3]/40 rounded-full blur-2xl pointer-events-none" />
 
-        {/* 3. Filter & Search Controls */}
-        <div className="space-y-4 sm:space-y-6 mb-8 sm:mb-12">
+        <ScrollReveal className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center" stagger={true}>
           
-          {/* Real-time Search Bar */}
-          <SearchBar
-            value={searchQuery}
-            onChange={setSearchQuery}
-            onClear={() => setSearchQuery('')}
-            totalResults={filteredServices.length}
-          />
+          {/* Eyebrow Pill Tag */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#CFA46A]/40 text-[#A67C48] text-[11px] font-bold tracking-[0.24em] uppercase mb-4 shadow-xs">
+            <Sparkles className="w-3.5 h-3.5 text-[#CFA46A]" />
+            <span>GLAM GIRL EXCLUSIVE</span>
+          </div>
 
-          {/* Horizontal Category Navigation Bar */}
-          <CategoryFilter
-            selectedCategory={selectedCategory}
-            onSelectCategory={handleCategoryChange}
-            counts={categoryCounts}
-          />
+          {/* Main Editorial Headline */}
+          {isSection ? (
+            <h2 className="font-serif text-[30px] sm:text-[54px] lg:text-[64px] text-[#1E1714] leading-[1.05] tracking-[-0.01em] mb-4 font-semibold">
+              Curated Rituals for <span className="italic font-serif text-[#CFA46A]">Hair & Beauty.</span>
+            </h2>
+          ) : (
+            <h1 className="font-serif text-[30px] sm:text-[54px] lg:text-[64px] text-[#1E1714] leading-[1.05] tracking-[-0.01em] mb-4 font-semibold">
+              Curated Rituals for <span className="italic font-serif text-[#CFA46A]">Hair & Beauty.</span>
+            </h1>
+          )}
 
-        </div>
+          {/* Subtitle */}
+          <p className="font-body text-[#5A4F48] text-sm sm:text-base lg:text-[16.5px] leading-relaxed max-w-2xl mx-auto font-normal mb-8">
+            Indulge in bespoke salon treatments tailored to your unique elegance.
+          </p>
 
-        {/* Anchor point for smooth scrolling on page change */}
-        <div id="services-grid-top" className="scroll-mt-28" />
-
-        {/* 4. Active Filter Summary Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pb-4 mb-6 sm:mb-8 border-b border-white/10 text-xs sm:text-sm text-white/60">
-          <div className="flex items-center gap-2">
-            <Layers className="w-4 h-4 text-brand-pink flex-shrink-0" />
-            <span>
-              Showing <strong className="text-white">{startItem}–{endItem}</strong> of <strong className="text-white">{filteredServices.length}</strong> {filteredServices.length === 1 ? 'treatment' : 'treatments'}
-              {selectedCategory !== 'all' && (
-                <> in <span className="text-brand-pink-muted font-semibold capitalize">{CATEGORIES.find(c => c.id === selectedCategory)?.name}</span></>
-              )}
+          {/* Key Feature Bullets */}
+          <div className="flex flex-wrap justify-center items-center gap-6 sm:gap-10 text-xs sm:text-[13px] font-medium text-[#6B5E55]">
+            <span className="inline-flex items-center gap-2">
+              <span className="text-[#CFA46A] text-sm">✦</span> Certified Stylists
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <span className="text-[#CFA46A] text-sm">✦</span> Premium Eco-Friendly Products
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <span className="text-[#CFA46A] text-sm">✦</span> Hygienic & Safe
             </span>
           </div>
 
-          {(searchQuery || selectedCategory !== 'all') && (
-            <button
-              onClick={handleClearAll}
-              className="text-xs font-medium text-brand-pink-muted hover:text-brand-pink flex items-center gap-1.5 hover:underline cursor-pointer py-1"
-            >
-              <RefreshCw className="w-3.5 h-3.5" />
-              <span>Reset Search & Filters</span>
-            </button>
-          )}
-        </div>
+        </ScrollReveal>
+      </div>
 
-        {/* 5. FILTERED GRID WITH 12 PRODUCTS PER PAGE LIMIT */}
-        {paginatedServices.length > 0 ? (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-              {paginatedServices.map((service) => (
-                <ServiceCard
-                  key={service.id}
-                  service={service}
-                  onQuickBook={handleQuickBook}
-                  onViewDetails={handleViewDetails}
-                />
-              ))}
-            </div>
-
-            {/* 6. PAGINATION CONTROLS (ONLY RENDERED WHEN > 12 PRODUCTS) */}
-            {totalPages > 1 && (
-              <div className="mt-10 sm:mt-14 flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-white/10">
-                <div className="text-xs sm:text-sm text-white/60">
-                  Page <strong className="text-white font-semibold">{currentPage}</strong> of <strong className="text-white font-semibold">{totalPages}</strong> ({filteredServices.length} total treatments, 12 per page)
-                </div>
-
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                  <button
-                    type="button"
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className="px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-xs sm:text-sm text-white hover:bg-white/15 disabled:opacity-30 disabled:hover:bg-white/5 disabled:cursor-not-allowed transition-all flex items-center gap-1.5 cursor-pointer"
-                    aria-label="Previous Page"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                    <span className="hidden sm:inline font-medium">Previous</span>
-                  </button>
-
-                  {/* Page Numbers */}
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => {
-                    const isActive = pageNum === currentPage;
-                    return (
-                      <button
-                        key={pageNum}
-                        type="button"
-                        onClick={() => handlePageChange(pageNum)}
-                        className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer flex items-center justify-center ${
-                          isActive
-                            ? 'bg-brand-pink text-white shadow-lg shadow-brand-pink/30 scale-105 border border-brand-pink'
-                            : 'bg-white/5 border border-white/10 text-white/70 hover:bg-white/15 hover:text-white'
-                        }`}
-                      >
-                        {pageNum}
-                      </button>
-                    );
-                  })}
-
-                  <button
-                    type="button"
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                    className="px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-xs sm:text-sm text-white hover:bg-white/15 disabled:opacity-30 disabled:hover:bg-white/5 disabled:cursor-not-allowed transition-all flex items-center gap-1.5 cursor-pointer"
-                    aria-label="Next Page"
-                  >
-                    <span className="hidden sm:inline font-medium">Next</span>
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
+      {/* ========================================================================= */}
+      {/* 2. SEARCH BAR & FILTER CONTROL TOOLBAR                                    */}
+      {/* ========================================================================= */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
+        
+        {/* Search Input Box */}
+        <div className="relative max-w-2xl mx-auto mb-8">
+          <div className="relative flex items-center">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search 72 treatments and custom packages..."
+              className="w-full bg-white border border-[#DED4C7] focus:border-[#1E1714] rounded-full py-4 pl-14 pr-28 text-sm text-[#1E1714] placeholder-[#8C7E75] focus:outline-none shadow-md shadow-black/5 transition-all"
+            />
+            <Search className="w-5 h-5 text-[#8C7E75] absolute left-5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            
+            {searchQuery ? (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 text-[#8C7E75] hover:text-[#1E1714] transition-colors cursor-pointer"
+                aria-label="Clear search"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            ) : (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 px-4 py-2 rounded-full bg-[#1E1714] text-white text-[11px] font-bold tracking-wider uppercase pointer-events-none shadow-sm">
+                SEARCH
               </div>
             )}
-          </>
-        ) : (
-          /* Empty Search & Filter State */
-          <div className="bg-[#1C1418]/90 backdrop-blur-md rounded-3xl p-6 sm:p-12 text-center shadow-2xl border border-white/10 max-w-lg mx-auto my-8 sm:my-12 animate-fade-in">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/10 text-brand-pink flex items-center justify-center mx-auto mb-4">
-              <Sparkles className="w-7 h-7 sm:w-8 sm:h-8" />
+          </div>
+        </div>
+
+        {/* Category Pill Navigation Row */}
+        <div className="mb-6 pb-2">
+          {/* Scrollable Pills container - horizontal scroll on mobile, wraps on desktop */}
+          <div className="pills-scroll sm:flex-wrap">
+            {CATEGORY_PILLS.map((pill) => {
+              const isActive = selectedCategory === pill.id || (pill.categories && pill.categories.includes(selectedCategory));
+              return (
+                <button
+                  key={pill.id}
+                  onClick={() => handleCategoryChange(pill.id)}
+                  className={`px-4 sm:px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-200 cursor-pointer flex-shrink-0 ${
+                    isActive
+                      ? 'bg-[#1E1714] text-white shadow-md scale-[1.02]'
+                      : 'bg-white text-[#5A4F48] hover:text-[#1E1714] hover:bg-[#F2ECE4] border border-[#E0D5C7] shadow-xs'
+                  }`}
+                >
+                  {pill.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Secondary Filters Bar (Sort & Counter) */}
+        <div className="flex flex-col sm:flex-row items-center justify-between pb-6 mb-8 border-b border-[#E8DFD3] gap-4">
+          <div className="text-xs font-semibold text-[#6B5E55]">
+            Showing <span className="font-bold text-[#1E1714]">{filteredTreatments.length}</span> luxury treatments
+            {selectedCategory !== 'all' && (
+              <span className="ml-1 text-[#A67C48]">
+                in {currentPill?.label || currentCategoryObj?.name || selectedCategory}
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-3">
+            {/* Sort Dropdown */}
+            <div className="flex items-center gap-2 text-xs text-[#6B5E55]">
+              <SlidersHorizontal className="w-3.5 h-3.5 text-[#A67C48]" />
+              <label htmlFor="services-sort-select" className="font-medium">Sort by:</label>
+              <select
+                id="services-sort-select"
+                aria-label="Sort services by"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="bg-white border border-[#E0D5C7] rounded-lg px-3 py-1.5 text-xs text-[#1E1714] font-semibold focus:outline-none focus:border-[#CFA46A] shadow-xs cursor-pointer"
+              >
+                <option value="recommended">Recommended</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="duration">Duration</option>
+              </select>
             </div>
+          </div>
+        </div>
 
-            <h3 className="font-serif font-bold text-lg sm:text-xl text-white mb-2">
-              No services found
-            </h3>
+      </div>
 
-            <p className="text-white/60 text-xs sm:text-sm leading-relaxed mb-6">
-              We couldn't find any treatments matching your current search. Try a different keyword or reset filters.
-            </p>
-
+      {/* ========================================================================= */}
+      {/* 3. CARD GRID (3 COLUMNS - EXACT MATCH TO REFERENCE SCREENSHOT)             */}
+      {/* ========================================================================= */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Empty Search State */}
+        {filteredTreatments.length === 0 ? (
+          <div className="text-center py-20 bg-white rounded-3xl border border-[#E8DFD3] p-8 shadow-sm">
+            <p className="text-base text-[#6B5E55] mb-4">No treatments found matching "{searchQuery}".</p>
             <button
-              onClick={handleClearAll}
-              className="w-full sm:w-auto px-6 py-3 rounded-full bg-brand-pink hover:bg-brand-pink-hover text-white text-xs sm:text-sm font-semibold shadow-lg shadow-brand-pink/30 transition-all active:scale-95 cursor-pointer"
+              onClick={() => { setSelectedCategory('all'); setSearchQuery(''); }}
+              className="px-6 py-3 rounded-full bg-[#1E1714] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#CFA46A] hover:text-[#1E1714] transition-colors"
             >
-              Clear Search & Show All Treatments
+              Reset Filters & View All Services
             </button>
           </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {(isSection ? filteredTreatments.slice(0, 8) : filteredTreatments).map((treatment) => (
+              <ServiceCard key={treatment.id} service={treatment} />
+            ))}
+          </div>
         )}
+
+        {isSection && (
+          <div className="mt-12 flex justify-center">
+            <Link
+              to="/services"
+              className="inline-flex items-center gap-2.5 px-8 py-4 rounded-full bg-[#CFA46A] hover:bg-[#B88D57] text-[#100C0D] text-xs font-bold uppercase tracking-widest transition-all duration-200 shadow-xl shadow-[#CFA46A]/20 hover:scale-105 cursor-pointer"
+            >
+              <span>VIEW ALL SERVICES</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* 4. BOTTOM DARK LUXURY BANNER                                              */}
+        {/* ========================================================================= */}
+        <ScrollReveal className="mt-16 sm:mt-24 p-8 sm:p-14 rounded-3xl bg-[#140E11] text-[#FAF6F0] border border-white/10 shadow-2xl relative overflow-hidden text-center">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[#CFA46A]/10 rounded-full blur-3xl pointer-events-none" />
+          
+          <div className="max-w-2xl mx-auto relative z-10">
+            <span className="inline-flex items-center gap-2 text-[10.5px] font-bold uppercase tracking-[0.24em] text-[#CFA46A] mb-3">
+              <Sparkles className="w-4 h-4 text-[#CFA46A]" />
+              LUXURY SALON EXPERIENCE
+            </span>
+            <h3 className="font-serif text-2xl sm:text-4xl font-semibold text-white mb-4">
+              Elevate your salon experience. Book an appointment today.
+            </h3>
+            <p className="text-xs sm:text-sm text-[#C8BCB3] mb-8 leading-relaxed max-w-lg mx-auto">
+              Treat yourself to bespoke hair styling, glowing facials, and luxury beauty treatments crafted by our master artists.
+            </p>
+
+            <div className="flex flex-wrap justify-center items-center gap-4">
+              <Link
+                to="/book-appointment"
+                className="px-8 py-3.5 rounded-full bg-[#CFA46A] hover:bg-[#E5C492] text-[#140E11] text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-lg"
+              >
+                BOOK APPOINTMENT
+              </Link>
+              <a
+                href="tel:16162550549"
+                className="px-8 py-3.5 rounded-full border border-white/30 hover:border-white text-white text-xs font-bold uppercase tracking-wider transition-all duration-200"
+              >
+                CALL STUDIO
+              </a>
+            </div>
+          </div>
+        </ScrollReveal>
 
       </div>
     </div>
   );
 }
+

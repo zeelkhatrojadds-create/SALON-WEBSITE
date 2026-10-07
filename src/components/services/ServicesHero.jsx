@@ -43,7 +43,7 @@ export default function ServicesHero() {
           <img
             src={jankiPhoto || "/janki-khatroja.jpg"}
             alt="Janki Khatroja — Founder, Main Owner & Master Beauty Director"
-            className="w-full h-full object-cover object-[center_20%] filter brightness-95 group-hover:scale-105 transition-transform duration-700"
+            className="w-full h-full object-cover object-center filter brightness-95 group-hover:scale-105 transition-transform duration-700"
             loading="eager"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#1C1418] via-transparent to-transparent lg:hidden opacity-90" />

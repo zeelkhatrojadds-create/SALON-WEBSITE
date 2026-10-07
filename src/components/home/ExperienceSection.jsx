@@ -21,8 +21,8 @@ export default function ExperienceSection() {
             {/* Main Image */}
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-brand-pink-light/60 aspect-[4/3] sm:aspect-[16/11]">
               <img
-                src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1000&q=80"
-                alt="Glow & Grace Luxury Ottawa Salon Interior"
+                src="/hero-campaign.jpg"
+                alt="Glam Girl By Janki Luxury Salon"
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />

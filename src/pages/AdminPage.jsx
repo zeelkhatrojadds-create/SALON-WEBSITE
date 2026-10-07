@@ -1,26 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  CalendarCheck, 
-  Sparkles, 
-  Settings, 
-  LogOut, 
-  Globe, 
-  Menu, 
-  X, 
-  Lock, 
-  Key, 
-  Mail, 
+import {
+  LayoutDashboard,
+  CalendarCheck,
+  Sparkles,
+  Settings,
+  LogOut,
+  Globe,
+  Menu,
+  X,
+  Lock,
+  Key,
+  Mail,
   ShieldCheck,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  Star
 } from 'lucide-react';
 import Logo from '../components/common/Logo';
 import AdminDashboard from '../components/admin/AdminDashboard';
 import AdminAppointments from '../components/admin/AdminAppointments';
 import AdminServices from '../components/admin/AdminServices';
 import AdminSettings from '../components/admin/AdminSettings';
+import AdminReviews from '../components/admin/AdminReviews';
 import { ALL_SERVICES } from '../data/servicesData';
 import salonDB from '../db/salonDatabase';
 
@@ -45,15 +47,19 @@ export default function AdminPage() {
   // Live database state
   const [appointments, setAppointments] = useState(() => salonDB.getAppointments());
   const [customServices, setCustomServices] = useState(() => salonDB.getServices());
+  const [reviews, setReviews] = useState(() => salonDB.getReviews());
 
   // Subscribe to live database updates across tabs and bookings
   useEffect(() => {
-    setAppointments(salonDB.getAppointments());
-    setCustomServices(salonDB.getServices());
-
-    const unsubscribe = salonDB.subscribe(() => {
+    const syncAll = () => {
       setAppointments(salonDB.getAppointments());
       setCustomServices(salonDB.getServices());
+      setReviews(salonDB.getReviews());
+    };
+
+    syncAll();
+    const unsubscribe = salonDB.subscribe(() => {
+      syncAll();
     });
 
     return () => unsubscribe();
@@ -79,6 +85,9 @@ export default function AdminPage() {
     localStorage.setItem('glfy_db_services', JSON.stringify(updatedList));
     localStorage.setItem('girl-looked-for-you-custom-services', JSON.stringify(updatedList));
     setCustomServices(updatedList);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('glfy_db_change', { detail: { event: 'services_updated', data: updatedList } }));
+    }
   };
 
   // Login Handler with dynamic credentials
@@ -116,7 +125,7 @@ export default function AdminPage() {
     return (
       <div className="min-h-screen bg-[#140E11] text-white flex items-center justify-center p-4 selection:bg-brand-pink selection:text-white">
         <div className="w-full max-w-md bg-[#1C1418] rounded-3xl border border-white/10 shadow-2xl p-6 sm:p-10 space-y-6 relative overflow-hidden">
-          
+
           {/* Decorative glow */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-brand-pink/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
 
@@ -208,16 +217,17 @@ export default function AdminPage() {
   const navTabs = [
     { id: 'dashboard', name: 'Dashboard', icon: LayoutDashboard },
     { id: 'appointments', name: 'Appointments', icon: CalendarCheck, badge: appointments.length },
+    { id: 'reviews', name: 'Client Reviews', icon: Star, badge: reviews.length },
     { id: 'services', name: '86 Treatments', icon: Sparkles },
     { id: 'settings', name: 'WhatsApp & Settings', icon: Settings },
   ];
 
   return (
     <div className="min-h-screen bg-[#140E11] text-white flex flex-col md:flex-row selection:bg-brand-pink selection:text-white">
-      
+
       {/* Desktop Sidebar (Left: 260px) */}
       <aside className="hidden md:flex md:w-64 lg:w-72 bg-[#1C1418] border-r border-white/10 flex-col justify-between p-5 lg:p-6 flex-shrink-0 min-h-screen sticky top-0">
-        
+
         {/* Top: Logo & Nav */}
         <div className="space-y-6">
           <div className="pb-4 border-b border-white/10">
@@ -237,20 +247,18 @@ export default function AdminPage() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
-                    isActive
-                      ? 'bg-brand-pink text-white shadow-lg shadow-brand-pink/30'
-                      : 'text-white/70 hover:text-white hover:bg-white/5'
-                  }`}
+                  className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${isActive
+                    ? 'bg-brand-pink text-white shadow-lg shadow-brand-pink/30'
+                    : 'text-white/70 hover:text-white hover:bg-white/5'
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     <Icon className="w-4 h-4" />
                     <span>{tab.name}</span>
                   </div>
                   {tab.badge !== undefined && (
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-bold ${
-                      isActive ? 'bg-white/20 text-white' : 'bg-white/10 text-brand-pink-light'
-                    }`}>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-bold ${isActive ? 'bg-white/20 text-white' : 'bg-white/10 text-brand-pink-light'
+                      }`}>
                       {tab.badge}
                     </span>
                   )}
@@ -295,14 +303,14 @@ export default function AdminPage() {
       {/* Mobile Sidebar Drawer */}
       {isMobileSidebarOpen && (
         <div className="fixed inset-0 z-50 md:hidden flex">
-          <div 
+          <div
             className="fixed inset-0 bg-black/70 backdrop-blur-sm"
             onClick={() => setIsMobileSidebarOpen(false)}
           />
           <div className="relative w-72 bg-[#1C1418] p-5 flex flex-col justify-between z-10 border-r border-white/10">
             <div className="space-y-6">
               <div className="flex items-center justify-between pb-3 border-b border-white/10">
-                <Logo variant="dark" size="sm" />
+                <Logo variant="dark" size="sm" onClick={() => setIsMobileSidebarOpen(false)} />
                 <button
                   onClick={() => setIsMobileSidebarOpen(false)}
                   className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white"
@@ -323,11 +331,10 @@ export default function AdminPage() {
                         setActiveTab(tab.id);
                         setIsMobileSidebarOpen(false);
                       }}
-                      className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl text-xs sm:text-sm font-semibold transition-all ${
-                        isActive
-                          ? 'bg-brand-pink text-white shadow-lg shadow-brand-pink/30'
-                          : 'text-white/70 hover:text-white hover:bg-white/5'
-                      }`}
+                      className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl text-xs sm:text-sm font-semibold transition-all ${isActive
+                        ? 'bg-brand-pink text-white shadow-lg shadow-brand-pink/30'
+                        : 'text-white/70 hover:text-white hover:bg-white/5'
+                        }`}
                     >
                       <div className="flex items-center gap-3">
                         <Icon className="w-4 h-4" />
@@ -375,6 +382,13 @@ export default function AdminPage() {
             onUpdateStatus={handleUpdateStatus}
             onDeleteAppointment={handleDeleteAppointment}
             onAddAppointment={handleAddAppointment}
+          />
+        )}
+
+        {activeTab === 'reviews' && (
+          <AdminReviews
+            reviews={reviews}
+            onUpdateReviews={() => setReviews(salonDB.getReviews())}
           />
         )}
 

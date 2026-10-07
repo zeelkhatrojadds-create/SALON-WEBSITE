@@ -62,9 +62,10 @@ export default function SearchModal({ isOpen, onClose }) {
           <input
             ref={inputRef}
             type="text"
+            aria-label="Search all services and rituals"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search 86 hair, facials, waxing, nails, makeup rituals..."
+            placeholder="Search all 72 hair, facial, waxing, lash, and makeup rituals..."
             className="w-full bg-transparent text-brand-espresso placeholder-brand-muted text-xs sm:text-base focus:outline-none"
           />
           {query && (

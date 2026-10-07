@@ -83,7 +83,7 @@ export default function MobileMenu({
             }}
             className="w-full min-h-[44px] py-2.5 px-3.5 sm:px-4 bg-white border border-brand-border rounded-2xl flex items-center justify-between text-brand-muted text-xs sm:text-sm shadow-xs hover:border-brand-pink/40 transition-colors cursor-pointer"
           >
-            <span className="truncate pr-2">Search 86 treatments & prices...</span>
+            <span className="truncate pr-2">Search all 72 treatments & prices...</span>
             <span className="text-[11px] bg-brand-pink-light text-brand-pink font-semibold px-2 py-0.5 rounded-full flex-shrink-0">
               Search
             </span>
