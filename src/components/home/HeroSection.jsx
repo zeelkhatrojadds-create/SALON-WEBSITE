@@ -35,7 +35,7 @@ export default function HeroSection() {
             fetchPriority="high"
             decoding="async"
             loading="eager"
-            className="w-full h-full object-cover object-[75%_center] sm:object-center"
+            className="w-full h-full object-cover object-center"
           />
         </picture>
       </div>
