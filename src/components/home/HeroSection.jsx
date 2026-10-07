@@ -13,9 +13,18 @@ export default function HeroSection() {
       {/* ========================================================================= */}
       <div className="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none bg-[#100C0D]">
         <picture className="w-full h-full block">
+          {/* Mobile View: Dedicated vertical mobile portrait composition */}
           <source
+            media="(max-width: 767px)"
             type="image/webp"
-            srcSet="/facial-atelier-clean-480.webp 480w, /facial-atelier-clean-768.webp 768w, /facial-atelier-clean-1200.webp 1200w, /facial-atelier-clean-1920.webp 1920w"
+            srcSet="/hero-mobile.webp 720w, /facial-atelier-clean-480.webp 480w"
+            sizes="100vw"
+          />
+          {/* Laptop & Desktop View: Exact same Luxury Atelier composition */}
+          <source
+            media="(min-width: 768px)"
+            type="image/webp"
+            srcSet="/facial-atelier-clean-1200.webp 1200w, /facial-atelier-clean-1920.webp 1920w"
             sizes="100vw"
           />
           <img
@@ -26,7 +35,7 @@ export default function HeroSection() {
             fetchPriority="high"
             decoding="async"
             loading="eager"
-            className="w-full h-full object-cover object-center"
+            className="w-full h-full object-cover object-[75%_center] sm:object-center"
           />
         </picture>
       </div>
@@ -35,9 +44,15 @@ export default function HeroSection() {
       {/* LAYER 1: SPECIFIED SUBTLE READING GRADIENT (KEEPS SCENE SHARP & NATURAL)  */}
       {/* ========================================================================= */}
       <div 
-        className="absolute inset-0 z-10 pointer-events-none"
+        className="absolute inset-0 z-10 pointer-events-none hidden sm:block"
         style={{
           background: 'linear-gradient(90deg, rgba(16,12,13,0.88) 0%, rgba(16,12,13,0.6) 45%, rgba(16,12,13,0.2) 75%, transparent 100%)'
+        }}
+      />
+      <div 
+        className="absolute inset-0 z-10 pointer-events-none sm:hidden"
+        style={{
+          background: 'linear-gradient(180deg, rgba(16,12,13,0.85) 0%, rgba(16,12,13,0.4) 45%, rgba(16,12,13,0.88) 100%)'
         }}
       />
 
