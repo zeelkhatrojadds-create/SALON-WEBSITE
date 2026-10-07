@@ -1,6 +1,6 @@
 import React from 'react';
 import { Sparkles, ShieldCheck } from 'lucide-react';
-import jankiPhoto from '../../assets/janki-khatroja.jpg';
+import jankiPhoto from '../../assets/janki-khatroja.webp';
 
 export default function ServicesHero() {
   return (

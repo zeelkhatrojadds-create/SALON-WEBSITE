@@ -24,8 +24,8 @@ import {
 import ScrollReveal from '../components/ScrollReveal/ScrollReveal';
 
 // Images from assets
-import founderPortrait from '../assets/janki-khatroja.jpg';
-import salonInterior from '../assets/atelier-salon-interior.jpg';
+import founderPortrait from '../assets/janki-khatroja.webp';
+import salonInterior from '../assets/atelier-salon-interior.webp';
 
 const ARTISAN_POSITIONS = [
   {

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import cleanFacialBg from '../assets/facial-atelier-clean.jpg';
+import cleanFacialBg from '../assets/facial-atelier-clean.webp';
 import ScrollReveal from '../components/ScrollReveal/ScrollReveal';
 
 export default function TreatmentsPage() {
