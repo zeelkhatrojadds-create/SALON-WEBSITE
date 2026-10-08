@@ -666,14 +666,14 @@ export default function CareersPage() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-4 rounded-full bg-[#18110E] hover:bg-[#9E5F49] text-white text-xs font-bold uppercase tracking-[0.22em] transition-all duration-300 shadow-lg cursor-pointer flex items-center justify-center gap-2"
+                    className="w-full relative py-4 px-6 sm:px-10 rounded-full bg-[#18110E] hover:bg-[#9E5F49] text-white text-[11px] sm:text-xs font-bold uppercase tracking-[0.18em] sm:tracking-[0.22em] transition-all duration-300 shadow-lg cursor-pointer flex items-center justify-center text-center leading-snug"
                   >
                     {isSubmitting ? (
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto" />
                     ) : (
                       <>
-                        <span>TRANSMIT SILENT DOSSIER</span>
-                        <ArrowRight className="w-4 h-4" />
+                        <span className="text-center w-full block">TRANSMIT SILENT DOSSIER</span>
+                        <ArrowRight className="w-4 h-4 absolute right-5 top-1/2 -translate-y-1/2 opacity-70 sm:opacity-100 hidden sm:block" />
                       </>
                     )}
                   </button>
