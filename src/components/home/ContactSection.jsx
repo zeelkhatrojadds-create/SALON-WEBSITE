@@ -315,10 +315,10 @@ export default function ContactSection() {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full relative py-4 px-6 sm:px-10 rounded-full bg-[#4A322B] hover:bg-[#38241E] text-white text-[11px] sm:text-xs font-bold uppercase tracking-[0.16em] sm:tracking-[0.18em] shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.01] active:scale-[0.99] cursor-pointer flex items-center justify-center text-center leading-snug"
+                  className="w-full py-4 px-4 sm:px-6 rounded-full bg-[#4A322B] hover:bg-[#38241E] text-white text-[11.5px] sm:text-xs font-bold uppercase tracking-[0.14em] sm:tracking-[0.18em] shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.01] active:scale-[0.99] cursor-pointer flex items-center justify-center gap-2.5 text-center"
                 >
-                  <span className="text-center w-full block">TRANSMIT INQUIRY TO ATELIER CONCIERGE</span>
-                  <ArrowRight className="w-3.5 h-3.5 absolute right-5 top-1/2 -translate-y-1/2 opacity-70 sm:opacity-100 hidden sm:block" />
+                  <span className="whitespace-nowrap">TRANSMIT INQUIRY TO CONCIERGE</span>
+                  <ArrowRight className="w-3.5 h-3.5 shrink-0 text-white/80" />
                 </button>
 
                 {/* Confidentiality Footer */}
