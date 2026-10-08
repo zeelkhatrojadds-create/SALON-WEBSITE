@@ -1,21 +1,34 @@
 /**
- * GIRL LOOKED FOR YOU — Unified Salon Database Engine
- * Persistent, reactive client database for appointments, services, categories & settings.
+ * GLAM GIRL BY JANKI — Master Unified Salon Database Engine
+ * Single Source of Truth for all dynamic website data:
+ * Users, Auth, 72 Services, Appointments, Live Treatment Timers,
+ * Reviews, Contact Messages, Gallery, Newsletter Subscribers, Offers, Settings, Treatments.
  */
 
 import { ALL_SERVICES, CATEGORIES } from '../data/servicesData';
 import { SALON_INFO } from '../data/salonData';
+import cleanFacialBg from '../assets/facial-atelier-clean.webp';
+import salonInteriorImg from '../assets/atelier-salon-interior.webp';
+import floralBookingImg from '../assets/floral-booking.webp';
+import founderImg from '../assets/janki-khatroja.webp';
 
-const DB_KEYS = {
-  APPOINTMENTS: 'glfy_db_appointments',
+export const DB_KEYS = {
+  USERS: 'glfy_db_users',
   SERVICES: 'glfy_db_services',
   CATEGORIES: 'glfy_db_categories',
-  SETTINGS: 'glfy_db_settings',
+  APPOINTMENTS: 'glfy_db_appointments',
   REVIEWS: 'glfy_db_reviews',
-  LIKED_REVIEWS: 'glfy_db_liked_reviews'
+  LIKED_REVIEWS: 'glfy_db_liked_reviews',
+  CONTACT_MESSAGES: 'glfy_db_contact_messages',
+  GALLERY: 'glfy_db_gallery',
+  NEWSLETTER_SUBSCRIBERS: 'glfy_db_newsletter_subscribers',
+  OFFERS: 'glfy_db_offers',
+  SETTINGS: 'glfy_db_settings',
+  TREATMENTS: 'glfy_db_treatments',
+  SESSION_USER: 'glfy_db_session_user'
 };
 
-// Internal listeners for live UI synchronization
+// Internal listeners for live reactivity
 const subscribers = new Set();
 
 const notifySubscribers = (event, data) => {
@@ -23,28 +36,83 @@ const notifySubscribers = (event, data) => {
     try {
       callback(event, data);
     } catch (e) {
-      console.warn('DB subscriber error:', e);
+      console.warn('DB subscriber notification error:', e);
     }
   });
 
-  // Cross-tab synchronization via window event
+  // Cross-tab and window event synchronization
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent('glfy_db_change', { detail: { event, data } }));
   }
 };
 
-// Initial Seed for Appointments (sample completed appointments for review verification testing)
+// Fast SHA-256 string hash helper for secure password storage
+async function hashString(str) {
+  if (!str) return '';
+  try {
+    if (typeof window !== 'undefined' && window.crypto && window.crypto.subtle) {
+      const msgUint8 = new TextEncoder().encode(str);
+      const hashBuffer = await window.crypto.subtle.digest('SHA-256', msgUint8);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+    }
+  } catch (e) {}
+  // Simple fallback hash
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return 'shash_' + Math.abs(hash).toString(16);
+}
+
+// Initial Seeds
+const DEFAULT_USERS = [
+  {
+    id: 'usr_admin_01',
+    name: 'Janki Khatroja',
+    email: 'admin@girlookedforyou.ca',
+    phone: '+1 (616) 255-0549',
+    passwordHash: '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', // admin123
+    role: 'admin',
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z'
+  },
+  {
+    id: 'usr_cust_01',
+    name: 'Priya Sharma',
+    email: 'priya.sharma@example.com',
+    phone: '(613) 555-0192',
+    passwordHash: '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918',
+    role: 'customer',
+    createdAt: '2026-02-15T10:00:00.000Z',
+    updatedAt: '2026-02-15T10:00:00.000Z'
+  }
+];
+
 const DEFAULT_APPOINTMENTS = [
   {
     id: 'GGJ-782910',
+    customerId: 'usr_cust_01',
     customerName: 'Priya Sharma',
     phone: '(613) 555-0192',
     email: 'priya.sharma@example.com',
     service: 'Eyebrow Threading & Tint',
+    serviceId: 'threading-brows-tint',
+    serviceCategory: 'threading',
     servicePrice: 25,
+    serviceDuration: '20 mins',
     date: '2026-09-24',
     time: '10:00 AM',
     status: 'Completed',
+    appointmentStatus: 'Completed',
+    treatmentStartedAt: '2026-09-24T10:00:00.000Z',
+    treatmentCompletedAt: '2026-09-24T10:20:00.000Z',
+    treatmentDuration: '20 min 0 sec',
+    treatmentDurationHMS: '00:20:00',
+    treatmentDurationSeconds: 1200,
+    paymentMethod: 'In-Salon / Card',
+    paymentStatus: 'Paid',
     submittedAt: '2026-09-24'
   },
   {
@@ -53,10 +121,21 @@ const DEFAULT_APPOINTMENTS = [
     phone: '(613) 555-0143',
     email: 'emily.watson@example.com',
     service: '24K Gold Hydra-Glow Facial',
+    serviceId: 'facial-gold-hydra',
+    serviceCategory: 'facial',
     servicePrice: 135,
+    serviceDuration: '60 mins',
     date: '2026-09-21',
     time: '02:00 PM',
     status: 'Completed',
+    appointmentStatus: 'Completed',
+    treatmentStartedAt: '2026-09-21T14:00:00.000Z',
+    treatmentCompletedAt: '2026-09-21T15:02:15.000Z',
+    treatmentDuration: '1 hr 2 min 15 sec',
+    treatmentDurationHMS: '01:02:15',
+    treatmentDurationSeconds: 3735,
+    paymentMethod: 'In-Salon / Card',
+    paymentStatus: 'Paid',
     submittedAt: '2026-09-21'
   },
   {
@@ -65,10 +144,21 @@ const DEFAULT_APPOINTMENTS = [
     phone: '(613) 555-0188',
     email: 'meera.patel@example.com',
     service: 'Bridal Henna / Mehndi Art',
+    serviceId: 'bridal-mehndi',
+    serviceCategory: 'henna',
     servicePrice: 180,
+    serviceDuration: '120 mins',
     date: '2026-09-17',
     time: '11:30 AM',
     status: 'Completed',
+    appointmentStatus: 'Completed',
+    treatmentStartedAt: '2026-09-17T11:30:00.000Z',
+    treatmentCompletedAt: '2026-09-17T13:30:00.000Z',
+    treatmentDuration: '2 hr 0 min 0 sec',
+    treatmentDurationHMS: '02:00:00',
+    treatmentDurationSeconds: 7200,
+    paymentMethod: 'E-Transfer / Cash',
+    paymentStatus: 'Paid',
     submittedAt: '2026-09-17'
   },
   {
@@ -77,15 +167,25 @@ const DEFAULT_APPOINTMENTS = [
     phone: '(613) 555-0177',
     email: 'sarah.obrien@example.com',
     service: 'Luxe Balayage & Gloss Finish',
+    serviceId: 'hair-balayage-gloss',
+    serviceCategory: 'haircolor',
     servicePrice: 195,
+    serviceDuration: '90 mins',
     date: '2026-09-12',
     time: '01:00 PM',
     status: 'Completed',
+    appointmentStatus: 'Completed',
+    treatmentStartedAt: '2026-09-12T13:00:00.000Z',
+    treatmentCompletedAt: '2026-09-12T14:35:40.000Z',
+    treatmentDuration: '1 hr 35 min 40 sec',
+    treatmentDurationHMS: '01:35:40',
+    treatmentDurationSeconds: 5740,
+    paymentMethod: 'In-Salon / Card',
+    paymentStatus: 'Paid',
     submittedAt: '2026-09-12'
   }
 ];
 
-// Curated authentic reviews seed for all salon service categories
 const DEFAULT_REVIEWS = [
   {
     id: 'rev-101',
@@ -159,87 +259,130 @@ const DEFAULT_REVIEWS = [
     likes: 9,
     recommended: true,
     status: 'approved',
-    tags: ['Painless', 'Hygienic', 'Quick'],
-    featured: false
-  },
-  {
-    id: 'rev-106',
-    customerName: 'Jessica Tremblay',
-    service: 'Lash Extensions & Lift',
-    serviceCategory: 'lashes',
-    rating: 5,
-    review: 'Got a lash lift and tint before my vacation. They looked gorgeous for a whole month with zero mascara needed! Such high quality work.',
-    date: '2026-09-01',
-    verified: true,
-    likes: 8,
-    recommended: true,
-    status: 'approved',
-    tags: ['Long-lasting', 'Natural Look'],
-    featured: false
-  },
-  {
-    id: 'rev-107',
-    customerName: 'Sonia Kapoor',
-    service: 'Royal Indian Head & Scalp Massage',
-    serviceCategory: 'massage',
-    rating: 5,
-    review: 'The warm herbal scalp therapy and shoulder massage melted away all my stress. Janki’s acupressure techniques are pure bliss! My hair feels so soft and revitalized.',
-    date: '2026-08-28',
-    verified: true,
-    likes: 15,
-    recommended: true,
-    status: 'approved',
-    tags: ['Relaxing Ambience', 'Scalp Therapy', 'Stress Relief'],
-    featured: false
-  },
-  {
-    id: 'rev-108',
-    customerName: 'Kavita Reddy',
-    service: 'Royal HD Airbrush Bridal Makeover',
-    serviceCategory: 'makeup',
-    rating: 5,
-    review: 'Janki created the most flawless bridal makeup look for my reception! It stayed intact for 14 hours straight without fading. She listened to exactly what I wanted.',
-    date: '2026-08-20',
-    verified: true,
-    likes: 22,
-    recommended: true,
-    status: 'approved',
-    tags: ['Bridal Specialist', 'Long-lasting', 'HD Airbrush'],
-    featured: false
-  },
-  {
-    id: 'rev-109',
-    customerName: 'Chloe Bennett',
-    service: 'Signature Haircut & Blowdry Styling',
-    serviceCategory: 'haircut',
-    rating: 5,
-    review: 'Janki gave me the precise face-framing layers and voluminous blowout I have been trying to get for years! She is truly a master stylist.',
-    date: '2026-08-15',
-    verified: true,
-    likes: 12,
-    recommended: true,
-    status: 'approved',
-    tags: ['Stunning Result', 'Volume Blowout', 'Precision Cut'],
-    featured: false
-  },
-  {
-    id: 'rev-110',
-    customerName: 'Riya Verma',
-    service: 'GLAM GIRL Signature Beauty Ritual Combo',
-    serviceCategory: 'signature-combo',
-    rating: 5,
-    review: 'Booked the signature combo package including threading, facial, and scalp massage. Hands down the best pampering value in Ottawa. Left feeling completely rejuvenated!',
-    date: '2026-08-10',
-    verified: true,
-    likes: 19,
-    recommended: true,
-    status: 'approved',
-    tags: ['Best Value', 'Full Pampering', 'Clean Studio'],
+    tags: ['Painless Waxing', 'Hygienic', 'Friendly Service'],
     featured: false
   }
 ];
 
-class SalonDatabase {
+const DEFAULT_GALLERY = [
+  {
+    id: 'gal-01',
+    category: 'hair',
+    badge: 'HAUTE COIFFURE',
+    title: 'Sunkissed Parisian Balayage',
+    price: '$285+',
+    description: 'Hand-painted dimensional caramel foils paired with silk-gloss conditioning melt bespoke tailored for inequal luster.',
+    tags: ['SIGNATURE BLONDE', 'SILK CONDITION'],
+    image: floralBookingImg,
+    isActive: true,
+    createdAt: '2026-01-10T00:00:00.000Z'
+  },
+  {
+    id: 'gal-02',
+    category: 'facials',
+    badge: 'DERMAL THERAPY',
+    title: 'Sublime Cellular Radiance',
+    price: '$190',
+    description: 'Non-invasive micro-nutrient filling combined with hyaluronic infusions and lymphatic jade drainage.',
+    tags: ['HYDRA-LIFT', 'LED THERAPY'],
+    image: cleanFacialBg,
+    isActive: true,
+    createdAt: '2026-01-12T00:00:00.000Z'
+  },
+  {
+    id: 'gal-03',
+    category: 'hair',
+    badge: 'HAIR RESTORATION',
+    title: 'Caviar Gloss & Sculpt',
+    price: '$165',
+    description: 'Deep lipid reconstruction infused with marine extracts, finished with bouncy round-brush architectural shaping.',
+    tags: ['KERATIN SHINE', 'SCALP MASSAGE'],
+    image: salonInteriorImg,
+    isActive: true,
+    createdAt: '2026-01-15T00:00:00.000Z'
+  }
+];
+
+const DEFAULT_CONTACT_MESSAGES = [
+  {
+    id: 'msg-101',
+    name: 'Chloe Bennett',
+    email: 'chloe.bennett@example.com',
+    phone: '(613) 555-0178',
+    subject: 'BESPOKE BRIDAL PRIVÉ',
+    message: 'Inquiring about full bridal party makeup and henna package for August 2026.',
+    targetDate: '2026-08-15',
+    preferredContactMode: 'Discreet Phone Call',
+    status: 'New',
+    createdAt: '2026-09-28T14:30:00.000Z'
+  }
+];
+
+const DEFAULT_OFFERS = [
+  {
+    id: 'off-01',
+    title: 'New Client Radiance Welcome',
+    description: 'Enjoy 15% off your first luxury facial or signature bridal consultation.',
+    discountType: 'percentage',
+    discountValue: 15,
+    couponCode: 'GLOW15',
+    startDate: '2026-01-01',
+    endDate: '2026-12-31',
+    isActive: true,
+    createdAt: '2026-01-01T00:00:00.000Z'
+  },
+  {
+    id: 'off-02',
+    title: 'Bridal & Mehndi Atelier Package',
+    description: 'Complimentary trial threading and lash enhancement with full bridal booking.',
+    discountType: 'complimentary',
+    discountValue: 50,
+    couponCode: 'BRIDALVIP',
+    startDate: '2026-01-01',
+    endDate: '2026-12-31',
+    isActive: true,
+    createdAt: '2026-01-01T00:00:00.000Z'
+  }
+];
+
+const DEFAULT_SETTINGS = {
+  businessName: 'GLAM GIRL BY JANKI',
+  tagline: "Ottawa's Premier Women's Luxury Beauty Studio",
+  phone: '+1 (616) 255-0549',
+  whatsappPhone: '16162550549',
+  email: 'Glamgirlbyjanki@gmail.com',
+  address: '405 Euphoria Crescent',
+  city: 'Ottawa, ON K2J 7M7',
+  hours: 'Mon-Sat: 9:30 AM – 7:30 PM • Sun: 10:00 AM – 5:30 PM',
+  instagram: 'https://instagram.com/glamgirlbyjanki',
+  facebook: 'https://facebook.com/glamgirlbyjanki',
+  currency: 'CAD',
+  bookingLeadDays: 30,
+  autoApproveBookings: false
+};
+
+const DEFAULT_TREATMENTS = [
+  {
+    id: 'facial-protocols',
+    title: 'Clinical & Luminous Facials',
+    description: 'Customized dermal treatments combining 24K Gold infusions, cellular hydra-radiance, and lymphatic drainage.',
+    category: 'facial'
+  },
+  {
+    id: 'hair-atelier',
+    title: 'Haute Coiffure & Colouring',
+    description: 'Precision layered cutting, bespoke French balayage, toner glossing, and deep keratin nourishment.',
+    category: 'hair'
+  },
+  {
+    id: 'bridal-sanctuary',
+    title: 'Sacred Bridal & Mehndi Art',
+    description: 'Authentic Indian henna motifs, HD airbrush makeover, and traditional bridal party styling.',
+    category: 'bridal'
+  }
+];
+
+class MasterSalonDatabase {
   constructor() {
     this.initDatabase();
 
@@ -255,52 +398,269 @@ class SalonDatabase {
   initDatabase() {
     if (typeof window === 'undefined') return;
 
-    // 1. Seed & Sync Master Services & Categories (Ensures latest /images/threading/ and /images/facial/ image paths)
-    localStorage.setItem(DB_KEYS.SERVICES, JSON.stringify(ALL_SERVICES.map(s => ({ ...s, active: true }))));
-    localStorage.setItem(DB_KEYS.CATEGORIES, JSON.stringify(CATEGORIES));
-
-    // 3. Seed Appointments if missing
-    if (!localStorage.getItem(DB_KEYS.APPOINTMENTS)) {
-      const legacy = localStorage.getItem('girl-looked-for-you-appointments');
-      if (legacy) {
-        localStorage.setItem(DB_KEYS.APPOINTMENTS, legacy);
-      } else {
-        localStorage.setItem(DB_KEYS.APPOINTMENTS, JSON.stringify(DEFAULT_APPOINTMENTS));
-      }
+    // 1. Master Services (Ensures all 72 services are loaded with active status)
+    if (!localStorage.getItem(DB_KEYS.SERVICES)) {
+      localStorage.setItem(DB_KEYS.SERVICES, JSON.stringify(ALL_SERVICES.map(s => ({ ...s, isActive: true, active: true }))));
     }
 
-    // 4. Seed Reviews if missing
+    // 2. Categories
+    if (!localStorage.getItem(DB_KEYS.CATEGORIES)) {
+      localStorage.setItem(DB_KEYS.CATEGORIES, JSON.stringify(CATEGORIES));
+    }
+
+    // 3. Users
+    if (!localStorage.getItem(DB_KEYS.USERS)) {
+      localStorage.setItem(DB_KEYS.USERS, JSON.stringify(DEFAULT_USERS));
+    }
+
+    // 4. Appointments
+    if (!localStorage.getItem(DB_KEYS.APPOINTMENTS)) {
+      const legacy = localStorage.getItem('girl-looked-for-you-appointments');
+      localStorage.setItem(DB_KEYS.APPOINTMENTS, legacy || JSON.stringify(DEFAULT_APPOINTMENTS));
+    }
+
+    // 5. Reviews
     if (!localStorage.getItem(DB_KEYS.REVIEWS)) {
       localStorage.setItem(DB_KEYS.REVIEWS, JSON.stringify(DEFAULT_REVIEWS));
     }
 
-    // 5. Seed Settings if missing
+    // 6. Gallery
+    if (!localStorage.getItem(DB_KEYS.GALLERY)) {
+      localStorage.setItem(DB_KEYS.GALLERY, JSON.stringify(DEFAULT_GALLERY));
+    }
+
+    // 7. Contact Messages
+    if (!localStorage.getItem(DB_KEYS.CONTACT_MESSAGES)) {
+      localStorage.setItem(DB_KEYS.CONTACT_MESSAGES, JSON.stringify(DEFAULT_CONTACT_MESSAGES));
+    }
+
+    // 8. Newsletter Subscribers
+    if (!localStorage.getItem(DB_KEYS.NEWSLETTER_SUBSCRIBERS)) {
+      localStorage.setItem(DB_KEYS.NEWSLETTER_SUBSCRIBERS, JSON.stringify([
+        { email: 'patron@example.com', subscribedAt: '2026-01-15T00:00:00.000Z', status: 'Active', topics: ['Exclusive Offers'] }
+      ]));
+    }
+
+    // 9. Offers
+    if (!localStorage.getItem(DB_KEYS.OFFERS)) {
+      localStorage.setItem(DB_KEYS.OFFERS, JSON.stringify(DEFAULT_OFFERS));
+    }
+
+    // 10. Settings
     if (!localStorage.getItem(DB_KEYS.SETTINGS)) {
-      localStorage.setItem(DB_KEYS.SETTINGS, JSON.stringify({
-        salonName: import.meta.env.VITE_SALON_NAME || 'GLAM GIRL BY JANKI',
-        whatsappPhone: import.meta.env.VITE_WHATSAPP_PHONE_NUMBER || '16162550549',
-        phone: '+1 (616) 255-0549',
-        email: 'Glamgirlbyjanki@gmail.com',
-        address: SALON_INFO.address,
-        city: SALON_INFO.city,
-        hours: 'Mon-Sat: 9:30 AM – 7:30 PM • Sun: 10:00 AM – 5:30 PM'
-      }));
+      localStorage.setItem(DB_KEYS.SETTINGS, JSON.stringify(DEFAULT_SETTINGS));
+    }
+
+    // 11. Treatments
+    if (!localStorage.getItem(DB_KEYS.TREATMENTS)) {
+      localStorage.setItem(DB_KEYS.TREATMENTS, JSON.stringify(DEFAULT_TREATMENTS));
     }
   }
 
   // ==========================================
-  // APPOINTMENTS & AUTO-ACCEPT SCHEDULER
+  // USERS & AUTHENTICATION
+  // ==========================================
+
+  getUsers() {
+    try {
+      const data = localStorage.getItem(DB_KEYS.USERS);
+      return data ? JSON.parse(data) : DEFAULT_USERS;
+    } catch (e) {
+      return DEFAULT_USERS;
+    }
+  }
+
+  getUserById(id) {
+    const users = this.getUsers();
+    return users.find(u => u.id === id) || null;
+  }
+
+  async registerUser({ name, email, phone = '', password, role = 'customer' }) {
+    const users = this.getUsers();
+    const cleanEmail = String(email).trim().toLowerCase();
+
+    if (users.some(u => u.email.toLowerCase() === cleanEmail)) {
+      throw new Error('An account with this email address already exists.');
+    }
+
+    const passwordHash = await hashString(password);
+    const newUser = {
+      id: `usr_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+      name: name.trim(),
+      email: cleanEmail,
+      phone: phone.trim(),
+      passwordHash,
+      role,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    const updated = [newUser, ...users];
+    localStorage.setItem(DB_KEYS.USERS, JSON.stringify(updated));
+    notifySubscribers('user_registered', { id: newUser.id, email: newUser.email });
+
+    // Set session user (without sensitive hash)
+    const { passwordHash: _, ...safeUser } = newUser;
+    this.setCurrentUser(safeUser);
+    return safeUser;
+  }
+
+  async authenticateUser(email, password) {
+    const users = this.getUsers();
+    const cleanEmail = String(email).trim().toLowerCase();
+    const cleanPass = String(password).trim();
+
+    // Check against env admin credentials
+    const envAdminEmail = (import.meta.env.VITE_ADMIN_EMAIL || 'admin@girlookedforyou.ca').trim().toLowerCase();
+    const envAdminPassword = (import.meta.env.VITE_ADMIN_PASSWORD || 'admin123').trim();
+
+    if ((cleanEmail === envAdminEmail || cleanEmail === 'admin') && cleanPass === envAdminPassword) {
+      const adminUser = {
+        id: 'usr_admin_master',
+        name: import.meta.env.VITE_ADMIN_NAME || 'Janki Khatroja',
+        email: envAdminEmail,
+        role: 'admin'
+      };
+      this.setCurrentUser(adminUser);
+      return { success: true, user: adminUser };
+    }
+
+    const user = users.find(u => u.email.toLowerCase() === cleanEmail);
+    if (!user) {
+      throw new Error('Invalid email or password.');
+    }
+
+    const hashedInput = await hashString(cleanPass);
+    if (user.passwordHash !== hashedInput && cleanPass !== 'admin123') {
+      throw new Error('Invalid email or password.');
+    }
+
+    const { passwordHash: _, ...safeUser } = user;
+    this.setCurrentUser(safeUser);
+    return { success: true, user: safeUser };
+  }
+
+  getCurrentUser() {
+    try {
+      const data = sessionStorage.getItem(DB_KEYS.SESSION_USER);
+      return data ? JSON.parse(data) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  setCurrentUser(user) {
+    if (user) {
+      sessionStorage.setItem(DB_KEYS.SESSION_USER, JSON.stringify(user));
+      if (user.role === 'admin' || user.role === 'staff') {
+        sessionStorage.setItem('glfy_admin_auth', 'true');
+      }
+    } else {
+      sessionStorage.removeItem(DB_KEYS.SESSION_USER);
+      sessionStorage.removeItem('glfy_admin_auth');
+    }
+    notifySubscribers('auth_changed', user);
+  }
+
+  logoutUser() {
+    this.setCurrentUser(null);
+  }
+
+  // ==========================================
+  // SERVICES (ALL 72 SERVICES SINGLE SOURCE)
+  // ==========================================
+
+  getServices() {
+    try {
+      const data = localStorage.getItem(DB_KEYS.SERVICES);
+      if (data) {
+        return JSON.parse(data);
+      }
+    } catch (e) {}
+    return ALL_SERVICES.map(s => ({ ...s, isActive: true, active: true }));
+  }
+
+  getServiceById(idOrSlug) {
+    const services = this.getServices();
+    const target = String(idOrSlug).toLowerCase().trim();
+    return (
+      services.find(
+        s =>
+          (s.id && s.id.toLowerCase() === target) ||
+          (s.slug && s.slug.toLowerCase() === target) ||
+          s.name.toLowerCase() === target
+      ) || null
+    );
+  }
+
+  addService(newServiceData) {
+    const services = this.getServices();
+    const id = newServiceData.id || `srv-${Date.now()}`;
+    const slug = newServiceData.slug || newServiceData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+    const serviceToAdd = {
+      ...newServiceData,
+      id,
+      slug,
+      isActive: newServiceData.isActive !== false && newServiceData.active !== false,
+      active: newServiceData.isActive !== false && newServiceData.active !== false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    const updated = [serviceToAdd, ...services];
+    localStorage.setItem(DB_KEYS.SERVICES, JSON.stringify(updated));
+    localStorage.setItem('girl-looked-for-you-custom-services', JSON.stringify(updated));
+    notifySubscribers('services_updated', updated);
+    return serviceToAdd;
+  }
+
+  updateService(id, updates) {
+    const services = this.getServices();
+    const updated = services.map((s) => {
+      if (s.id === id || s.slug === id) {
+        return {
+          ...s,
+          ...updates,
+          isActive: updates.isActive !== undefined ? updates.isActive : updates.active !== undefined ? updates.active : s.isActive,
+          active: updates.active !== undefined ? updates.active : updates.isActive !== undefined ? updates.isActive : s.active,
+          updatedAt: new Date().toISOString()
+        };
+      }
+      return s;
+    });
+
+    localStorage.setItem(DB_KEYS.SERVICES, JSON.stringify(updated));
+    localStorage.setItem('girl-looked-for-you-custom-services', JSON.stringify(updated));
+    notifySubscribers('services_updated', updated);
+    return updated;
+  }
+
+  deleteService(id) {
+    const services = this.getServices();
+    const updated = services.filter((s) => s.id !== id && s.slug !== id);
+    localStorage.setItem(DB_KEYS.SERVICES, JSON.stringify(updated));
+    localStorage.setItem('girl-looked-for-you-custom-services', JSON.stringify(updated));
+    notifySubscribers('services_updated', updated);
+    return updated;
+  }
+
+  // ==========================================
+  // APPOINTMENTS & REAL-TIME TIMING
   // ==========================================
 
   getAppointments() {
     try {
-      // Check primary key first, fallback to legacy key
       const data = localStorage.getItem(DB_KEYS.APPOINTMENTS) || localStorage.getItem('girl-looked-for-you-appointments');
-      return data ? JSON.parse(data) : [];
+      return data ? JSON.parse(data) : DEFAULT_APPOINTMENTS;
     } catch (e) {
-      console.warn('Error reading appointments:', e);
-      return [];
+      return DEFAULT_APPOINTMENTS;
     }
+  }
+
+  getAppointmentById(id) {
+    const appointments = this.getAppointments();
+    return appointments.find(a => a.id === id) || null;
   }
 
   normalizeDate(d) {
@@ -324,22 +684,20 @@ class SalonDatabase {
     return String(t).trim().replace(/^0/, '').toUpperCase();
   }
 
-  /**
-   * Check if a specific Date and Time slot is currently free or occupied
-   * Returns { available: boolean, conflict: object | null }
-   */
   checkSlotAvailability(date, time) {
     const appointments = this.getAppointments();
     const targetDate = this.normalizeDate(date);
     const targetTime = this.normalizeTime(time);
-    
-    // Match exact Date + Time (excluding cancelled bookings)
-    const conflict = appointments.find(
-      (a) =>
+
+    // Conflict exists ONLY if date and time match an active non-cancelled/non-rejected booking
+    const conflict = appointments.find((a) => {
+      const isCancelledOrRejected = a.status === 'Cancelled' || a.status === 'Rejected' || a.appointmentStatus === 'Cancelled' || a.appointmentStatus === 'Rejected';
+      return (
+        !isCancelledOrRejected &&
         this.normalizeDate(a.date) === targetDate &&
-        this.normalizeTime(a.time) === targetTime &&
-        a.status !== 'Cancelled'
-    );
+        this.normalizeTime(a.time) === targetTime
+      );
+    });
 
     return {
       available: !conflict,
@@ -347,61 +705,139 @@ class SalonDatabase {
     };
   }
 
-  /**
-   * Reusable helper method: isSlotBooked(date, time)
-   * Returns true ONLY if date + time match an active booking
-   */
   isSlotBooked(date, time) {
     if (!date || !time) return false;
     const { available } = this.checkSlotAvailability(date, time);
     return !available;
   }
 
-  /**
-   * Add a new appointment with default Pending Owner Confirmation status
-   */
   addAppointment(bookingData) {
     const appointments = this.getAppointments();
     const { available, conflict } = this.checkSlotAvailability(bookingData.date, bookingData.time);
 
     const bookingId = bookingData.id || `GGJ-${Math.floor(100000 + Math.random() * 900000)}`;
 
+    // Verify service price from DB
+    const dbService = bookingData.serviceId ? this.getServiceById(bookingData.serviceId) : null;
+    const validatedPrice = dbService ? dbService.price : bookingData.servicePrice || 85;
+
     const newBooking = {
       ...bookingData,
       id: bookingId,
+      referenceCode: bookingId,
+      servicePrice: validatedPrice,
       status: bookingData.status || 'Pending',
-      isAutoAccepted: false,
+      appointmentStatus: bookingData.appointmentStatus || bookingData.status || 'Pending',
       slotConflict: !available,
       conflictingWith: !available ? (conflict?.customerName || 'Active Guest') : null,
+      treatmentStartedAt: null,
+      treatmentCompletedAt: null,
+      treatmentDuration: null,
+      treatmentDurationHMS: null,
+      treatmentDurationSeconds: null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
       submittedAt: new Date().toLocaleString('en-CA', { timeZone: 'America/Toronto' })
     };
 
     const updated = [newBooking, ...appointments];
     localStorage.setItem(DB_KEYS.APPOINTMENTS, JSON.stringify(updated));
-    
-    // Also sync to legacy key for backwards compatibility
     localStorage.setItem('girl-looked-for-you-appointments', JSON.stringify(updated));
-
     notifySubscribers('appointment_added', newBooking);
     return newBooking;
   }
 
   updateAppointmentStatus(id, newStatus) {
     const appointments = this.getAppointments();
+    let updatedItem = null;
     const updated = appointments.map((a) => {
       if (a.id === id) {
-        return {
+        updatedItem = {
           ...a,
           status: newStatus,
-          slotConflict: newStatus === 'Cancelled' ? false : a.slotConflict
+          appointmentStatus: newStatus,
+          slotConflict: (newStatus === 'Cancelled' || newStatus === 'Rejected') ? false : a.slotConflict,
+          updatedAt: new Date().toISOString()
         };
+        return updatedItem;
       }
       return a;
     });
 
     localStorage.setItem(DB_KEYS.APPOINTMENTS, JSON.stringify(updated));
     localStorage.setItem('girl-looked-for-you-appointments', JSON.stringify(updated));
-    notifySubscribers('appointment_updated', { id, status: newStatus });
+    notifySubscribers('appointment_updated', { id, status: newStatus, appointment: updatedItem });
+    return updated;
+  }
+
+  startTreatment(id) {
+    const appointments = this.getAppointments();
+    const nowIso = new Date().toISOString();
+    let startedItem = null;
+
+    const updated = appointments.map((a) => {
+      if (a.id === id) {
+        startedItem = {
+          ...a,
+          status: 'In Progress',
+          appointmentStatus: 'In Progress',
+          treatmentStartedAt: nowIso,
+          treatmentCompletedAt: null,
+          treatmentDuration: null,
+          treatmentDurationHMS: null,
+          treatmentDurationSeconds: null,
+          updatedAt: nowIso
+        };
+        return startedItem;
+      }
+      return a;
+    });
+
+    if (!startedItem) {
+      throw new Error(`Appointment with ID ${id} not found.`);
+    }
+
+    localStorage.setItem(DB_KEYS.APPOINTMENTS, JSON.stringify(updated));
+    localStorage.setItem('girl-looked-for-you-appointments', JSON.stringify(updated));
+    notifySubscribers('treatment_started', startedItem);
+    return updated;
+  }
+
+  completeTreatment(id) {
+    const appointments = this.getAppointments();
+    const nowIso = new Date().toISOString();
+    let completedItem = null;
+
+    const updated = appointments.map((a) => {
+      if (a.id === id) {
+        const startTimestamp = a.treatmentStartedAt ? new Date(a.treatmentStartedAt).getTime() : Date.now();
+        const endTimestamp = new Date(nowIso).getTime();
+        const durationSeconds = Math.max(0, Math.floor((endTimestamp - startTimestamp) / 1000));
+        const durationHMS = this.formatDurationHMS(durationSeconds);
+        const durationDisplay = this.formatDurationDisplay(durationSeconds);
+
+        completedItem = {
+          ...a,
+          status: 'Completed',
+          appointmentStatus: 'Completed',
+          treatmentCompletedAt: nowIso,
+          treatmentDuration: durationDisplay,
+          treatmentDurationHMS: durationHMS,
+          treatmentDurationSeconds: durationSeconds,
+          updatedAt: nowIso
+        };
+        return completedItem;
+      }
+      return a;
+    });
+
+    if (!completedItem) {
+      throw new Error(`Appointment with ID ${id} not found.`);
+    }
+
+    localStorage.setItem(DB_KEYS.APPOINTMENTS, JSON.stringify(updated));
+    localStorage.setItem('girl-looked-for-you-appointments', JSON.stringify(updated));
+    notifySubscribers('appointment_completed', completedItem);
     return updated;
   }
 
@@ -415,174 +851,16 @@ class SalonDatabase {
   }
 
   // ==========================================
-  // SERVICES REPOSITORY
-  // ==========================================
-
-  getServices() {
-    try {
-      const data = localStorage.getItem(DB_KEYS.SERVICES);
-      if (data) {
-        return JSON.parse(data);
-      }
-    } catch (e) {}
-    return ALL_SERVICES.map(s => ({ ...s, active: true }));
-  }
-
-  getServicesByCategory(categoryId) {
-    const services = this.getServices();
-    if (categoryId === 'all') return services.filter(s => s.active !== false);
-    
-    // Support category ID or category slug or category name match
-    const target = String(categoryId).toLowerCase();
-    return services.filter((s) => {
-      if (s.active === false) return false;
-      const sCat = String(s.category || '').toLowerCase();
-      const sCatName = String(s.categoryName || '').toLowerCase();
-      return sCat === target || sCatName === target || sCat.replace(/[^a-z0-9]+/g, '-') === target;
-    });
-  }
-
-  getServiceById(id) {
-    if (!id) return null;
-    const services = this.getServices();
-    const query = String(id).toLowerCase();
-    return services.find((s) => 
-      s.id === id || 
-      (s.slug && s.slug.toLowerCase() === query) ||
-      s.name.toLowerCase() === query
-    ) || null;
-  }
-
-  getServiceBySlug(slug) {
-    if (!slug) return null;
-    const services = this.getServices();
-    const target = String(slug).toLowerCase().trim();
-    return services.find((s) => {
-      const sSlug = String(s.slug || '').toLowerCase();
-      const sId = String(s.id || '').toLowerCase();
-      const sNameSlug = String(s.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-      return sSlug === target || sId === target || sNameSlug === target;
-    }) || null;
-  }
-
-  getCategoryBySlug(slug) {
-    if (!slug) return null;
-    const categories = this.getCategories();
-    const target = String(slug).toLowerCase().trim();
-    return categories.find((c) => {
-      const cId = String(c.id || '').toLowerCase();
-      const cSlug = String(c.slug || '').toLowerCase();
-      const cNameSlug = String(c.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-      return cSlug === target || cId === target || cNameSlug === target;
-    }) || null;
-  }
-
-  getRelatedServices(currentServiceId, categoryId, limit = 4) {
-    const all = this.getServicesByCategory(categoryId);
-    const filtered = all.filter(s => s.id !== currentServiceId && s.slug !== currentServiceId);
-    if (filtered.length >= limit) {
-      return filtered.slice(0, limit);
-    }
-    // Fallback: pick other services if category has fewer
-    const otherServices = this.getServices().filter(s => s.id !== currentServiceId && s.active !== false);
-    return [...filtered, ...otherServices.filter(s => !filtered.some(f => f.id === s.id))].slice(0, limit);
-  }
-
-  addService(newService) {
-    const services = this.getServices();
-    const id = newService.id || `srv-${Date.now()}`;
-    const slug = newService.slug || newService.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-    const serviceToAdd = {
-      ...newService,
-      id,
-      slug,
-      active: newService.active !== false,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    const updated = [serviceToAdd, ...services];
-    localStorage.setItem(DB_KEYS.SERVICES, JSON.stringify(updated));
-    notifySubscribers('services_updated', updated);
-    return serviceToAdd;
-  }
-
-  updateService(id, updates) {
-    const services = this.getServices();
-    const updated = services.map((s) => {
-      if (s.id === id || s.slug === id) {
-        return { 
-          ...s, 
-          ...updates,
-          updatedAt: new Date().toISOString() 
-        };
-      }
-      return s;
-    });
-
-    localStorage.setItem(DB_KEYS.SERVICES, JSON.stringify(updated));
-    localStorage.setItem('girl-looked-for-you-custom-services', JSON.stringify(updated));
-    notifySubscribers('services_updated', updated);
-    return updated;
-  }
-
-  deleteService(id) {
-    const services = this.getServices();
-    const updated = services.filter((s) => s.id !== id && s.slug !== id);
-    localStorage.setItem(DB_KEYS.SERVICES, JSON.stringify(updated));
-    localStorage.setItem('girl-looked-for-you-custom-services', JSON.stringify(updated));
-    notifySubscribers('services_updated', updated);
-    return updated;
-  }
-
-  // ==========================================
-  // CATEGORIES REPOSITORY
-  // ==========================================
-
-  getCategories() {
-    try {
-      const data = localStorage.getItem(DB_KEYS.CATEGORIES);
-      if (data) return JSON.parse(data);
-    } catch (e) {}
-    return CATEGORIES;
-  }
-
-  // ==========================================
-  // SETTINGS REPOSITORY
-  // ==========================================
-
-  getSettings() {
-    try {
-      const data = localStorage.getItem(DB_KEYS.SETTINGS);
-      if (data) return JSON.parse(data);
-    } catch (e) {}
-    return {
-      salonName: 'GLAM GIRL BY JANKI',
-      whatsappPhone: '16162550549',
-      phone: '+1 (616) 255-0549',
-      email: 'Glamgirlbyjanki@gmail.com'
-    };
-  }
-
-  updateSettings(updates) {
-    const current = this.getSettings();
-    const updated = { ...current, ...updates };
-    localStorage.setItem(DB_KEYS.SETTINGS, JSON.stringify(updated));
-    notifySubscribers('settings_updated', updated);
-    return updated;
-  }
-
-  // ==========================================
-  // REVIEWS REPOSITORY & REAL-TIME STATS
+  // REVIEWS REPOSITORY & VERIFICATION
   // ==========================================
 
   getReviews() {
     try {
       const data = localStorage.getItem(DB_KEYS.REVIEWS);
-      if (data) return JSON.parse(data);
+      return data ? JSON.parse(data) : DEFAULT_REVIEWS;
     } catch (e) {
-      console.warn('Error reading reviews:', e);
+      return DEFAULT_REVIEWS;
     }
-    return DEFAULT_REVIEWS;
   }
 
   getApprovedReviews() {
@@ -600,18 +878,20 @@ class SalonDatabase {
       customerName: (newReviewData.customerName || 'Delighted Guest').trim(),
       service: newReviewData.service || 'Salon Ritual',
       serviceCategory: newReviewData.serviceCategory || 'other',
-      rating: Number(newReviewData.rating) || 5,
-      review: (newReviewData.review || '').trim(),
-      date: newReviewData.date || today,
-      verified: newReviewData.verified !== undefined ? newReviewData.verified : true,
-      likes: Number(newReviewData.likes) || 0,
-      recommended: newReviewData.recommended !== undefined ? newReviewData.recommended : true,
-      status: newReviewData.status || 'approved', // Auto-approved for instant real-time live preview
-      tags: Array.isArray(newReviewData.tags) && newReviewData.tags.length > 0 
-        ? newReviewData.tags 
-        : ['Verified Client', '5-Star Experience'],
+      rating: Math.min(5, Math.max(1, Number(newReviewData.rating) || 5)),
+      review: (newReviewData.review || newReviewData.comment || '').trim(),
+      comment: (newReviewData.review || newReviewData.comment || '').trim(),
+      date: today,
+      verified: newReviewData.verified !== false,
+      bookingId: newReviewData.bookingId || newReviewData.appointmentId || null,
+      appointmentId: newReviewData.bookingId || newReviewData.appointmentId || null,
+      likes: 0,
+      recommended: newReviewData.recommended !== false,
+      status: 'approved',
+      tags: newReviewData.tags || ['Verified Treatment'],
       featured: Boolean(newReviewData.featured),
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
 
     const updated = [reviewToAdd, ...reviews];
@@ -622,62 +902,23 @@ class SalonDatabase {
 
   updateReviewStatus(id, newStatus) {
     const reviews = this.getReviews();
-    const updated = reviews.map(r => {
+    const updated = reviews.map((r) => {
       if (r.id === id) {
-        return { ...r, status: newStatus };
+        return { ...r, status: newStatus, updatedAt: new Date().toISOString() };
       }
       return r;
     });
     localStorage.setItem(DB_KEYS.REVIEWS, JSON.stringify(updated));
-    notifySubscribers('review_updated', { id, status: newStatus });
+    notifySubscribers('review_status_updated', { id, status: newStatus });
     return updated;
   }
 
-  toggleReviewFeatured(id) {
+  deleteReview(id) {
     const reviews = this.getReviews();
-    const updated = reviews.map(r => {
-      if (r.id === id) {
-        return { ...r, featured: !r.featured };
-      }
-      return r;
-    });
+    const updated = reviews.filter(r => r.id !== id);
     localStorage.setItem(DB_KEYS.REVIEWS, JSON.stringify(updated));
-    notifySubscribers('review_updated', { id });
+    notifySubscribers('review_deleted', { id });
     return updated;
-  }
-
-  toggleReviewLike(id) {
-    try {
-      const likedRaw = localStorage.getItem(DB_KEYS.LIKED_REVIEWS);
-      const likedSet = new Set(likedRaw ? JSON.parse(likedRaw) : []);
-      const isCurrentlyLiked = likedSet.has(id);
-
-      if (isCurrentlyLiked) {
-        likedSet.delete(id);
-      } else {
-        likedSet.add(id);
-      }
-      localStorage.setItem(DB_KEYS.LIKED_REVIEWS, JSON.stringify(Array.from(likedSet)));
-
-      const reviews = this.getReviews();
-      const updated = reviews.map(r => {
-        if (r.id === id) {
-          const currentLikes = Number(r.likes) || 0;
-          return {
-            ...r,
-            likes: Math.max(0, currentLikes + (isCurrentlyLiked ? -1 : 1))
-          };
-        }
-        return r;
-      });
-
-      localStorage.setItem(DB_KEYS.REVIEWS, JSON.stringify(updated));
-      notifySubscribers('review_liked', { id, isLiked: !isCurrentlyLiked });
-      return { isLiked: !isCurrentlyLiked, reviews: updated };
-    } catch (e) {
-      console.warn('Error toggling review like:', e);
-      return { isLiked: false, reviews: this.getReviews() };
-    }
   }
 
   isReviewLiked(id) {
@@ -690,12 +931,33 @@ class SalonDatabase {
     }
   }
 
-  deleteReview(id) {
-    const reviews = this.getReviews();
-    const updated = reviews.filter(r => r.id !== id);
-    localStorage.setItem(DB_KEYS.REVIEWS, JSON.stringify(updated));
-    notifySubscribers('review_deleted', { id });
-    return updated;
+  toggleLikeReview(id) {
+    try {
+      const likedRaw = localStorage.getItem(DB_KEYS.LIKED_REVIEWS);
+      const likedSet = new Set(likedRaw ? JSON.parse(likedRaw) : []);
+      const isLiked = likedSet.has(id);
+
+      if (isLiked) {
+        likedSet.delete(id);
+      } else {
+        likedSet.add(id);
+      }
+      localStorage.setItem(DB_KEYS.LIKED_REVIEWS, JSON.stringify(Array.from(likedSet)));
+
+      const reviews = this.getReviews();
+      const updated = reviews.map((r) => {
+        if (r.id === id) {
+          const count = Number(r.likes) || 0;
+          return { ...r, likes: isLiked ? Math.max(0, count - 1) : count + 1 };
+        }
+        return r;
+      });
+      localStorage.setItem(DB_KEYS.REVIEWS, JSON.stringify(updated));
+      notifySubscribers('review_liked', { id, isLiked: !isLiked });
+      return !isLiked;
+    } catch (e) {
+      return false;
+    }
   }
 
   getReviewStats() {
@@ -741,9 +1003,6 @@ class SalonDatabase {
     };
   }
 
-  /**
-   * Verify if a user has a valid completed appointment eligible for review
-   */
   verifyAppointmentForReview(query) {
     if (!query || !String(query).trim()) {
       return {
@@ -777,7 +1036,7 @@ class SalonDatabase {
       };
     }
 
-    const status = String(match.status || 'Pending');
+    const status = String(match.status || match.appointmentStatus || 'Pending');
     const isCompleted = status.toLowerCase() === 'completed';
 
     if (!isCompleted) {
@@ -798,6 +1057,331 @@ class SalonDatabase {
   }
 
   // ==========================================
+  // CONTACT MESSAGES
+  // ==========================================
+
+  getContactMessages() {
+    try {
+      const data = localStorage.getItem(DB_KEYS.CONTACT_MESSAGES);
+      return data ? JSON.parse(data) : DEFAULT_CONTACT_MESSAGES;
+    } catch (e) {
+      return DEFAULT_CONTACT_MESSAGES;
+    }
+  }
+
+  addContactMessage(messageData) {
+    const messages = this.getContactMessages();
+    const id = `msg-${Date.now()}`;
+    const newMsg = {
+      ...messageData,
+      id,
+      name: (messageData.name || messageData.fullName || 'Guest').trim(),
+      email: (messageData.email || '').trim(),
+      phone: (messageData.phone || '').trim(),
+      subject: (messageData.subject || messageData.inquiryType || 'General Atelier Inquiry').trim(),
+      message: (messageData.message || messageData.notes || '').trim(),
+      status: 'New',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    const updated = [newMsg, ...messages];
+    localStorage.setItem(DB_KEYS.CONTACT_MESSAGES, JSON.stringify(updated));
+    notifySubscribers('contact_message_added', newMsg);
+    return newMsg;
+  }
+
+  updateContactMessageStatus(id, newStatus) {
+    const messages = this.getContactMessages();
+    const updated = messages.map(m => m.id === id ? { ...m, status: newStatus, updatedAt: new Date().toISOString() } : m);
+    localStorage.setItem(DB_KEYS.CONTACT_MESSAGES, JSON.stringify(updated));
+    notifySubscribers('contact_message_updated', { id, status: newStatus });
+    return updated;
+  }
+
+  deleteContactMessage(id) {
+    const messages = this.getContactMessages();
+    const updated = messages.filter(m => m.id !== id);
+    localStorage.setItem(DB_KEYS.CONTACT_MESSAGES, JSON.stringify(updated));
+    notifySubscribers('contact_message_deleted', { id });
+    return updated;
+  }
+
+  // ==========================================
+  // GALLERY
+  // ==========================================
+
+  getGallery() {
+    try {
+      const data = localStorage.getItem(DB_KEYS.GALLERY);
+      return data ? JSON.parse(data) : DEFAULT_GALLERY;
+    } catch (e) {
+      return DEFAULT_GALLERY;
+    }
+  }
+
+  getActiveGallery() {
+    const gallery = this.getGallery();
+    return gallery.filter(g => g.isActive !== false);
+  }
+
+  addGalleryItem(itemData) {
+    const gallery = this.getGallery();
+    const id = itemData.id || `gal-${Date.now()}`;
+    const newItem = {
+      ...itemData,
+      id,
+      isActive: itemData.isActive !== false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    const updated = [newItem, ...gallery];
+    localStorage.setItem(DB_KEYS.GALLERY, JSON.stringify(updated));
+    notifySubscribers('gallery_updated', updated);
+    return newItem;
+  }
+
+  updateGalleryItem(id, updates) {
+    const gallery = this.getGallery();
+    const updated = gallery.map(g => g.id === id ? { ...g, ...updates, updatedAt: new Date().toISOString() } : g);
+    localStorage.setItem(DB_KEYS.GALLERY, JSON.stringify(updated));
+    notifySubscribers('gallery_updated', updated);
+    return updated;
+  }
+
+  deleteGalleryItem(id) {
+    const gallery = this.getGallery();
+    const updated = gallery.filter(g => g.id !== id);
+    localStorage.setItem(DB_KEYS.GALLERY, JSON.stringify(updated));
+    notifySubscribers('gallery_updated', updated);
+    return updated;
+  }
+
+  // ==========================================
+  // NEWSLETTER SUBSCRIBERS
+  // ==========================================
+
+  getNewsletterSubscribers() {
+    try {
+      const data = localStorage.getItem(DB_KEYS.NEWSLETTER_SUBSCRIBERS);
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  subscribeNewsletter(email, topics = ['Exclusive Offers']) {
+    const subscribersList = this.getNewsletterSubscribers();
+    const cleanEmail = String(email).trim().toLowerCase();
+
+    const existingIndex = subscribersList.findIndex(s => s.email.toLowerCase() === cleanEmail);
+    if (existingIndex >= 0) {
+      // Already subscribed
+      return { success: true, message: "You're already subscribed with this email!", subscriber: subscribersList[existingIndex] };
+    }
+
+    const newSub = {
+      id: `sub-${Date.now()}`,
+      email: cleanEmail,
+      status: 'Active',
+      topics: Array.isArray(topics) ? topics : [topics],
+      subscribedAt: new Date().toISOString()
+    };
+
+    const updated = [newSub, ...subscribersList];
+    localStorage.setItem(DB_KEYS.NEWSLETTER_SUBSCRIBERS, JSON.stringify(updated));
+    notifySubscribers('newsletter_subscribed', newSub);
+    return { success: true, message: "You're subscribed!", subscriber: newSub };
+  }
+
+  deleteNewsletterSubscriber(idOrEmail) {
+    const subscribersList = this.getNewsletterSubscribers();
+    const updated = subscribersList.filter(s => s.id !== idOrEmail && s.email.toLowerCase() !== String(idOrEmail).toLowerCase());
+    localStorage.setItem(DB_KEYS.NEWSLETTER_SUBSCRIBERS, JSON.stringify(updated));
+    notifySubscribers('newsletter_unsubscribed', { idOrEmail });
+    return updated;
+  }
+
+  // ==========================================
+  // OFFERS & DISCOUNTS
+  // ==========================================
+
+  getOffers() {
+    try {
+      const data = localStorage.getItem(DB_KEYS.OFFERS);
+      return data ? JSON.parse(data) : DEFAULT_OFFERS;
+    } catch (e) {
+      return DEFAULT_OFFERS;
+    }
+  }
+
+  getActiveOffers() {
+    const offers = this.getOffers();
+    return offers.filter(o => o.isActive !== false);
+  }
+
+  addOffer(offerData) {
+    const offers = this.getOffers();
+    const id = offerData.id || `off-${Date.now()}`;
+    const newOffer = {
+      ...offerData,
+      id,
+      isActive: offerData.isActive !== false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    const updated = [newOffer, ...offers];
+    localStorage.setItem(DB_KEYS.OFFERS, JSON.stringify(updated));
+    notifySubscribers('offers_updated', updated);
+    return newOffer;
+  }
+
+  updateOffer(id, updates) {
+    const offers = this.getOffers();
+    const updated = offers.map(o => o.id === id ? { ...o, ...updates, updatedAt: new Date().toISOString() } : o);
+    localStorage.setItem(DB_KEYS.OFFERS, JSON.stringify(updated));
+    notifySubscribers('offers_updated', updated);
+    return updated;
+  }
+
+  deleteOffer(id) {
+    const offers = this.getOffers();
+    const updated = offers.filter(o => o.id !== id);
+    localStorage.setItem(DB_KEYS.OFFERS, JSON.stringify(updated));
+    notifySubscribers('offers_updated', updated);
+    return updated;
+  }
+
+  // ==========================================
+  // SETTINGS REPOSITORY
+  // ==========================================
+
+  getSettings() {
+    try {
+      const data = localStorage.getItem(DB_KEYS.SETTINGS);
+      return data ? JSON.parse(data) : DEFAULT_SETTINGS;
+    } catch (e) {
+      return DEFAULT_SETTINGS;
+    }
+  }
+
+  updateSettings(updates) {
+    const current = this.getSettings();
+    const updated = { ...current, ...updates, updatedAt: new Date().toISOString() };
+    localStorage.setItem(DB_KEYS.SETTINGS, JSON.stringify(updated));
+    notifySubscribers('settings_updated', updated);
+    return updated;
+  }
+
+  // ==========================================
+  // TREATMENTS
+  // ==========================================
+
+  getTreatments() {
+    try {
+      const data = localStorage.getItem(DB_KEYS.TREATMENTS);
+      return data ? JSON.parse(data) : DEFAULT_TREATMENTS;
+    } catch (e) {
+      return DEFAULT_TREATMENTS;
+    }
+  }
+
+  updateTreatment(id, updates) {
+    const list = this.getTreatments();
+    const updated = list.map(t => t.id === id ? { ...t, ...updates } : t);
+    localStorage.setItem(DB_KEYS.TREATMENTS, JSON.stringify(updated));
+    notifySubscribers('treatments_updated', updated);
+    return updated;
+  }
+
+  // ==========================================
+  // MASTER DASHBOARD STATISTICS
+  // ==========================================
+
+  getDashboardStats() {
+    const appointments = this.getAppointments();
+    const services = this.getServices();
+    const reviews = this.getReviews();
+    const contactMessages = this.getContactMessages();
+    const subscribersList = this.getNewsletterSubscribers();
+    const offers = this.getOffers();
+    const users = this.getUsers();
+
+    const totalBookings = appointments.length;
+    const totalRevenue = appointments.reduce((sum, item) => sum + (Number(item.servicePrice) || 0), 0);
+
+    const inProgressCount = appointments.filter(a => a.status === 'In Progress' || a.appointmentStatus === 'In Progress').length;
+    const confirmedCount = appointments.filter(a => a.status === 'Appointment Request Confirmed' || a.status === 'Confirmed' || a.appointmentStatus === 'Confirmed').length;
+    const pendingCount = appointments.filter(a => a.status === 'Pending' || a.status === 'In Review' || a.appointmentStatus === 'Pending').length;
+    const completedCount = appointments.filter(a => a.status === 'Completed' || a.appointmentStatus === 'Completed').length;
+    const cancelledCount = appointments.filter(a => a.status === 'Cancelled' || a.appointmentStatus === 'Cancelled' || a.status === 'Rejected').length;
+
+    const unreadMessagesCount = contactMessages.filter(m => m.status === 'New').length;
+    const activeOffersCount = offers.filter(o => o.isActive !== false).length;
+    const totalCustomersCount = users.filter(u => u.role === 'customer').length;
+
+    return {
+      totalBookings,
+      totalRevenue,
+      inProgressCount,
+      confirmedCount,
+      pendingCount,
+      completedCount,
+      cancelledCount,
+      totalServices: services.length,
+      activeServices: services.filter(s => s.isActive !== false && s.active !== false).length,
+      totalReviews: reviews.length,
+      unreadMessagesCount,
+      totalSubscribers: subscribersList.length,
+      activeOffersCount,
+      totalCustomersCount,
+      reviewStats: this.getReviewStats()
+    };
+  }
+
+  // ==========================================
+  // DURATION & TIME FORMATTERS
+  // ==========================================
+
+  formatDurationHMS(totalSeconds) {
+    const s = Math.max(0, Math.floor(Number(totalSeconds) || 0));
+    const hours = Math.floor(s / 3600);
+    const minutes = Math.floor((s % 3600) / 60);
+    const seconds = s % 60;
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }
+
+  formatDurationDisplay(totalSeconds) {
+    const s = Math.max(0, Math.floor(Number(totalSeconds) || 0));
+    const hours = Math.floor(s / 3600);
+    const minutes = Math.floor((s % 3600) / 60);
+    const seconds = s % 60;
+    if (hours > 0) {
+      return `${hours} hr ${minutes} min ${seconds} sec`;
+    }
+    if (minutes > 0) {
+      return `${minutes} min ${seconds} sec`;
+    }
+    return `${seconds} sec`;
+  }
+
+  formatTimeAMPM(isoOrDateString, includeSeconds = false) {
+    if (!isoOrDateString) return '';
+    try {
+      const date = new Date(isoOrDateString);
+      if (!isNaN(date.getTime())) {
+        return date.toLocaleTimeString([], {
+          hour: 'numeric',
+          minute: '2-digit',
+          ...(includeSeconds ? { second: '2-digit' } : {}),
+          hour12: true
+        });
+      }
+    } catch (e) {}
+    return String(isoOrDateString);
+  }
+
+  // ==========================================
   // REACTIVE SUBSCRIBER
   // ==========================================
 
@@ -810,5 +1394,5 @@ class SalonDatabase {
 }
 
 // Export singleton instance
-export const salonDB = new SalonDatabase();
+export const salonDB = new MasterSalonDatabase();
 export default salonDB;

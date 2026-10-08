@@ -16,13 +16,21 @@ import {
   Calendar
 } from 'lucide-react';
 import ScrollReveal from '../ScrollReveal/ScrollReveal';
+import salonDB from '../../db/salonDatabase';
 
 export default function ReviewsSection() {
   const navigate = useNavigate();
-  const [activeCategory, setActiveCategory] = useState('ALL REVIEWS (320+)');
+  const [activeCategory, setActiveCategory] = useState('ALL REVIEWS');
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [submittedReview, setSubmittedReview] = useState(false);
-  const [likedCards, setLikedCards] = useState({});
+  const [reviewsList, setReviewsList] = useState(() => salonDB.getApprovedReviews());
+
+  React.useEffect(() => {
+    const sync = () => setReviewsList(salonDB.getApprovedReviews());
+    sync();
+    const unsub = salonDB.subscribe(sync);
+    return () => unsub();
+  }, []);
 
   // Form State
   const [newReview, setNewReview] = useState({
@@ -36,106 +44,32 @@ export default function ReviewsSection() {
 
   // Filter Categories
   const categories = [
-    'ALL REVIEWS (320+)',
+    'ALL REVIEWS',
     '24K CELLULAR FACIALS',
     'PARISIAN BALAYAGE & CUT',
     'BRIDAL PRIVÉ RITUALS',
     'DERMAL SKIN PROTOCOLS',
-    'SANCTUARY AMBIENCE'
+    'THREADING & LASHES'
   ];
-
-  // Review Items Database
-  const initialReviews = [
-    {
-      id: 1,
-      category: 'DERMAL SKIN PROTOCOLS',
-      title: '“Unsurpassed Cellular Precision”',
-      text: 'As a clinical researcher, I am exceptionally critical of facial claims. Janki’s single-guest acoustic suite and French ultrasound technique delivered immediate deep dermal elasticity without irritation. Truly sublime.',
-      author: 'Dr. Evelyn Vance',
-      role: 'Dermatological Research Fellow',
-      tag: '24K FACIAL LIFT',
-      rating: 5,
-      likes: 24
-    },
-    {
-      id: 2,
-      category: 'PARISIAN BALAYAGE & CUT',
-      title: '“Pure Parisian Color Mastery”',
-      text: 'Finding authentic Parisian freehand balayage outside of Europe seemed impossible until I visited the atelier. The tone is seamless, buttery caramel with zero brassiness, and the hair condition feels pure silk.',
-      author: 'Camille Laurent',
-      role: 'Art Curator · Rockcliffe Park',
-      tag: 'BALAYAGE PRIVÉ',
-      rating: 5,
-      likes: 19
-    },
-    {
-      id: 3,
-      category: 'BRIDAL PRIVÉ RITUALS',
-      title: '“An Unhurried Bridal Sanctuary”',
-      text: 'Reserving the private suite for my wedding morning was the best choice. Absolute single-guest intimacy, organic damask rose welcome elixir, relaxing acoustics, and bridal hair that held beautifully through midnight.',
-      author: 'Sophia Al-Mansoor',
-      role: 'Bridal Patron · Ottawa',
-      tag: 'BRIDAL PRIVÉ',
-      rating: 5,
-      likes: 31
-    },
-    {
-      id: 4,
-      category: '24K CELLULAR FACIALS',
-      title: '“My Monthly Skin Haven”',
-      text: 'The single-occupancy protocol means no crowded reception and zero hurried encounters. You are escorted straight to your suite. It is a personal refuge in the center of Ottawa, paired with glass-skin radiance.',
-      author: 'Madeleine Tremblay',
-      role: 'Senior Policy Advisor',
-      tag: 'CELLULAR RADIANCE',
-      rating: 5,
-      likes: 16
-    },
-    {
-      id: 5,
-      category: 'SANCTUARY AMBIENCE',
-      title: '“Hair Restored to Pure Texture”',
-      text: 'The botanical scalp gloss infusion alongside the warm thermal hand cocoon made this appointment feel like an unhurried luxury spa day. My blowout has never looked this bouncy and weightless.',
-      author: 'Ananya Sharma',
-      role: 'Tech Founder & Speaker',
-      tag: 'HERBAL GLOSS',
-      rating: 5,
-      likes: 22
-    },
-    {
-      id: 6,
-      category: 'SANCTUARY AMBIENCE',
-      title: '“Architectural Serenity”',
-      text: 'The atelier aesthetics, warm ambient lighting, and bespoke aroma calibration in Suite 400 is as impressive as the skincare efficacy. Janki brings authentic Paris atelier craftsmanship to Canada.',
-      author: 'Isabelle Côté',
-      role: 'Interior Architect · Ottawa',
-      tag: 'SANCTUARY PASS',
-      rating: 5,
-      likes: 28
-    }
-  ];
-
-  const [reviewsList, setReviewsList] = useState(initialReviews);
 
   const handleLike = (id) => {
-    setLikedCards(prev => ({ ...prev, [id]: !prev[id] }));
-    setReviewsList(prev => prev.map(r => r.id === id ? { ...r, likes: likedCards[id] ? r.likes - 1 : r.likes + 1 } : r));
+    salonDB.toggleLikeReview(id);
   };
 
   const handleAddReviewSubmit = (e) => {
     e.preventDefault();
-    const newEntry = {
-      id: Date.now(),
-      category: newReview.service.toUpperCase(),
-      title: `“${newReview.title || 'Exceptional Atelier Experience'}”`,
-      text: newReview.text,
-      author: newReview.name || 'Verified Patron',
-      role: newReview.role || 'Ottawa Flagship Patron',
-      tag: 'VERIFIED PATRON',
-      rating: newReview.rating,
-      likes: 1
-    };
+    if (!newReview.name || !newReview.text) return;
 
-    setReviewsList([newEntry, ...reviewsList]);
+    salonDB.addReview({
+      customerName: newReview.name.trim(),
+      service: newReview.service,
+      serviceCategory: 'other',
+      rating: newReview.rating,
+      review: newReview.text.trim(),
+      verified: true,
+      tags: ['Guest Review', newReview.service]
+    });
+
     setSubmittedReview(true);
     setTimeout(() => {
       setSubmittedReview(false);
@@ -144,14 +78,18 @@ export default function ReviewsSection() {
     }, 2000);
   };
 
-  const filteredReviews = activeCategory === 'ALL REVIEWS (320+)'
+  const filteredReviews = activeCategory === 'ALL REVIEWS'
     ? reviewsList
     : reviewsList.filter(r => {
-        if (activeCategory === '24K CELLULAR FACIALS') return r.category.includes('FACIAL') || r.tag.includes('FACIAL') || r.tag.includes('CELLULAR');
-        if (activeCategory === 'PARISIAN BALAYAGE & CUT') return r.category.includes('BALAYAGE') || r.tag.includes('BALAYAGE');
-        if (activeCategory === 'BRIDAL PRIVÉ RITUALS') return r.category.includes('BRIDAL') || r.tag.includes('BRIDAL');
-        if (activeCategory === 'DERMAL SKIN PROTOCOLS') return r.category.includes('DERMAL') || r.tag.includes('CELLULAR');
-        if (activeCategory === 'SANCTUARY AMBIENCE') return r.category.includes('SANCTUARY') || r.tag.includes('PASS') || r.tag.includes('GLOSS');
+        const cat = (r.serviceCategory || r.category || '').toUpperCase();
+        const srv = (r.service || '').toUpperCase();
+        const text = (r.review || r.text || '').toUpperCase();
+
+        if (activeCategory === '24K CELLULAR FACIALS') return cat.includes('FACIAL') || srv.includes('FACIAL') || text.includes('FACIAL');
+        if (activeCategory === 'PARISIAN BALAYAGE & CUT') return cat.includes('HAIR') || srv.includes('BALAYAGE') || srv.includes('CUT') || text.includes('BALAYAGE');
+        if (activeCategory === 'BRIDAL PRIVÉ RITUALS') return cat.includes('BRIDAL') || cat.includes('HENNA') || srv.includes('BRIDAL');
+        if (activeCategory === 'DERMAL SKIN PROTOCOLS') return cat.includes('FACIAL') || text.includes('SKIN');
+        if (activeCategory === 'THREADING & LASHES') return cat.includes('THREADING') || cat.includes('LASH') || srv.includes('THREADING');
         return true;
       });
 

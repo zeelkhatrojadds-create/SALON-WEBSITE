@@ -1,38 +1,86 @@
-/* Base scroll-reveal class */
+/* =========================================================================
+   GLAM GIRL BY JANKI — CINEMATIC ZOOM-OUT SCROLL REVEAL ENGINE
+   Ultra-smooth 60fps hardware-accelerated zoom-out reveal for text & photos
+   ========================================================================= */
+
+/* Base container: initial state starts slightly zoomed in and glides down to scale(1) */
 .scroll-reveal {
   opacity: 0;
   will-change: transform, opacity;
-  transition: opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: scale(1.08) translateY(24px);
 }
 
-/* Default Zoom-Out reveal behavior: starts scale(1.08) translateY(20px) -> zooms OUT to scale(1) translateY(0) */
-.scroll-reveal.reveal-zoom-out {
-  transform: scale(1.08) translateY(20px);
+/* Zoom-Out reveal variant */
+.scroll-reveal.reveal-zoom-out,
+.scroll-reveal {
+  transform: scale(1.08) translateY(24px);
 }
 
-@media (max-width: 768px) {
-  .scroll-reveal.reveal-zoom-out {
-    transform: scale(1.04) translateY(12px);
-  }
+/* Zoom-out on photos & images inside scroll-reveal containers */
+.scroll-reveal img,
+.scroll-reveal picture > img,
+.scroll-reveal .aspect-video img,
+.scroll-reveal .aspect-square img,
+.scroll-reveal .aspect-\[16\/10\] img,
+.scroll-reveal .aspect-\[4\/5\] img,
+.scroll-reveal .aspect-\[4\/3\] img {
+  transform: scale(1.10);
+  transition: transform 1.3s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
 
-/* When visible in viewport */
+/* When the section/card/element enters the viewport */
 .scroll-reveal.is-visible {
-  opacity: 1;
+  opacity: 1 !important;
   transform: scale(1) translateY(0) !important;
 }
 
-/* Stagger support for child elements */
-.scroll-reveal.reveal-stagger > *:nth-child(1) { transition-delay: 0ms; }
-.scroll-reveal.reveal-stagger > *:nth-child(2) { transition-delay: 90ms; }
-.scroll-reveal.reveal-stagger > *:nth-child(3) { transition-delay: 180ms; }
-.scroll-reveal.reveal-stagger > *:nth-child(4) { transition-delay: 270ms; }
-.scroll-reveal.reveal-stagger > *:nth-child(5) { transition-delay: 360ms; }
+/* Photos inside revealed elements smoothly zoom out to clean scale(1) */
+.scroll-reveal.is-visible img,
+.scroll-reveal.is-visible picture > img,
+.scroll-reveal.is-visible .aspect-video img,
+.scroll-reveal.is-visible .aspect-square img,
+.scroll-reveal.is-visible .aspect-\[16\/10\] img,
+.scroll-reveal.is-visible .aspect-\[4\/5\] img,
+.scroll-reveal.is-visible .aspect-\[4\/3\] img {
+  transform: scale(1);
+}
 
-/* Reduced motion accessibility fallback */
+/* Stagger cascade for grids & lists */
+.scroll-reveal.reveal-stagger > *:nth-child(1) { transition-delay: 0ms; }
+.scroll-reveal.reveal-stagger > *:nth-child(2) { transition-delay: 80ms; }
+.scroll-reveal.reveal-stagger > *:nth-child(3) { transition-delay: 160ms; }
+.scroll-reveal.reveal-stagger > *:nth-child(4) { transition-delay: 240ms; }
+.scroll-reveal.reveal-stagger > *:nth-child(5) { transition-delay: 320ms; }
+.scroll-reveal.reveal-stagger > *:nth-child(6) { transition-delay: 400ms; }
+.scroll-reveal.reveal-stagger > *:nth-child(7) { transition-delay: 480ms; }
+.scroll-reveal.reveal-stagger > *:nth-child(8) { transition-delay: 560ms; }
+
+/* Responsive adjustments for mobile/tablet */
+@media (max-width: 768px) {
+  .scroll-reveal,
+  .scroll-reveal.reveal-zoom-out {
+    transform: scale(1.04) translateY(14px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .scroll-reveal img,
+  .scroll-reveal picture > img {
+    transform: scale(1.06);
+    transition: transform 1.0s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+/* Accessibility: Prefers Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
-  .scroll-reveal {
+  .scroll-reveal,
+  .scroll-reveal.reveal-zoom-out,
+  .scroll-reveal img,
+  .scroll-reveal picture > img {
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;

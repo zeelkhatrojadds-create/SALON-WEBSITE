@@ -35,8 +35,8 @@
 
 @keyframes luxuryPageMoveIn {
   0% {
-    opacity: 0.96;
-    transform: translate3d(8px, 8px, 0) scale(0.985);
+    opacity: 0.94;
+    transform: translate3d(0, 10px, 0) scale(1.02);
   }
   100% {
     opacity: 1;
@@ -52,7 +52,7 @@
   @keyframes luxuryPageMoveIn {
     0% {
       opacity: 0.96;
-      transform: translate3d(4px, 5px, 0) scale(0.99);
+      transform: translate3d(0, 6px, 0) scale(1.01);
     }
     100% {
       opacity: 1;

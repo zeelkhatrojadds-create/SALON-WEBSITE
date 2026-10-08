@@ -31,9 +31,15 @@ export default function LoadingScreen({ onComplete, duration = 1200 }) {
           {/* Outer Rotating Gold Border */}
           <div className="absolute inset-0 rounded-full border-2 border-t-[#CFA46A] border-r-[#CFA46A]/40 border-b-[#CFA46A]/10 border-l-[#CFA46A]/70 animate-spin" />
           
-          {/* Inner Glowing Star */}
-          <div className="text-[#CFA46A] text-lg sm:text-xl animate-pulse">
-            ✦
+          {/* Inner Glowing Salon Scissors */}
+          <div className="text-[#CFA46A] w-6 h-6 flex items-center justify-center animate-pulse">
+            <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="#CFA46A" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="6" cy="6" r="3"/>
+              <circle cx="6" cy="18" r="3"/>
+              <line x1="20" y1="4" x2="8.12" y2="15.88"/>
+              <line x1="14.47" y1="14.48" x2="20" y2="20"/>
+              <line x1="8.12" y1="8.12" x2="12" y2="12"/>
+            </svg>
           </div>
         </div>
 

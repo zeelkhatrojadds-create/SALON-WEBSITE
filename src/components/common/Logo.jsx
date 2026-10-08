@@ -32,7 +32,7 @@ export default function Logo({ theme = 'dark', className = '', onClick }) {
           ? 'text-[#A67C48]'
           : 'text-[#CFA46A] drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]'
       }`}>
-        BY JANKI · ATELIER
+        BY JANKI - ATELIER
       </span>
     </Link>
   );

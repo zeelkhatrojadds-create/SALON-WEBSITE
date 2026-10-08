@@ -66,14 +66,14 @@ export default function ServicesPage({ isSection = false }) {
     }
   };
 
-  // Filter & Sort treatments
+  // Filter & Sort treatments — Case-insensitive partial matching on service.name + category
   const filteredTreatments = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     
     let list = servicesData.filter((service) => {
       if (service.active === false) return false;
 
-      // Category matching logic
+      // 1. Category filter matching
       let matchesCategory = false;
       if (selectedCategory === 'all') {
         matchesCategory = true;
@@ -88,17 +88,20 @@ export default function ServicesPage({ isSection = false }) {
         }
       }
 
-      // Search matching logic
-      const matchesSearch =
-        !q ||
-        service.name.toLowerCase().includes(q) ||
-        (service.categoryName && service.categoryName.toLowerCase().includes(q)) ||
-        (service.description && service.description.toLowerCase().includes(q));
+      // 2. Search query matching on service.name
+      let matchesSearch = true;
+      if (q) {
+        const name = (service.name || '').toLowerCase();
+        const catName = (service.categoryName || '').toLowerCase();
+        const catId = (service.category || '').toLowerCase();
+        
+        matchesSearch = name.includes(q) || catName.includes(q) || catId.includes(q);
+      }
 
       return matchesCategory && matchesSearch;
     });
 
-    // Sort logic
+    // 3. Sort logic
     if (sortBy === 'price-low') {
       list.sort((a, b) => (a.price || 0) - (b.price || 0));
     } else if (sortBy === 'price-high') {
@@ -117,110 +120,121 @@ export default function ServicesPage({ isSection = false }) {
     <div className="min-h-screen bg-[#FBF8F4] text-[#1C1614] pt-20 sm:pt-24 pb-20 selection:bg-[#CFA46A] selection:text-[#100C0D]">
       
       {/* ========================================================================= */}
-      {/* 1. HERO BANNER - Curated Rituals for Hair & Beauty                         */}
+      {/* 1. COMPACT HERO TITLE BANNER                                              */}
       {/* ========================================================================= */}
-      <div className="relative bg-gradient-to-b from-[#F5EFE6] via-[#FAF5EE] to-[#FBF8F4] pt-12 sm:pt-16 pb-12 sm:pb-16 overflow-hidden border-b border-[#E8DFD3]">
-        <div className="absolute top-0 right-1/4 w-[480px] h-[480px] bg-[#CFA46A]/8 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-1/4 w-[360px] h-[360px] bg-[#E8DFD3]/40 rounded-full blur-2xl pointer-events-none" />
+      <div className="relative bg-gradient-to-b from-[#F5EFE6] via-[#FAF5EE] to-[#FBF8F4] pt-6 sm:pt-10 pb-6 sm:pb-8 overflow-hidden border-b border-[#E8DFD3]">
+        <div className="absolute top-0 right-1/4 w-[400px] h-[400px] bg-[#CFA46A]/8 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-[300px] h-[300px] bg-[#E8DFD3]/40 rounded-full blur-2xl pointer-events-none" />
 
-        <ScrollReveal className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center" stagger={true}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           
           {/* Eyebrow Pill Tag */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#CFA46A]/40 text-[#A67C48] text-[11px] font-bold tracking-[0.24em] uppercase mb-4 shadow-xs">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white border border-[#CFA46A]/40 text-[#A67C48] text-[10.5px] font-bold tracking-[0.24em] uppercase mb-2.5 shadow-xs">
             <Sparkles className="w-3.5 h-3.5 text-[#CFA46A]" />
-            <span>GLAM GIRL EXCLUSIVE</span>
+            <span>GLAM GIRL ATELIER</span>
           </div>
 
           {/* Main Editorial Headline */}
           {isSection ? (
-            <h2 className="font-serif text-[30px] sm:text-[54px] lg:text-[64px] text-[#1E1714] leading-[1.05] tracking-[-0.01em] mb-4 font-semibold">
+            <h2 className="font-serif text-[28px] sm:text-[44px] lg:text-[52px] text-[#1E1714] leading-[1.08] tracking-[-0.01em] mb-2 font-semibold">
               Curated Rituals for <span className="italic font-serif text-[#CFA46A]">Hair & Beauty.</span>
             </h2>
           ) : (
-            <h1 className="font-serif text-[30px] sm:text-[54px] lg:text-[64px] text-[#1E1714] leading-[1.05] tracking-[-0.01em] mb-4 font-semibold">
+            <h1 className="font-serif text-[28px] sm:text-[44px] lg:text-[52px] text-[#1E1714] leading-[1.08] tracking-[-0.01em] mb-2 font-semibold">
               Curated Rituals for <span className="italic font-serif text-[#CFA46A]">Hair & Beauty.</span>
             </h1>
           )}
 
           {/* Subtitle */}
-          <p className="font-body text-[#5A4F48] text-sm sm:text-base lg:text-[16.5px] leading-relaxed max-w-2xl mx-auto font-normal mb-8">
-            Indulge in bespoke salon treatments tailored to your unique elegance.
+          <p className="font-body text-[#5A4F48] text-xs sm:text-sm lg:text-[15px] leading-relaxed max-w-xl mx-auto font-normal">
+            Explore our complete collection of 72 bespoke luxury salon & spa treatments in Ottawa.
           </p>
-
-          {/* Key Feature Bullets */}
-          <div className="flex flex-wrap justify-center items-center gap-6 sm:gap-10 text-xs sm:text-[13px] font-medium text-[#6B5E55]">
-            <span className="inline-flex items-center gap-2">
-              <span className="text-[#CFA46A] text-sm">✦</span> Certified Stylists
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <span className="text-[#CFA46A] text-sm">✦</span> Premium Eco-Friendly Products
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <span className="text-[#CFA46A] text-sm">✦</span> Hygienic & Safe
-            </span>
-          </div>
-
-        </ScrollReveal>
+        </div>
       </div>
 
       {/* ========================================================================= */}
-      {/* 2. SEARCH BAR & FILTER CONTROL TOOLBAR                                    */}
+      {/* 2. STICKY SEARCH & CATEGORY CONTROLS TOOLBAR                              */}
       {/* ========================================================================= */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
-        
-        {/* Search Input Box */}
-        <div className="relative max-w-2xl mx-auto mb-8">
-          <div className="relative flex items-center">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search 72 treatments and custom packages..."
-              className="w-full bg-white border border-[#DED4C7] focus:border-[#1E1714] rounded-full py-4 pl-14 pr-28 text-sm text-[#1E1714] placeholder-[#8C7E75] focus:outline-none shadow-md shadow-black/5 transition-all"
-            />
-            <Search className="w-5 h-5 text-[#8C7E75] absolute left-5 top-1/2 -translate-y-1/2 pointer-events-none" />
-            
-            {searchQuery ? (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 text-[#8C7E75] hover:text-[#1E1714] transition-colors cursor-pointer"
-                aria-label="Clear search"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            ) : (
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 px-4 py-2 rounded-full bg-[#1E1714] text-white text-[11px] font-bold tracking-wider uppercase pointer-events-none shadow-sm">
-                SEARCH
-              </div>
-            )}
-          </div>
-        </div>
+      <div className="sticky top-[68px] sm:top-[74px] md:top-[78px] lg:top-[80px] z-30 bg-[#FBF8F4]/95 backdrop-blur-md border-b border-[#E8DFD3] shadow-[0_4px_20px_rgba(0,0,0,0.03)] py-3 sm:py-4 transition-all">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          
+          {/* A. Search Input Form */}
+          <form 
+            onSubmit={(e) => {
+              e.preventDefault();
+              const grid = document.getElementById('services-grid-section');
+              if (grid) {
+                const navOffset = 140;
+                const elementPosition = grid.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - navOffset;
+                window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+              }
+            }}
+            className="relative max-w-2xl mx-auto mb-3"
+          >
+            <div className="relative flex items-center w-full">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search 72 treatments and services..."
+                className="w-full bg-white border border-[#DED4C7] focus:border-[#1E1714] rounded-full h-[46px] sm:h-[50px] pl-11 sm:pl-13 pr-28 sm:pr-32 text-xs sm:text-sm text-[#1E1714] placeholder-[#8C7E75] focus:outline-none shadow-sm transition-all"
+              />
+              <Search className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-[#8C7E75] absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              
+              {/* Clear button if text exists */}
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-24 sm:right-28 top-1/2 -translate-y-1/2 p-1.5 text-[#8C7E75] hover:text-[#1E1714] transition-colors cursor-pointer"
+                  aria-label="Clear search text"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
 
-        {/* Category Pill Navigation Row */}
-        <div className="mb-6 pb-2">
-          {/* Scrollable Pills container - horizontal scroll on mobile, wraps on desktop */}
-          <div className="pills-scroll sm:flex-wrap">
+              {/* Clickable SEARCH button */}
+              <button
+                type="submit"
+                className="absolute right-1.5 sm:right-2 top-1/2 -translate-y-1/2 px-4 sm:px-5 py-2 rounded-full bg-[#1E1714] hover:bg-[#CFA46A] hover:text-[#100C0D] text-white text-[10.5px] sm:text-[11.5px] font-extrabold tracking-wider uppercase shadow-sm transition-all duration-200 cursor-pointer active:scale-95 flex items-center justify-center min-h-[36px]"
+              >
+                <span>SEARCH</span>
+              </button>
+            </div>
+          </form>
+
+          {/* B. Category Filter Row — Haute Luxe Obsidian & Gold Aesthetic with Mobile Scroll & Desktop Centered Wrap */}
+          <div className="w-full overflow-x-auto no-scrollbar scroll-smooth flex items-center justify-start sm:justify-center flex-nowrap sm:flex-wrap gap-2 sm:gap-2.5 pb-1 pt-1">
             {CATEGORY_PILLS.map((pill) => {
               const isActive = selectedCategory === pill.id || (pill.categories && pill.categories.includes(selectedCategory));
               return (
                 <button
                   key={pill.id}
                   onClick={() => handleCategoryChange(pill.id)}
-                  className={`px-4 sm:px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-200 cursor-pointer flex-shrink-0 ${
+                  className={`min-h-[42px] px-4 sm:px-5 py-2 rounded-full text-[11px] sm:text-[11.5px] font-bold uppercase tracking-[0.14em] whitespace-nowrap transition-all duration-200 cursor-pointer flex-shrink-0 flex items-center justify-center gap-1.5 ${
                     isActive
-                      ? 'bg-[#1E1714] text-white shadow-md scale-[1.02]'
-                      : 'bg-white text-[#5A4F48] hover:text-[#1E1714] hover:bg-[#F2ECE4] border border-[#E0D5C7] shadow-xs'
+                      ? 'bg-[#120D0F] text-[#FFF6E5] border border-[#CFA46A] shadow-[0_4px_18px_rgba(207,164,106,0.32)] scale-[1.03]'
+                      : 'bg-white/95 text-[#483C36] hover:text-[#120D0F] hover:bg-[#FAF4EC] border border-[#E2D6C8] hover:border-[#CFA46A]/50 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_12px_rgba(207,164,106,0.12)] active:scale-95'
                   }`}
                 >
-                  {pill.label}
+                  {isActive && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#CFA46A] shadow-[0_0_8px_#CFA46A] animate-pulse" />
+                  )}
+                  <span>{pill.label}</span>
                 </button>
               );
             })}
           </div>
-        </div>
 
-        {/* Secondary Filters Bar (Sort & Counter) */}
-        <div className="flex flex-col sm:flex-row items-center justify-between pb-6 mb-8 border-b border-[#E8DFD3] gap-4">
+        </div>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* 3. SORTING & RESULTS COUNTER BAR                                          */}
+      {/* ========================================================================= */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-2">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-[#E8DFD3] gap-3">
           <div className="text-xs font-semibold text-[#6B5E55]">
             Showing <span className="font-bold text-[#1E1714]">{filteredTreatments.length}</span> luxury treatments
             {selectedCategory !== 'all' && (
@@ -240,7 +254,7 @@ export default function ServicesPage({ isSection = false }) {
                 aria-label="Sort services by"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="bg-white border border-[#E0D5C7] rounded-lg px-3 py-1.5 text-xs text-[#1E1714] font-semibold focus:outline-none focus:border-[#CFA46A] shadow-xs cursor-pointer"
+                className="bg-white border border-[#E0D5C7] rounded-lg px-3 py-1.5 text-xs text-[#1E1714] font-semibold focus:outline-none focus:border-[#CFA46A] shadow-xs cursor-pointer min-h-[36px]"
               >
                 <option value="recommended">Recommended</option>
                 <option value="price-low">Price: Low to High</option>
@@ -250,24 +264,43 @@ export default function ServicesPage({ isSection = false }) {
             </div>
           </div>
         </div>
-
       </div>
 
       {/* ========================================================================= */}
       {/* 3. CARD GRID (3 COLUMNS - EXACT MATCH TO REFERENCE SCREENSHOT)             */}
       {/* ========================================================================= */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div id="services-grid-section" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Empty Search State */}
         {filteredTreatments.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-3xl border border-[#E8DFD3] p-8 shadow-sm">
-            <p className="text-base text-[#6B5E55] mb-4">No treatments found matching "{searchQuery}".</p>
-            <button
-              onClick={() => { setSelectedCategory('all'); setSearchQuery(''); }}
-              className="px-6 py-3 rounded-full bg-[#1E1714] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#CFA46A] hover:text-[#1E1714] transition-colors"
-            >
-              Reset Filters & View All Services
-            </button>
+          <div className="text-center py-16 bg-white rounded-3xl border border-[#E8DFD3] p-8 shadow-sm max-w-lg mx-auto">
+            <div className="w-12 h-12 rounded-full bg-[#F5EFE6] text-[#A67C48] flex items-center justify-center mx-auto mb-3.5">
+              <Search className="w-5 h-5" />
+            </div>
+            <h3 className="font-serif text-xl sm:text-2xl font-semibold text-[#1E1714] mb-2">
+              No treatments found
+            </h3>
+            <p className="text-xs sm:text-sm text-[#6B5E55] mb-6">
+              Try another service name or browse all treatments.
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="px-6 py-2.5 rounded-full bg-[#1E1714] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#CFA46A] hover:text-[#100C0D] transition-all cursor-pointer shadow-sm active:scale-95 min-h-[40px]"
+              >
+                CLEAR SEARCH
+              </button>
+              {selectedCategory !== 'all' && (
+                <button
+                  type="button"
+                  onClick={() => { setSelectedCategory('all'); setSearchQuery(''); }}
+                  className="px-6 py-2.5 rounded-full border border-[#E0D5C7] text-[#5A4F48] hover:text-[#1E1714] hover:bg-[#F2ECE4] text-xs font-bold uppercase tracking-wider transition-all cursor-pointer active:scale-95 min-h-[40px]"
+                >
+                  VIEW ALL SERVICES
+                </button>
+              )}
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">

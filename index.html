@@ -8,6 +8,19 @@
     <title>GLAM GIRL BY JANKI — Women's Luxury Beauty Studio | Ottawa, Canada</title>
     <meta name="description" content="Glam Girl by Janki is Ottawa's premier luxury salon studio by master artist Janki Patel. Expert Hair Care, Skin Care, Nail Care, Bridal Makeup, Spa & Wellness in an ultra-luxurious atmosphere." />
     
+    <!-- Synchronous Global Refresh Redirect: Always open on Home ('/') upon browser refresh -->
+    <script>
+      (function() {
+        try {
+          var nav = window.performance && window.performance.getEntriesByType && window.performance.getEntriesByType('navigation')[0];
+          var isReload = nav ? (nav.type === 'reload') : (window.performance && window.performance.navigation && window.performance.navigation.type === 1);
+          if (isReload && window.location.pathname !== '/' && window.location.pathname !== '') {
+            window.location.replace('/');
+          }
+        } catch (e) {}
+      })();
+    </script>
+    
     <!-- Open Graph & Social Cards -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="GLAM GIRL BY JANKI — Luxury Beauty Studio" />
@@ -27,8 +40,8 @@
     <link 
       rel="preload" 
       as="image" 
-      href="/facial-atelier-clean-1200.webp"
-      imagesrcset="/facial-atelier-clean-1200.webp 1200w, /facial-atelier-clean-1920.webp 1920w"
+      href="/facial-atelier-clean-1920.webp"
+      imagesrcset="/facial-atelier-clean-1920.webp 1920w, /facial-atelier-clean-1200.webp 1200w"
       imagesizes="100vw"
       media="(min-width: 768px)"
       fetchpriority="high" 

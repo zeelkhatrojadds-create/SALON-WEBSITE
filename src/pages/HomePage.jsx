@@ -28,8 +28,6 @@ export default function HomePage({ defaultSection = null }) {
 
     if (!targetId && location.hash) {
       targetId = location.hash.replace('#', '');
-    } else if (!targetId && location.pathname !== '/') {
-      targetId = location.pathname.replace('/', '').split('/')[0];
     }
 
     if (targetId) {
@@ -46,10 +44,10 @@ export default function HomePage({ defaultSection = null }) {
       }, 120);
 
       return () => clearTimeout(scrollTimer);
-    } else if (location.pathname === '/' && !location.hash) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'instant' });
     }
-  }, [location.pathname, location.hash, defaultSection]);
+  }, [location.hash, defaultSection]);
 
   return (
     <div className="w-full min-h-screen bg-[#140E11] text-white overflow-x-hidden">

@@ -53,30 +53,38 @@ export default function Footer() {
             <h4 className="font-display font-semibold text-[#CFA46A] text-sm tracking-wider uppercase">Quick Links</h4>
             <ul className="space-y-2 text-sm text-[#F7F1E8]/55">
               {[
-                { label: 'Home', id: 'home' },
-                { label: 'Services', id: 'services' },
-                { label: 'Gallery', id: 'gallery' },
-                { label: 'About', id: 'about' },
-                { label: 'Stay in the Glow', id: 'newsletter' },
-                { label: 'Contact', id: 'contact' },
-              ].map(({ label, id }) => (
-                <li key={id}>
-                  <a
-                    href={`/#${id}`}
-                    onClick={(e) => { e.preventDefault(); scrollTo(id); }}
+                { label: 'Home', path: '/' },
+                { label: 'Services', path: '/services' },
+                { label: 'Treatments', path: '/treatments' },
+                { label: 'Gallery', path: '/gallery' },
+                { label: 'About', path: '/about' },
+                { label: 'Contact', path: '/contact' },
+              ].map(({ label, path }) => (
+                <li key={path}>
+                  <Link
+                    to={path}
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })}
                     className="hover:text-[#CFA46A] transition-colors cursor-pointer"
                   >
                     {label}
-                  </a>
+                  </Link>
                 </li>
               ))}
               <li>
-                <Link to="/careers" className="hover:text-[#CFA46A] transition-colors">
+                <Link 
+                  to="/careers" 
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })}
+                  className="hover:text-[#CFA46A] transition-colors"
+                >
                   Careers & Join Us
                 </Link>
               </li>
               <li>
-                <Link to="/book-appointment" className="hover:text-[#CFA46A] transition-colors">
+                <Link 
+                  to="/book-appointment" 
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })}
+                  className="hover:text-[#CFA46A] transition-colors"
+                >
                   Book Appointment
                 </Link>
               </li>
@@ -87,15 +95,23 @@ export default function Footer() {
           <div className="lg:col-span-2 space-y-3">
             <h4 className="font-display font-semibold text-[#CFA46A] text-sm tracking-wider uppercase">Services</h4>
             <ul className="space-y-2 text-sm text-[#F7F1E8]/55">
-              {['Threading', 'Waxing', 'Facial', 'Makeup', 'Henna', 'Hair', 'Massage'].map((s) => (
-                <li key={s}>
-                  <a
-                    href="/#services"
-                    onClick={(e) => { e.preventDefault(); scrollTo('services'); }}
+              {[
+                { name: 'Threading', path: '/services/threading' },
+                { name: 'Waxing', path: '/services/waxing' },
+                { name: 'Facial', path: '/services/facial' },
+                { name: 'Makeup', path: '/services/makeup' },
+                { name: 'Henna', path: '/services/henna' },
+                { name: 'Hair Care', path: '/services/hair-cut' },
+                { name: 'Massage', path: '/services/massage' }
+              ].map((s) => (
+                <li key={s.name}>
+                  <Link
+                    to={s.path}
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })}
                     className="hover:text-[#CFA46A] transition-colors cursor-pointer"
                   >
-                    {s}
-                  </a>
+                    {s.name}
+                  </Link>
                 </li>
               ))}
             </ul>

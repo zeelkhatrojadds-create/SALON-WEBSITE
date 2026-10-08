@@ -69,58 +69,7 @@ export default function Navbar() {
     }
   }, [location.pathname]);
 
-  const handleNavClick = (e, link) => {
-    e.preventDefault();
-    setIsMobileMenuOpen(false);
 
-    if (link.id === 'home') {
-      navigate('/');
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-      return;
-    }
-
-    if (link.id === 'services') {
-      navigate('/services');
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-      return;
-    }
-
-    if (link.id === 'treatments') {
-      navigate('/treatments');
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-      return;
-    }
-
-    if (link.id === 'gallery') {
-      navigate('/gallery');
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-      return;
-    }
-
-    if (link.id === 'about') {
-      navigate('/about');
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-      return;
-    }
-
-    if (link.id === 'reviews') {
-      navigate('/reviews');
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-      return;
-    }
-
-    if (link.id === 'careers') {
-      navigate('/careers');
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-      return;
-    }
-
-    if (link.id === 'contact') {
-      navigate('/contact');
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-      return;
-    }
-  };
 
   return (
     <>
@@ -146,17 +95,20 @@ export default function Navbar() {
           </div>
 
           {/* ===================================================================== */}
-          {/* CENTER: Centered Navigation with Medium/Large Readable Typography */}
+          {/* CENTER: Full Desktop Navigation (>= 1200px / xl)                     */}
           {/* ===================================================================== */}
-          <nav className="hidden md:flex items-center justify-center space-x-6 lg:space-x-8 xl:space-x-10 flex-1 px-4">
+          <nav className="hidden xl:flex items-center justify-center space-x-6 xl:space-x-8 2xl:space-x-10 flex-1 px-4">
             {navLinks.map((link) => {
               const isActive = activeSection === link.id;
               return (
-                <a
+                <Link
                   key={link.name}
-                  href={`/#${link.id}`}
-                  onClick={(e) => handleNavClick(e, link)}
-                  className={`relative font-body text-[13px] lg:text-[14px] font-bold tracking-[0.2em] uppercase transition-colors duration-200 py-2 cursor-pointer group ${
+                  to={link.path}
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    window.scrollTo({ top: 0, behavior: 'instant' });
+                  }}
+                  className={`relative font-body text-[12.5px] xl:text-[13.5px] 2xl:text-[14px] font-bold tracking-[0.2em] uppercase transition-colors duration-200 py-2 cursor-pointer group whitespace-nowrap ${
                     isLightPage
                       ? isActive
                         ? 'text-[#A67C48]'
@@ -172,36 +124,72 @@ export default function Navbar() {
                   ) : (
                     <span className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[#CFA46A]/60 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center rounded-full" />
                   )}
-                </a>
+                </Link>
               );
             })}
           </nav>
 
           {/* ===================================================================== */}
-          {/* RIGHT: Large Premium Rectangular Button (190px × 46px) & Mobile Menu */}
+          {/* RIGHT: Responsive CTA & Menu (Desktop / Tablet / Mobile)              */}
           {/* ===================================================================== */}
-          <div className="flex items-center justify-end gap-3 flex-shrink-0">
+          <div className="flex items-center justify-end gap-2.5 sm:gap-3 flex-shrink-0">
             
-            {/* Desktop / Tablet Premium Rounded-Full Pill Button */}
+            {/* Desktop Full CTA (>= 1200px / xl) */}
             <Link
               to="/book-appointment"
-              className="hidden sm:inline-flex items-center justify-center gap-2 px-6 h-[40px] lg:h-[44px] rounded-full bg-gradient-to-r from-[#CFA46A] via-[#E5C492] to-[#CFA46A] hover:from-[#E5C492] hover:to-[#CFA46A] text-[#0D0B0B] text-[11.5px] lg:text-[12px] font-extrabold uppercase tracking-[0.16em] border border-[#E5C492]/50 shadow-[0_4px_16px_rgba(207,164,106,0.35)] transition-all duration-300 hover:scale-[1.03] active:scale-98 cursor-pointer flex-shrink-0"
+              className="hidden xl:inline-flex items-center justify-center gap-2 px-6 h-[42px] 2xl:h-[44px] rounded-full bg-gradient-to-r from-[#CFA46A] via-[#E5C492] to-[#CFA46A] hover:from-[#E5C492] hover:to-[#CFA46A] text-[#0D0B0B] text-[11.5px] 2xl:text-[12px] font-extrabold uppercase tracking-[0.16em] border border-[#E5C492]/50 shadow-[0_4px_16px_rgba(207,164,106,0.35)] transition-all duration-300 hover:scale-[1.03] active:scale-98 cursor-pointer flex-shrink-0"
             >
               <span>BOOK APPOINTMENT</span>
             </Link>
 
-            {/* Mobile Hamburger Toggle */}
-            <button
-              onClick={() => setIsMobileMenuOpen(true)}
-              className={`md:hidden w-10 h-10 rounded-lg flex items-center justify-center transition-colors cursor-pointer ${
-                isLightPage
-                  ? 'bg-white border border-[#E8DFD3] text-[#161012] hover:text-[#CFA46A]'
-                  : 'bg-white/5 border border-white/10 text-[#F7F1E8] hover:text-[#CFA46A]'
-              }`}
-              aria-label="Open navigation menu"
-            >
-              <Menu className="w-5 h-5" />
-            </button>
+            {/* Tablet View (768px → 1199px): Book Appointment CTA + Hamburger Toggle */}
+            <div className="hidden md:flex xl:hidden items-center gap-3">
+              <Link
+                to="/book-appointment"
+                className="inline-flex items-center justify-center gap-2 px-5 h-[42px] rounded-full bg-gradient-to-r from-[#CFA46A] via-[#E5C492] to-[#CFA46A] hover:from-[#E5C492] hover:to-[#CFA46A] text-[#0D0B0B] text-[11px] font-extrabold uppercase tracking-[0.14em] border border-[#E5C492]/50 shadow-[0_4px_14px_rgba(207,164,106,0.3)] transition-all duration-200 active:scale-98 cursor-pointer"
+              >
+                <span>BOOK APPOINTMENT</span>
+              </Link>
+              <button
+                onClick={() => setIsMobileMenuOpen(true)}
+                className={`w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer shadow-md active:scale-95 ${
+                  isLightPage
+                    ? 'bg-[#221D1F] text-white hover:bg-[#342D2F]'
+                    : 'bg-[#241F20]/90 backdrop-blur-md border border-white/15 text-white hover:bg-[#342D2F]'
+                }`}
+                aria-label="Open navigation menu"
+              >
+                <Menu className="w-5 h-5 text-white" />
+              </button>
+            </div>
+
+            {/* Mobile View (< 768px): Ottawa Location Pill Badge + Menu Toggle */}
+            <div className="flex md:hidden items-center gap-2">
+              <div
+                className={`flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full border shadow-sm select-none transition-all ${
+                  isLightPage
+                    ? 'bg-[#221D1F] border-black/15 text-white'
+                    : 'bg-[#241F20]/90 backdrop-blur-md border-white/15 text-[#F7F1E8]'
+                }`}
+              >
+                <span className="w-2 h-2 rounded-full bg-[#D4AF37] shadow-[0_0_8px_rgba(212,175,55,0.9)] flex-shrink-0" />
+                <span className="text-[11px] sm:text-xs font-bold tracking-[0.14em] uppercase font-body text-white leading-none">
+                  OTTAWA
+                </span>
+              </div>
+
+              <button
+                onClick={() => setIsMobileMenuOpen(true)}
+                className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer shadow-md active:scale-95 ${
+                  isLightPage
+                    ? 'bg-[#221D1F] text-white hover:bg-[#342D2F]'
+                    : 'bg-[#241F20]/90 backdrop-blur-md border border-white/15 text-white hover:bg-[#342D2F]'
+                }`}
+                aria-label="Open navigation menu"
+              >
+                <Menu className="w-5 h-5 text-white" />
+              </button>
+            </div>
 
           </div>
 
@@ -240,10 +228,13 @@ export default function Navbar() {
         {/* Drawer Nav Links */}
         <nav className="flex-1 flex flex-col gap-1 p-5 pt-6 overflow-y-auto">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.name}
-              href={`/#${link.id}`}
-              onClick={(e) => handleNavClick(e, link)}
+              to={link.path}
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                window.scrollTo({ top: 0, behavior: 'instant' });
+              }}
               className={`font-body text-sm font-bold uppercase tracking-[0.2em] py-3.5 px-3 rounded-xl border-b border-[#CFA46A]/10 transition-colors flex items-center justify-between ${
                 activeSection === link.id
                   ? 'text-[#CFA46A] bg-[#CFA46A]/10'
@@ -252,7 +243,7 @@ export default function Navbar() {
             >
               <span>{link.name}</span>
               <ArrowRight className="w-3.5 h-3.5 opacity-50" />
-            </a>
+            </Link>
           ))}
         </nav>
 

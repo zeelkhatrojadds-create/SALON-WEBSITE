@@ -1061,20 +1061,49 @@ export default function BookingPage() {
               <p className="text-xs text-[#7A6B60] text-center py-6">No appointments booked yet.</p>
             ) : (
               <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
-                {savedAppointments.map((app) => (
-                  <div key={app.id || app.referenceCode} className="p-3.5 rounded-2xl bg-[#F8F4EE] border border-[#E8DFC8] space-y-1 text-xs">
-                    <div className="flex justify-between font-bold">
-                      <span className="text-[#4A392B]">{app.service}</span>
-                      <span className="text-[#CFA46A]">${app.servicePrice} CAD</span>
+                {savedAppointments.map((app) => {
+                  const status = app.status || app.appointmentStatus || 'Pending';
+                  return (
+                    <div key={app.id || app.referenceCode} className="p-3.5 rounded-2xl bg-[#F8F4EE] border border-[#E8DFC8] space-y-1.5 text-xs">
+                      <div className="flex justify-between items-start font-bold">
+                        <span className="text-[#4A392B] text-sm">{app.service}</span>
+                        <span className="text-[#CFA46A]">${app.servicePrice} CAD</span>
+                      </div>
+                      <div className="text-[11px] text-[#7A6B60]">
+                        📅 {app.date} • ⏰ {app.time}
+                      </div>
+                      <div className="flex items-center justify-between pt-1 border-t border-[#E8DFC8]/60">
+                        <span className="text-[10px] text-[#A09488] font-mono">
+                          Ref: {app.referenceCode || app.id}
+                        </span>
+                        
+                        {/* Customer status display (Read-only) */}
+                        {status === 'In Progress' ? (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-800 border border-amber-500/40">
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping" />
+                            <span>Treatment In Progress</span>
+                          </span>
+                        ) : status === 'Completed' ? (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-500/15 text-emerald-800 border border-emerald-500/30">
+                            <span>✓ Treatment Completed</span>
+                          </span>
+                        ) : status === 'Confirmed' || status === 'Appointment Request Confirmed' ? (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-500/15 text-emerald-800 border border-emerald-500/30">
+                            <span>Appointment Confirmed</span>
+                          </span>
+                        ) : status === 'Cancelled' ? (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-red-500/15 text-red-800 border border-red-500/30">
+                            <span>Cancelled</span>
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/15 text-amber-800 border border-amber-500/30">
+                            <span>Pending Confirmation</span>
+                          </span>
+                        )}
+                      </div>
                     </div>
-                    <div className="text-[11px] text-[#7A6B60]">
-                      📅 {app.date} • ⏰ {app.time}
-                    </div>
-                    <div className="text-[10px] text-[#A09488] font-mono">
-                      Ref: {app.referenceCode || app.id}
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>

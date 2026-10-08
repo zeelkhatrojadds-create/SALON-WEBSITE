@@ -43,29 +43,15 @@ export default function NewsletterSection() {
 
     setStatus('loading');
 
-    // Simulate real network request & save to local storage
     setTimeout(() => {
       try {
-        const storedSubscribers = JSON.parse(localStorage.getItem('glfy_db_newsletter_subscribers') || '[]');
-        const normalizedEmail = email.trim().toLowerCase();
-        
-        const exists = storedSubscribers.some(sub => (typeof sub === 'string' ? sub : sub.email) === normalizedEmail);
-        
-        if (!exists) {
-          storedSubscribers.push({
-            email: normalizedEmail,
-            subscribedAt: new Date().toISOString(),
-            topics: selectedTopics,
-          });
-          localStorage.setItem('glfy_db_newsletter_subscribers', JSON.stringify(storedSubscribers));
-        }
-
+        salonDB.subscribeNewsletter(email, selectedTopics);
         setStatus('success');
       } catch (err) {
         console.error('Subscription error:', err);
-        setStatus('success'); // Soft fallback for user experience
+        setStatus('success');
       }
-    }, 800);
+    }, 400);
   };
 
   const handleReset = () => {

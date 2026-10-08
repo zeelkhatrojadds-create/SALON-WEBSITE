@@ -17,8 +17,11 @@ import {
   Flower2 
 } from 'lucide-react';
 import ScrollReveal from '../ScrollReveal/ScrollReveal';
+import salonDB from '../../db/salonDatabase';
 
 export default function ContactSection() {
+  const settings = salonDB.getSettings();
+
   // Form State
   const [salutation, setSalutation] = useState('Ms.');
   const [fullName, setFullName] = useState('');
@@ -40,6 +43,19 @@ export default function ContactSection() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!fullName.trim() || !email.trim()) return;
+
+    // Save directly to the Master Database
+    salonDB.addContactMessage({
+      name: `${salutation} ${fullName.trim()}`,
+      email: email.trim(),
+      phone: phone.trim(),
+      subject: inquiryType,
+      message: notes.trim(),
+      targetDate,
+      preferredContactMode
+    });
+
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
@@ -52,11 +68,11 @@ export default function ContactSection() {
   };
 
   const handleCallConcierge = () => {
-    window.location.href = 'tel:+16135550192';
+    window.location.href = `tel:${settings.phone || '+16162550549'}`;
   };
 
   const handleDrivingDirections = () => {
-    window.open('https://maps.google.com/?q=180+Kent+Street+Ottawa+ON', '_blank', 'noopener,noreferrer');
+    window.open(`https://maps.google.com/?q=${encodeURIComponent(settings.address + ' ' + settings.city)}`, '_blank', 'noopener,noreferrer');
   };
 
   return (

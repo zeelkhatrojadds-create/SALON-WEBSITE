@@ -17,6 +17,7 @@ import salonInteriorImg from '../../assets/atelier-salon-interior.webp';
 import floralBookingImg from '../../assets/floral-booking.webp';
 import founderImg from '../../assets/janki-khatroja.webp';
 import ScrollReveal from '../ScrollReveal/ScrollReveal';
+import salonDB from '../../db/salonDatabase';
 
 const FILTER_CATEGORIES = [
   { id: 'all', label: 'ALL 50 EXHIBITIONS' },
@@ -27,45 +28,20 @@ const FILTER_CATEGORIES = [
   { id: 'clinical', label: 'CLINICAL DERMO CARE' }
 ];
 
-const TRANSFORMATION_CARDS = [
-  {
-    id: 1,
-    category: 'hair',
-    badge: 'HAUTE COIFFURE',
-    title: 'Sunkissed Parisian Balayage',
-    price: '$285+',
-    description: 'Hand-painted dimensional caramel foils paired with silk-gloss conditioning melt bespoke tailored for inequal luster.',
-    tags: ['SIGNATURE BLONDE', 'SILK CONDITION'],
-    image: floralBookingImg
-  },
-  {
-    id: 2,
-    category: 'facials',
-    badge: 'DERMAL THERAPY',
-    title: 'Sublime Cellular Radiance',
-    price: '$190',
-    description: 'Non-invasive micro-nutrient filling combined with hyaluronic infusions and lymphatic jade drainage.',
-    tags: ['HYDRA-LIFT', 'LED THERAPY'],
-    image: cleanFacialBg
-  },
-  {
-    id: 3,
-    category: 'hair',
-    badge: 'HAIR RESTORATION',
-    title: 'Caviar Gloss & Sculpt',
-    price: '$165',
-    description: 'Deep lipid reconstruction infused with marine extracts, finished with bouncy round-brush architectural shaping.',
-    tags: ['KERATIN SHINE', 'SCALP MASSAGE'],
-    image: salonInteriorImg
-  }
-];
-
 export default function GallerySection() {
   const [activeFilter, setActiveFilter] = useState('all');
+  const [galleryItems, setGalleryItems] = useState(() => salonDB.getActiveGallery());
+
+  React.useEffect(() => {
+    const sync = () => setGalleryItems(salonDB.getActiveGallery());
+    sync();
+    const unsub = salonDB.subscribe(sync);
+    return () => unsub();
+  }, []);
 
   const filteredCards = activeFilter === 'all' 
-    ? TRANSFORMATION_CARDS 
-    : TRANSFORMATION_CARDS.filter(c => c.category === activeFilter || activeFilter === 'all');
+    ? galleryItems 
+    : galleryItems.filter(c => c.category === activeFilter || activeFilter === 'all');
 
   return (
     <section id="gallery" className="w-full bg-[#FAF6F0] text-[#1E1714] py-16 sm:py-24 overflow-hidden border-t border-[#E8DFD3]">
