@@ -83,11 +83,7 @@ export default function ContactSection() {
       {/* ========================================================================= */}
       <section className="pt-20 sm:pt-28 pb-14 sm:pb-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto text-center">
         <ScrollReveal stagger={true}>
-          {/* Top Tag Pill */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F3E5DE] border border-[#E4CEC3] text-[#A6634E] text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.22em] mb-6 shadow-xs">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#B8735C]" />
-            <span>BESPOKE CONCIERGE · DIRECT LIAISON | OR / INTIMATE INQUIRIES</span>
-          </div>
+
 
           {/* Headline */}
           <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl text-[#2B1D19] font-normal tracking-tight leading-[1.15] mb-5">

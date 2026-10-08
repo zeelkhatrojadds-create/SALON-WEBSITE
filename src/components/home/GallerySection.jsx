@@ -52,11 +52,7 @@ export default function GallerySection() {
         {/* ========================================================================= */}
         <ScrollReveal className="text-center max-w-3xl mx-auto space-y-3.5 mb-10 sm:mb-14" stagger={true}>
           
-          {/* Top Pill Tag */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F3ECE1] border border-[#CFA46A]/30 text-[#8C6430] text-[10.5px] sm:text-[11px] font-bold uppercase tracking-[0.24em] shadow-xs">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#CFA46A]" />
-            <span>BESPOKE ATELIER • CURATED ARCHIVE | 50+ VISUAL EXHIBITION</span>
-          </div>
+
 
           {/* Main Title */}
           <h2 className="font-serif text-[38px] sm:text-[50px] lg:text-[58px] font-normal leading-[1.05] text-[#161012] tracking-tight">
