@@ -35,17 +35,53 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Prevent background scroll when mobile drawer is open
+  // Prevent background scroll when mobile drawer is open (iOS & Android compatible)
   useEffect(() => {
     if (isMobileMenuOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
       document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
     } else {
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
+      }
     }
     return () => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
     };
   }, [isMobileMenuOpen]);
+
+  // Clean navigation handler for mobile menu links
+  const handleMobileNav = (path) => {
+    // Unlock body scroll immediately
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+
+    setIsMobileMenuOpen(false);
+
+    if (location.pathname === path) {
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    } else {
+      navigate(path);
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    }
+  };
 
   // Set active section based on current pathname
   useEffect(() => {
@@ -202,22 +238,23 @@ export default function Navbar() {
       {/* Backdrop */}
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm transition-opacity animate-fade-in"
-          onClick={() => setIsMobileMenuOpen(false)}
+          className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm transition-opacity animate-fade-in touch-none"
+          onClick={() => handleMobileNav(location.pathname)}
+          onTouchMove={(e) => e.preventDefault()}
         />
       )}
 
       {/* Mobile Drawer Slide-in */}
       <div
-        className={`fixed top-0 right-0 h-full w-[min(320px,85vw)] z-[70] bg-[#0A0809] border-l border-[#CFA46A]/20 flex flex-col transform transition-transform duration-300 ease-out shadow-2xl ${
+        className={`fixed top-0 right-0 h-full w-[min(320px,85vw)] z-[70] bg-[#0A0809] border-l border-[#CFA46A]/20 flex flex-col transform transition-transform duration-300 ease-out shadow-2xl overscroll-contain ${
           isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         {/* Drawer Header */}
         <div className="flex items-center justify-between p-5 border-b border-[#CFA46A]/15 bg-[#140F11]">
-          <Logo size="sm" onClick={() => setIsMobileMenuOpen(false)} />
+          <Logo size="sm" onClick={() => handleMobileNav('/')} />
           <button
-            onClick={() => setIsMobileMenuOpen(false)}
+            onClick={() => handleMobileNav(location.pathname)}
             className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-[#F7F1E8]/70 hover:text-[#CFA46A] transition-colors cursor-pointer"
             aria-label="Close menu"
           >
@@ -226,16 +263,13 @@ export default function Navbar() {
         </div>
 
         {/* Drawer Nav Links */}
-        <nav className="flex-1 flex flex-col gap-1 p-5 pt-6 overflow-y-auto">
+        <nav className="flex-1 flex flex-col gap-1 p-5 pt-6 overflow-y-auto overscroll-contain">
           {navLinks.map((link) => (
-            <Link
+            <button
               key={link.name}
-              to={link.path}
-              onClick={() => {
-                setIsMobileMenuOpen(false);
-                window.scrollTo({ top: 0, behavior: 'instant' });
-              }}
-              className={`font-body text-sm font-bold uppercase tracking-[0.2em] py-3.5 px-3 rounded-xl border-b border-[#CFA46A]/10 transition-colors flex items-center justify-between ${
+              type="button"
+              onClick={() => handleMobileNav(link.path)}
+              className={`font-body text-sm font-bold uppercase tracking-[0.2em] py-3.5 px-3 rounded-xl border-b border-[#CFA46A]/10 transition-colors flex items-center justify-between text-left w-full cursor-pointer ${
                 activeSection === link.id
                   ? 'text-[#CFA46A] bg-[#CFA46A]/10'
                   : 'text-[#F7F1E8]/80 hover:text-[#CFA46A] hover:bg-white/5'
@@ -243,20 +277,20 @@ export default function Navbar() {
             >
               <span>{link.name}</span>
               <ArrowRight className="w-3.5 h-3.5 opacity-50" />
-            </Link>
+            </button>
           ))}
         </nav>
 
         {/* Drawer Footer CTA */}
         <div className="p-5 border-t border-[#CFA46A]/15 bg-[#140F11] space-y-3">
-          <Link
-            to="/book-appointment"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="w-full h-[46px] rounded-lg bg-gradient-to-r from-[#CFA46A] via-[#E5C492] to-[#CFA46A] text-[#0D0B0B] text-xs font-extrabold uppercase tracking-[0.16em] flex items-center justify-center gap-2 shadow-lg shadow-[#CFA46A]/20 transition-all hover:scale-105 active:scale-95"
+          <button
+            type="button"
+            onClick={() => handleMobileNav('/book-appointment')}
+            className="w-full h-[46px] rounded-lg bg-gradient-to-r from-[#CFA46A] via-[#E5C492] to-[#CFA46A] text-[#0D0B0B] text-xs font-extrabold uppercase tracking-[0.16em] flex items-center justify-center gap-2 shadow-lg shadow-[#CFA46A]/20 transition-all hover:scale-105 active:scale-95 cursor-pointer"
           >
             <Calendar className="w-4 h-4" />
             <span>BOOK APPOINTMENT</span>
-          </Link>
+          </button>
           <p className="text-[10px] text-center text-[#F7F1E8]/40 uppercase tracking-widest font-mono">
             Ottawa, ON • 1 616-255-0549
           </p>
