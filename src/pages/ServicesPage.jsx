@@ -128,11 +128,7 @@ export default function ServicesPage({ isSection = false }) {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           
-          {/* Eyebrow Pill Tag */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white border border-[#CFA46A]/40 text-[#A67C48] text-[10.5px] font-bold tracking-[0.24em] uppercase mb-2.5 shadow-xs">
-            <Sparkles className="w-3.5 h-3.5 text-[#CFA46A]" />
-            <span>GLAM GIRL ATELIER</span>
-          </div>
+
 
           {/* Main Editorial Headline */}
           {isSection ? (
