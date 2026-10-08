@@ -73,14 +73,7 @@ export default function HeroSection() {
             </Link>
           </div>
 
-          {/* Bottom Prompt */}
-          <div className="w-full pt-4 mt-2 flex items-center justify-between text-[9.5px] font-body tracking-[0.2em] uppercase text-[#F7F1E8]/60 border-t border-white/5">
-            <span>GLAM GIRL ATELIER</span>
-            <a href="#services" className="flex items-center gap-1 text-[#CFA46A]">
-              <span>SCROLL</span>
-              <ChevronDown className="w-3.5 h-3.5" />
-            </a>
-          </div>
+
 
         </div>
       </div>
