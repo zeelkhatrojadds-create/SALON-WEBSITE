@@ -117,17 +117,17 @@ export default function AdminGallery() {
   });
 
   return (
-    <div className="space-y-6 animate-fade-in text-white">
+    <div className="space-y-6 animate-fade-in text-[#10110F]">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white">Gallery Exhibitions</h2>
-          <p className="text-white/60 text-xs sm:text-sm">Manage visual showcase items, categories, and public visibility.</p>
+          <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#10110F]">Gallery Exhibitions</h2>
+          <p className="text-[#6B7068] text-xs sm:text-sm">Manage visual showcase items, categories, and public visibility.</p>
         </div>
 
         <button
           onClick={handleOpenAdd}
-          className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-[#CFA46A] hover:bg-[#E5C492] text-[#0D0B0B] text-xs font-bold uppercase tracking-wider shadow-lg shadow-[#CFA46A]/20 active:scale-95 transition-all cursor-pointer"
+          className="global-button inline-flex items-center gap-1.5 !px-5 !py-2.5 text-white text-xs font-bold uppercase tracking-wider shadow-md cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>Add Exhibition</span>
@@ -135,15 +135,15 @@ export default function AdminGallery() {
       </div>
 
       {/* Search Bar */}
-      <div className="bg-[#1C1418] rounded-2xl p-4 border border-white/10 shadow-lg">
+      <div className="bg-white rounded-2xl p-4 border border-[#DCE1D8] shadow-sm">
         <div className="relative">
-          <Search className="w-4 h-4 text-white/40 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#6B7068] absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search exhibitions by title, category, or badge..."
-            className="w-full h-10 pl-10 pr-4 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder-white/40 focus:outline-none focus:border-[#CFA46A]"
+            className="w-full h-10 pl-10 pr-4 bg-[#F7F4ED]/50 border border-[#DCE1D8] rounded-xl text-xs text-[#10110F] placeholder-[#6B7068]/50 focus:outline-none focus:border-[#263D2B]"
           />
         </div>
       </div>
@@ -153,25 +153,25 @@ export default function AdminGallery() {
         {filteredItems.map((item) => (
           <div 
             key={item.id}
-            className={`bg-[#1C1418] rounded-3xl border overflow-hidden shadow-xl flex flex-col justify-between transition-all ${
-              item.isActive !== false ? 'border-white/10 hover:border-[#CFA46A]/40' : 'border-red-500/30 opacity-70'
+            className={`bg-white rounded-3xl border overflow-hidden shadow-sm flex flex-col justify-between transition-all ${
+              item.isActive !== false ? 'border-[#DCE1D8] hover:border-[#263D2B]' : 'border-red-300 opacity-70'
             }`}
           >
             <div>
-              <div className="relative aspect-[16/10] bg-black/40 overflow-hidden">
+              <div className="relative aspect-[16/10] bg-[#F7F4ED] overflow-hidden">
                 <img 
                   src={item.image} 
                   alt={item.title} 
                   className="w-full h-full object-cover"
                   onError={(e) => { e.target.src = '/images/facial/24k-gold-hydra-glow.webp'; }}
                 />
-                <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/75 backdrop-blur-md text-[10px] font-bold tracking-wider uppercase text-[#CFA46A] border border-white/10">
+                <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/75 backdrop-blur-md text-[10px] font-bold tracking-wider uppercase text-white border border-white/10">
                   {item.badge || item.category}
                 </span>
                 <button
                   onClick={() => handleToggleActive(item)}
                   className={`absolute top-3 right-3 p-1.5 rounded-full backdrop-blur-md border ${
-                    item.isActive !== false ? 'bg-emerald-500/80 text-white border-emerald-400' : 'bg-red-500/80 text-white border-red-400'
+                    item.isActive !== false ? 'bg-[#263D2B] text-white border-[#263D2B]' : 'bg-red-600 text-white border-red-500'
                   }`}
                   title={item.isActive !== false ? 'Active on website' : 'Hidden from website'}
                 >
@@ -181,28 +181,28 @@ export default function AdminGallery() {
 
               <div className="p-5 space-y-2">
                 <div className="flex justify-between items-start gap-2">
-                  <h3 className="font-serif font-bold text-base text-white">{item.title}</h3>
-                  <span className="text-xs font-mono font-bold text-[#CFA46A] flex-shrink-0">{item.price}</span>
+                  <h3 className="font-serif font-bold text-base text-[#10110F]">{item.title}</h3>
+                  <span className="text-xs font-mono font-bold text-[#263D2B] flex-shrink-0">{item.price}</span>
                 </div>
-                <p className="text-xs text-white/60 line-clamp-2">{item.description}</p>
+                <p className="text-xs text-[#6B7068] line-clamp-2">{item.description}</p>
               </div>
             </div>
 
-            <div className="p-5 pt-0 border-t border-white/5 flex items-center justify-between gap-2 mt-2">
-              <span className="text-[10px] font-mono text-white/40 uppercase">
+            <div className="p-5 pt-0 border-t border-[#DCE1D8] flex items-center justify-between gap-2 mt-2">
+              <span className="text-[10px] font-mono text-[#6B7068] uppercase">
                 {item.category}
               </span>
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => handleOpenEdit(item)}
-                  className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs transition-colors"
+                  className="p-2 rounded-xl bg-[#F7F4ED] hover:bg-[#263D2B] text-[#263D2B] hover:text-white text-xs transition-colors"
                   title="Edit item"
                 >
                   <Edit3 className="w-3.5 h-3.5" />
                 </button>
                 <button
                   onClick={() => handleDelete(item.id, item.title)}
-                  className="p-2 rounded-xl bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white transition-colors"
+                  className="p-2 rounded-xl bg-red-50 hover:bg-red-600 text-red-600 hover:text-white transition-colors"
                   title="Delete item"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -215,37 +215,37 @@ export default function AdminGallery() {
 
       {/* Add / Edit Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
-          <div className="bg-[#1C1418] border border-white/15 rounded-3xl p-6 sm:p-8 w-full max-w-lg shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto text-xs">
-            <div className="flex items-center justify-between pb-3 border-b border-white/10">
-              <h3 className="font-serif font-bold text-white text-lg">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white border border-[#DCE1D8] rounded-3xl p-6 sm:p-8 w-full max-w-lg shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto text-xs">
+            <div className="flex items-center justify-between pb-3 border-b border-[#DCE1D8]">
+              <h3 className="font-serif font-bold text-[#10110F] text-lg">
                 {editingItem ? 'Edit Gallery Exhibition' : 'Add New Exhibition'}
               </h3>
-              <button onClick={() => setShowAddModal(false)} className="text-white/60 hover:text-white">
+              <button onClick={() => setShowAddModal(false)} className="text-[#6B7068] hover:text-[#10110F]">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-3.5">
               <div>
-                <label className="block text-white/80 font-semibold mb-1">Title *</label>
+                <label className="block text-[#10110F] font-semibold mb-1">Title *</label>
                 <input
                   type="text"
                   required
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   placeholder="e.g. Sunkissed Parisian Balayage"
-                  className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-xl text-white focus:border-[#CFA46A] outline-none"
+                  className="w-full h-10 px-3 bg-[#F7F4ED]/50 border border-[#DCE1D8] rounded-xl text-[#10110F] focus:border-[#263D2B] outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-white/80 font-semibold mb-1">Category</label>
+                  <label className="block text-[#10110F] font-semibold mb-1">Category</label>
                   <select
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full h-10 px-3 bg-[#24151E] border border-white/10 rounded-xl text-white focus:border-[#CFA46A] outline-none"
+                    className="w-full h-10 px-3 bg-[#F7F4ED]/50 border border-[#DCE1D8] rounded-xl text-[#10110F] focus:border-[#263D2B] outline-none"
                   >
                     <option value="hair">Haute Coiffure & Balayage</option>
                     <option value="facials">Luminous Facials</option>
@@ -255,46 +255,46 @@ export default function AdminGallery() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-white/80 font-semibold mb-1">Price Tag</label>
+                  <label className="block text-[#10110F] font-semibold mb-1">Price Tag</label>
                   <input
                     type="text"
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                     placeholder="$190+"
-                    className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-xl text-white focus:border-[#CFA46A] outline-none"
+                    className="w-full h-10 px-3 bg-[#F7F4ED]/50 border border-[#DCE1D8] rounded-xl text-[#10110F] focus:border-[#263D2B] outline-none"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-white/80 font-semibold mb-1">Badge Text</label>
+                <label className="block text-[#10110F] font-semibold mb-1">Badge Text</label>
                 <input
                   type="text"
                   value={formData.badge}
                   onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
                   placeholder="HAUTE COIFFURE"
-                  className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-xl text-white focus:border-[#CFA46A] outline-none"
+                  className="w-full h-10 px-3 bg-[#F7F4ED]/50 border border-[#DCE1D8] rounded-xl text-[#10110F] focus:border-[#263D2B] outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-white/80 font-semibold mb-1">Image URL / Path</label>
+                <label className="block text-[#10110F] font-semibold mb-1">Image URL / Path</label>
                 <input
                   type="text"
                   value={formData.image}
                   onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                   placeholder="/images/facial/24k-gold-hydra-glow.webp"
-                  className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-xl text-white focus:border-[#CFA46A] outline-none"
+                  className="w-full h-10 px-3 bg-[#F7F4ED]/50 border border-[#DCE1D8] rounded-xl text-[#10110F] focus:border-[#263D2B] outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-white/80 font-semibold mb-1">Description</label>
+                <label className="block text-[#10110F] font-semibold mb-1">Description</label>
                 <textarea
                   rows={2}
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full p-2.5 bg-white/5 border border-white/10 rounded-xl text-white focus:border-[#CFA46A] outline-none resize-none"
+                  className="w-full p-2.5 bg-[#F7F4ED]/50 border border-[#DCE1D8] rounded-xl text-[#10110F] focus:border-[#263D2B] outline-none resize-none"
                 />
               </div>
 
@@ -304,9 +304,9 @@ export default function AdminGallery() {
                   id="isActiveToggle"
                   checked={formData.isActive}
                   onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="rounded text-[#CFA46A] focus:ring-0 cursor-pointer"
+                  className="rounded text-[#263D2B] focus:ring-0 cursor-pointer"
                 />
-                <label htmlFor="isActiveToggle" className="text-white/90 font-medium cursor-pointer">
+                <label htmlFor="isActiveToggle" className="text-[#10110F] font-medium cursor-pointer">
                   Show on live website
                 </label>
               </div>
@@ -315,13 +315,13 @@ export default function AdminGallery() {
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 rounded-full bg-white/10 text-white cursor-pointer"
+                  className="global-button-secondary !px-4 !py-2 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2 rounded-full bg-[#CFA46A] text-[#0D0B0B] font-bold uppercase tracking-wider cursor-pointer"
+                  className="global-button !px-6 !py-2 text-white font-bold uppercase tracking-wider cursor-pointer"
                 >
                   {editingItem ? 'Update Exhibition' : 'Save Exhibition'}
                 </button>

@@ -54,12 +54,12 @@ export default function AdminDashboard({
 
   // Category breakdown
   const categoryStats = [
-    { name: 'Hair Care & Balayage', key: 'hair', barColor: 'bg-[#CFA46A]' },
-    { name: 'Facial & Skin Rituals', key: 'skin', barColor: 'bg-[#E5C492]' },
-    { name: 'Nail Atelier & Gel', key: 'nails', barColor: 'bg-[#D4AF37]' },
-    { name: 'Bridal & Haute Makeup', key: 'makeup', barColor: 'bg-[#B38F4D]' },
-    { name: 'Spa & Wellness', key: 'spa', barColor: 'bg-[#8C6430]' },
-    { name: 'Threading & Waxing', key: 'waxing', barColor: 'bg-[#6F5542]' },
+    { name: 'Hair Care & Balayage', key: 'hair', barColor: 'bg-[#263D2B]' },
+    { name: 'Facial & Skin Rituals', key: 'skin', barColor: 'bg-[#465640]' },
+    { name: 'Nail Atelier & Gel', key: 'nails', barColor: 'bg-[#A8B5A0]' },
+    { name: 'Bridal & Haute Makeup', key: 'makeup', barColor: 'bg-[#10110F]' },
+    { name: 'Spa & Wellness', key: 'spa', barColor: 'bg-[#263D2B]' },
+    { name: 'Threading & Waxing', key: 'waxing', barColor: 'bg-[#465640]' },
   ].map(cat => {
     const count = appointments.filter(a => {
       const matchService = ALL_SERVICES.find(s => s.name === a.service || s.id === a.serviceId);
@@ -79,23 +79,23 @@ export default function AdminDashboard({
   }).slice(0, 6);
 
   return (
-    <div className="space-y-6 sm:space-y-7 animate-fade-in text-[#F7F1E8]">
+    <div className="space-y-6 sm:space-y-7 animate-fade-in text-[#10110F]">
       
       {/* 1. TOP EXECUTIVE COMMAND HEADER */}
-      <div className="bg-[#120E10] rounded-2xl p-6 sm:p-7 border border-[#261E22] shadow-xl relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-5">
+      <div className="bg-white rounded-2xl p-6 sm:p-7 border border-[#DCE1D8] shadow-sm relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-5">
         <div className="space-y-1.5 z-10">
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-[#1D161A] border border-[#CFA46A]/30 text-[#CFA46A] text-[10px] font-bold uppercase tracking-[0.2em]">
-              <Activity className="w-3 h-3 text-[#CFA46A]" />
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-[#F7F4ED] border border-[#DCE1D8] text-[#263D2B] text-[10px] font-bold uppercase tracking-[0.2em]">
+              <Activity className="w-3 h-3 text-[#263D2B]" />
               COMMAND CENTER
             </span>
-            <span className="text-white/40 text-xs">•</span>
-            <span className="text-white/50 text-xs font-mono">{new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</span>
+            <span className="text-[#6B7068] text-xs">•</span>
+            <span className="text-[#6B7068] text-xs font-mono">{new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</span>
           </div>
-          <h1 className="font-serif text-2xl sm:text-3xl font-normal text-white tracking-tight">
+          <h1 className="font-serif text-2xl sm:text-3xl font-normal text-[#10110F] tracking-tight">
             Executive Studio Operations
           </h1>
-          <p className="text-white/60 text-xs sm:text-sm max-w-xl font-light">
+          <p className="text-[#6B7068] text-xs sm:text-sm max-w-xl font-light">
             Real-time appointment schedule, revenue pipeline, guest satisfaction metrics, and live treatment telemetry.
           </p>
         </div>
@@ -103,41 +103,38 @@ export default function AdminDashboard({
         <div className="flex items-center gap-3 z-10">
           <button
             onClick={() => onNavigateTab('appointments')}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#1D161A] hover:bg-[#281F24] text-white text-xs font-semibold border border-[#261E22] hover:border-[#CFA46A]/40 transition-all cursor-pointer"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#F7F4ED] hover:bg-white text-[#10110F] text-xs font-semibold border border-[#DCE1D8] transition-all cursor-pointer shadow-xs"
           >
-            <Calendar className="w-3.5 h-3.5 text-[#CFA46A]" />
+            <Calendar className="w-3.5 h-3.5 text-[#263D2B]" />
             <span>Full Schedule</span>
           </button>
 
           <button
             onClick={onOpenNewBookingModal}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#CFA46A] via-[#E5C492] to-[#CFA46A] hover:from-[#E5C492] hover:to-[#CFA46A] text-[#0D0B0B] font-extrabold text-xs uppercase tracking-wider shadow-md shadow-[#CFA46A]/20 active:scale-95 transition-all cursor-pointer"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#263D2B] hover:bg-[#1C2E20] text-white font-bold text-xs uppercase tracking-wider shadow-md active:scale-95 transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>New Booking</span>
           </button>
         </div>
-
-        {/* Subtle ambient gradient highlight */}
-        <div className="absolute right-0 top-0 w-72 h-72 bg-[#CFA46A]/5 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
       </div>
 
       {/* 2. LIVE IN-PROGRESS TREATMENT TELEMETRY BAR (If active) */}
       {inProgressCount > 0 && (
-        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#1C1412] via-[#221715] to-[#171012] border border-amber-500/40 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4 animate-fade-in">
+        <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50/70 border border-emerald-300 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 animate-fade-in">
           <div className="flex items-center gap-3.5 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 flex-shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-emerald-100 border border-emerald-300 flex items-center justify-center text-[#263D2B] flex-shrink-0">
               <Timer className="w-5 h-5 animate-pulse" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-[10.5px] font-bold text-amber-400 uppercase tracking-widest">
+                <span className="text-[10.5px] font-bold text-[#263D2B] uppercase tracking-widest">
                   LIVE TREATMENT IN PROGRESS ({inProgressCount})
                 </span>
-                <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+                <span className="w-2 h-2 rounded-full bg-emerald-600 animate-ping" />
               </div>
-              <p className="text-xs sm:text-sm font-semibold text-white truncate">
-                {inProgressList[0]?.customerName} — <span className="text-[#CFA46A]">{inProgressList[0]?.service}</span>
+              <p className="text-xs sm:text-sm font-semibold text-[#10110F] truncate">
+                {inProgressList[0]?.customerName} — <span className="text-[#263D2B] font-bold">{inProgressList[0]?.service}</span>
               </p>
             </div>
           </div>
@@ -148,7 +145,7 @@ export default function AdminDashboard({
               <button
                 type="button"
                 onClick={() => onCompleteTreatment(inProgressList[0]?.id)}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md shadow-emerald-500/20 active:scale-95 cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#263D2B] hover:bg-[#1C2E20] text-white font-bold text-xs uppercase tracking-wider transition-all shadow-sm active:scale-95 cursor-pointer"
               >
                 <CheckCircle2 className="w-4 h-4" />
                 <span>Complete Treatment</span>
@@ -162,36 +159,36 @@ export default function AdminDashboard({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         
         {/* Metric 1: Total Appointments */}
-        <div className="bg-[#120E10] rounded-2xl p-5 border border-[#261E22] hover:border-[#CFA46A]/30 transition-all space-y-3">
+        <div className="bg-white rounded-2xl p-5 border border-[#DCE1D8] hover:border-[#263D2B] transition-all space-y-3 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-[10.5px] font-bold text-white/50 uppercase tracking-[0.16em]">Total Appointments</span>
-            <div className="w-9 h-9 rounded-xl bg-[#1D161A] text-[#CFA46A] flex items-center justify-center border border-[#261E22]">
+            <span className="text-[10.5px] font-bold text-[#6B7068] uppercase tracking-[0.16em]">Total Appointments</span>
+            <div className="w-9 h-9 rounded-xl bg-[#F7F4ED] text-[#263D2B] flex items-center justify-center border border-[#DCE1D8]">
               <Calendar className="w-4 h-4" />
             </div>
           </div>
           <div>
-            <div className="text-2xl sm:text-3xl font-normal font-serif text-white">{totalBookings}</div>
-            <div className="text-[11px] text-white/50 mt-1 flex items-center gap-2">
-              <span className="text-emerald-400 font-semibold">{confirmedCount} confirmed</span>
+            <div className="text-2xl sm:text-3xl font-normal font-serif text-[#10110F]">{totalBookings}</div>
+            <div className="text-[11px] text-[#6B7068] mt-1 flex items-center gap-2">
+              <span className="text-emerald-800 font-semibold">{confirmedCount} confirmed</span>
               <span>•</span>
-              <span className="text-amber-400 font-semibold">{pendingCount} pending</span>
+              <span className="text-[#465640] font-semibold">{pendingCount} pending</span>
             </div>
           </div>
         </div>
 
         {/* Metric 2: Pipeline Revenue */}
-        <div className="bg-[#120E10] rounded-2xl p-5 border border-[#261E22] hover:border-[#CFA46A]/30 transition-all space-y-3">
+        <div className="bg-white rounded-2xl p-5 border border-[#DCE1D8] hover:border-[#263D2B] transition-all space-y-3 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-[10.5px] font-bold text-white/50 uppercase tracking-[0.16em]">Pipeline Revenue</span>
-            <div className="w-9 h-9 rounded-xl bg-[#1D161A] text-emerald-400 flex items-center justify-center border border-[#261E22]">
+            <span className="text-[10.5px] font-bold text-[#6B7068] uppercase tracking-[0.16em]">Pipeline Revenue</span>
+            <div className="w-9 h-9 rounded-xl bg-[#F7F4ED] text-[#263D2B] flex items-center justify-center border border-[#DCE1D8]">
               <DollarSign className="w-4 h-4" />
             </div>
           </div>
           <div>
-            <div className="text-2xl sm:text-3xl font-normal font-serif text-white">
-              ${totalRevenue.toLocaleString()} <span className="text-xs font-sans text-white/50">CAD</span>
+            <div className="text-2xl sm:text-3xl font-normal font-serif text-[#10110F]">
+              ${totalRevenue.toLocaleString()} <span className="text-xs font-sans text-[#6B7068]">CAD</span>
             </div>
-            <div className="text-[11px] text-emerald-400/90 mt-1 flex items-center gap-1">
+            <div className="text-[11px] text-[#263D2B] font-semibold mt-1 flex items-center gap-1">
               <TrendingUp className="w-3.5 h-3.5" />
               <span>Avg. ${avgBookingValue} CAD / booking</span>
             </div>
@@ -199,16 +196,16 @@ export default function AdminDashboard({
         </div>
 
         {/* Metric 3: Today's Schedule */}
-        <div className="bg-[#120E10] rounded-2xl p-5 border border-[#261E22] hover:border-[#CFA46A]/30 transition-all space-y-3">
+        <div className="bg-white rounded-2xl p-5 border border-[#DCE1D8] hover:border-[#263D2B] transition-all space-y-3 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-[10.5px] font-bold text-white/50 uppercase tracking-[0.16em]">Today's Schedule</span>
-            <div className="w-9 h-9 rounded-xl bg-[#1D161A] text-amber-400 flex items-center justify-center border border-[#261E22]">
+            <span className="text-[10.5px] font-bold text-[#6B7068] uppercase tracking-[0.16em]">Today's Schedule</span>
+            <div className="w-9 h-9 rounded-xl bg-[#F7F4ED] text-[#465640] flex items-center justify-center border border-[#DCE1D8]">
               <Clock className="w-4 h-4" />
             </div>
           </div>
           <div>
-            <div className="text-2xl sm:text-3xl font-normal font-serif text-white">{todayAppointments.length}</div>
-            <p className="text-[11px] text-white/50 mt-1">
+            <div className="text-2xl sm:text-3xl font-normal font-serif text-[#10110F]">{todayAppointments.length}</div>
+            <p className="text-[11px] text-[#6B7068] mt-1">
               {todayAppointments.length === 0 ? 'No guests booked today' : `${todayAppointments.length} guest sessions scheduled`}
             </p>
           </div>
@@ -217,22 +214,22 @@ export default function AdminDashboard({
         {/* Metric 4: Client Satisfaction */}
         <button
           onClick={() => onNavigateTab?.('reviews')}
-          className="bg-[#120E10] hover:bg-[#171214] rounded-2xl p-5 border border-[#261E22] hover:border-[#CFA46A]/40 transition-all space-y-3 text-left cursor-pointer group"
+          className="bg-white hover:bg-[#F7F4ED] rounded-2xl p-5 border border-[#DCE1D8] hover:border-[#263D2B] transition-all space-y-3 text-left cursor-pointer shadow-sm group"
         >
           <div className="flex items-center justify-between">
-            <span className="text-[10.5px] font-bold text-white/50 uppercase tracking-[0.16em]">Guest Ratings</span>
-            <div className="w-9 h-9 rounded-xl bg-[#1D161A] text-[#CFA46A] flex items-center justify-center border border-[#261E22] group-hover:border-[#CFA46A]/40">
-              <Star className="w-4 h-4 fill-current" />
+            <span className="text-[10.5px] font-bold text-[#6B7068] uppercase tracking-[0.16em]">Guest Ratings</span>
+            <div className="w-9 h-9 rounded-xl bg-[#F7F4ED] text-[#263D2B] flex items-center justify-center border border-[#DCE1D8] group-hover:border-[#263D2B]">
+              <Star className="w-4 h-4 fill-current text-[#263D2B]" />
             </div>
           </div>
           <div>
-            <div className="text-2xl sm:text-3xl font-normal font-serif text-white flex items-center gap-2">
+            <div className="text-2xl sm:text-3xl font-normal font-serif text-[#10110F] flex items-center gap-2">
               <span>{reviewStats.averageRating.toFixed(1)}</span>
-              <span className="text-xs text-[#CFA46A] font-sans">/ 5.0 ★</span>
+              <span className="text-xs text-[#263D2B] font-sans font-bold">/ 5.0 ★</span>
             </div>
-            <p className="text-[11px] text-[#CFA46A]/80 mt-1 flex items-center justify-between">
+            <p className="text-[11px] text-[#6B7068] mt-1 flex items-center justify-between">
               <span>{reviewStats.totalReviews} verified reviews</span>
-              <ChevronRight className="w-3.5 h-3.5 text-white/40 group-hover:text-white transition-colors" />
+              <ChevronRight className="w-3.5 h-3.5 text-[#6B7068] group-hover:text-[#10110F] transition-colors" />
             </p>
           </div>
         </button>
@@ -243,25 +240,25 @@ export default function AdminDashboard({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Left Column: Recent Bookings Queue (7 cols) */}
-        <div className="lg:col-span-7 bg-[#120E10] rounded-2xl p-5 sm:p-6 border border-[#261E22] shadow-xl space-y-4">
+        <div className="lg:col-span-7 bg-white rounded-2xl p-5 sm:p-6 border border-[#DCE1D8] shadow-sm space-y-4">
           
           {/* Header & Filter Tabs */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#261E22]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#DCE1D8]">
             <div>
-              <h3 className="font-serif text-base sm:text-lg font-normal text-white">Live Appointments Queue</h3>
-              <p className="text-white/50 text-xs font-light">Latest guest submissions and real-time status</p>
+              <h3 className="font-serif text-base sm:text-lg font-normal text-[#10110F]">Live Appointments Queue</h3>
+              <p className="text-[#6B7068] text-xs font-light">Latest guest submissions and real-time status</p>
             </div>
             
             {/* Quick Status Filter Tabs */}
-            <div className="flex items-center gap-1 p-1 rounded-xl bg-[#1A1417] border border-[#261E22]">
+            <div className="flex items-center gap-1 p-1 rounded-xl bg-[#F7F4ED] border border-[#DCE1D8]">
               {['All', 'Confirmed', 'Pending', 'In Progress'].map(f => (
                 <button
                   key={f}
                   onClick={() => setTableFilter(f)}
                   className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-wider transition-all cursor-pointer ${
                     tableFilter === f 
-                      ? 'bg-[#261E22] text-[#CFA46A] shadow-xs' 
-                      : 'text-white/50 hover:text-white'
+                      ? 'bg-[#263D2B] text-white shadow-xs' 
+                      : 'text-[#6B7068] hover:text-[#10110F]'
                   }`}
                 >
                   {f}
@@ -283,29 +280,29 @@ export default function AdminDashboard({
                     key={booking.id}
                     className={`p-3.5 rounded-xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
                       isInProgress 
-                        ? 'border-amber-500/40 bg-amber-500/[0.04]' 
-                        : 'border-[#261E22] bg-[#171215] hover:border-[#CFA46A]/30'
+                        ? 'border-emerald-400 bg-emerald-50/50' 
+                        : 'border-[#DCE1D8] bg-[#F7F4ED]/60 hover:border-[#263D2B]'
                     }`}
                   >
                     <div className="space-y-1 min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <span className="font-medium text-white text-xs sm:text-sm truncate">
+                        <span className="font-semibold text-[#10110F] text-xs sm:text-sm truncate">
                           {booking.customerName}
                         </span>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-white/5 text-white/60 border border-white/10 flex-shrink-0">
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-white text-[#6B7068] border border-[#DCE1D8] flex-shrink-0">
                           {booking.id}
                         </span>
                         {isInProgress && (
-                          <span className="text-[9px] font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1">
-                            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                          <span className="text-[9px] font-bold text-emerald-800 uppercase tracking-wider flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
                             <span>Active</span>
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-[#CFA46A] truncate">
+                      <p className="text-xs text-[#10110F] font-medium truncate">
                         {booking.service} {booking.servicePrice ? `• $${booking.servicePrice} CAD` : ''}
                       </p>
-                      <div className="flex flex-wrap items-center gap-3 text-[11px] text-white/45">
+                      <div className="flex flex-wrap items-center gap-3 text-[11px] text-[#6B7068]">
                         <span>📅 {booking.date}</span>
                         <span>⏰ {booking.time}</span>
                         {isInProgress && (
@@ -315,7 +312,7 @@ export default function AdminDashboard({
                           />
                         )}
                         {status === 'Completed' && booking.treatmentDuration && (
-                          <span className="text-emerald-400 font-medium">✓ {booking.treatmentDuration}</span>
+                          <span className="text-emerald-800 font-medium">✓ {booking.treatmentDuration}</span>
                         )}
                       </div>
                     </div>
@@ -325,7 +322,7 @@ export default function AdminDashboard({
                         <button
                           type="button"
                           onClick={() => onStartTreatment(booking.id)}
-                          className="px-2.5 py-1 rounded-lg bg-[#CFA46A] hover:bg-[#E5C492] text-[#0D0B0B] text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-1 cursor-pointer"
+                          className="px-2.5 py-1 rounded-lg bg-[#263D2B] hover:bg-[#1C2E20] text-white text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-1 cursor-pointer"
                           title="Start Treatment"
                         >
                           <Play className="w-3 h-3 fill-current" />
@@ -337,7 +334,7 @@ export default function AdminDashboard({
                         <button
                           type="button"
                           onClick={() => onCompleteTreatment(booking.id)}
-                          className="px-2.5 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-1 cursor-pointer"
+                          className="px-2.5 py-1 rounded-lg bg-[#263D2B] hover:bg-[#1C2E20] text-white text-[10px] font-bold uppercase tracking-wider transition-all flex items-center gap-1 cursor-pointer"
                           title="Complete Treatment"
                         >
                           <CheckCircle2 className="w-3 h-3" />
@@ -349,7 +346,7 @@ export default function AdminDashboard({
                         href={`https://wa.me/${String(booking.phone).replace(/\D/g, '')}?text=${encodeURIComponent(`Hello ${booking.customerName}! We have received your booking (${booking.id}) for ${booking.service} at GLAM GIRL BY JANKI.`)}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-white border border-emerald-500/20 transition-all cursor-pointer"
+                        className="p-1.5 rounded-lg bg-emerald-50 hover:bg-[#263D2B] text-[#263D2B] hover:text-white border border-[#DCE1D8] transition-all cursor-pointer"
                         title="WhatsApp Client"
                       >
                         <MessageCircle className="w-3.5 h-3.5" />
@@ -357,12 +354,12 @@ export default function AdminDashboard({
                       
                       <span className={`px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider border ${
                         isInProgress
-                          ? 'bg-amber-500/15 text-amber-300 border-amber-500/30'
+                          ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
                           : status === 'Completed'
-                          ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/20'
+                          ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
                           : status === 'Cancelled'
-                          ? 'bg-red-500/15 text-red-300 border-red-500/20'
-                          : 'bg-emerald-500/15 text-emerald-300 border-emerald-500/20'
+                          ? 'bg-red-100 text-red-900 border-red-300'
+                          : 'bg-[#263D2B]/10 text-[#263D2B] border-[#263D2B]/20'
                       }`}>
                         {status}
                       </span>
@@ -372,7 +369,7 @@ export default function AdminDashboard({
               })}
             </div>
           ) : (
-            <div className="text-center py-10 text-white/40 text-xs sm:text-sm font-light">
+            <div className="text-center py-10 text-[#6B7068] text-xs sm:text-sm font-light">
               No appointments match the current filter.
             </div>
           )}
@@ -380,7 +377,7 @@ export default function AdminDashboard({
           <div className="pt-2 flex justify-end">
             <button
               onClick={() => onNavigateTab('appointments')}
-              className="text-xs font-semibold text-[#CFA46A] hover:text-white flex items-center gap-1 transition-colors cursor-pointer"
+              className="text-xs font-semibold text-[#263D2B] hover:text-[#10110F] flex items-center gap-1 transition-colors cursor-pointer"
             >
               <span>Open Appointments Queue ({appointments.length})</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
@@ -392,20 +389,20 @@ export default function AdminDashboard({
         <div className="lg:col-span-5 space-y-5">
           
           {/* Category Distribution Card */}
-          <div className="bg-[#120E10] rounded-2xl p-5 sm:p-6 border border-[#261E22] shadow-xl space-y-3.5">
+          <div className="bg-white rounded-2xl p-5 sm:p-6 border border-[#DCE1D8] shadow-sm space-y-3.5">
             <div className="flex items-center justify-between">
-              <h3 className="font-serif text-base sm:text-lg font-normal text-white">Treatment Demand</h3>
-              <span className="text-[10.5px] text-white/50 uppercase tracking-wider">By Category</span>
+              <h3 className="font-serif text-base sm:text-lg font-normal text-[#10110F]">Treatment Demand</h3>
+              <span className="text-[10.5px] text-[#6B7068] uppercase tracking-wider">By Category</span>
             </div>
 
             <div className="space-y-3 pt-1">
               {categoryStats.map((cat) => (
                 <div key={cat.key} className="space-y-1">
-                  <div className="flex justify-between text-xs text-white/70">
+                  <div className="flex justify-between text-xs text-[#10110F]">
                     <span>{cat.name}</span>
-                    <span className="text-[#CFA46A] font-mono text-[11px]">{cat.count} bookings</span>
+                    <span className="text-[#6B7068] font-mono text-[11px] font-bold">{cat.count} bookings</span>
                   </div>
-                  <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                  <div className="h-1.5 w-full bg-[#F7F4ED] rounded-full overflow-hidden border border-[#DCE1D8]">
                     <div 
                       className={`h-full ${cat.barColor} rounded-full transition-all duration-500`}
                       style={{ 
@@ -421,39 +418,39 @@ export default function AdminDashboard({
           </div>
 
           {/* Database Summary Grid */}
-          <div className="bg-[#120E10] rounded-2xl p-5 sm:p-6 border border-[#261E22] shadow-xl space-y-3.5">
-            <h3 className="font-serif text-base sm:text-lg font-normal text-white">Studio Repository Records</h3>
+          <div className="bg-white rounded-2xl p-5 sm:p-6 border border-[#DCE1D8] shadow-sm space-y-3.5">
+            <h3 className="font-serif text-base sm:text-lg font-normal text-[#10110F]">Studio Repository Records</h3>
             <div className="grid grid-cols-2 gap-2.5 text-xs">
               <button
                 onClick={() => onNavigateTab('services')}
-                className="p-3 rounded-xl bg-[#171215] hover:bg-[#1F181D] border border-[#261E22] text-left transition-colors cursor-pointer"
+                className="p-3 rounded-xl bg-[#F7F4ED] hover:bg-white border border-[#DCE1D8] text-left transition-colors cursor-pointer"
               >
-                <span className="text-[10px] text-white/45 block font-mono uppercase tracking-wider">Service Catalog</span>
-                <span className="text-base font-normal text-white font-serif">{ALL_SERVICES.length} Treatments</span>
+                <span className="text-[10px] text-[#6B7068] block font-mono uppercase tracking-wider">Service Catalog</span>
+                <span className="text-base font-normal text-[#10110F] font-serif">{ALL_SERVICES.length} Treatments</span>
               </button>
 
               <button
                 onClick={() => onNavigateTab('messages')}
-                className="p-3 rounded-xl bg-[#171215] hover:bg-[#1F181D] border border-[#261E22] text-left transition-colors cursor-pointer"
+                className="p-3 rounded-xl bg-[#F7F4ED] hover:bg-white border border-[#DCE1D8] text-left transition-colors cursor-pointer"
               >
-                <span className="text-[10px] text-white/45 block font-mono uppercase tracking-wider">Inquiries</span>
-                <span className="text-base font-normal text-[#CFA46A] font-serif">{salonDB.getContactMessages().length} Messages</span>
+                <span className="text-[10px] text-[#6B7068] block font-mono uppercase tracking-wider">Inquiries</span>
+                <span className="text-base font-normal text-[#263D2B] font-serif">{salonDB.getContactMessages().length} Messages</span>
               </button>
 
               <button
                 onClick={() => onNavigateTab('offers')}
-                className="p-3 rounded-xl bg-[#171215] hover:bg-[#1F181D] border border-[#261E22] text-left transition-colors cursor-pointer"
+                className="p-3 rounded-xl bg-[#F7F4ED] hover:bg-white border border-[#DCE1D8] text-left transition-colors cursor-pointer"
               >
-                <span className="text-[10px] text-white/45 block font-mono uppercase tracking-wider">Promotions</span>
-                <span className="text-base font-normal text-emerald-400 font-serif">{salonDB.getActiveOffers().length} Active</span>
+                <span className="text-[10px] text-[#6B7068] block font-mono uppercase tracking-wider">Promotions</span>
+                <span className="text-base font-normal text-emerald-800 font-serif">{salonDB.getActiveOffers().length} Active</span>
               </button>
 
               <button
                 onClick={() => onNavigateTab('newsletter')}
-                className="p-3 rounded-xl bg-[#171215] hover:bg-[#1F181D] border border-[#261E22] text-left transition-colors cursor-pointer"
+                className="p-3 rounded-xl bg-[#F7F4ED] hover:bg-white border border-[#DCE1D8] text-left transition-colors cursor-pointer"
               >
-                <span className="text-[10px] text-white/45 block font-mono uppercase tracking-wider">VIP Newsletter</span>
-                <span className="text-base font-normal text-amber-300 font-serif">{salonDB.getNewsletterSubscribers().length} Clients</span>
+                <span className="text-[10px] text-[#6B7068] block font-mono uppercase tracking-wider">VIP Newsletter</span>
+                <span className="text-base font-normal text-[#10110F] font-serif">{salonDB.getNewsletterSubscribers().length} Clients</span>
               </button>
             </div>
           </div>

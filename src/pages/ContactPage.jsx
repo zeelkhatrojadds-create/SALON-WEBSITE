@@ -13,7 +13,7 @@ export default function ContactPage({ isSection = false }) {
   }
 
   return (
-    <div className="w-full bg-[#FAF5EE] min-h-screen pt-16 sm:pt-20">
+    <div className="w-full bg-[#F7F4ED] min-h-screen pt-16 sm:pt-20">
       <ContactSection />
     </div>
   );

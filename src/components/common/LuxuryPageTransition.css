@@ -1,6 +1,6 @@
 /* =========================================================================
    GLAM GIRL BY JANKI — SUBTLE CINEMATIC 1-SECOND PAGE TRANSITION
-   Direct Container Motion • 0 Overlays • 0 Black Screens • 60 FPS
+   Direct Container Motion • 0 Overlays • 0 Black Screens • Razor-Sharp Text
    ========================================================================= */
 
 .luxury-transition-root {
@@ -18,45 +18,49 @@
   width: 100%;
   min-height: 100vh;
   transform-origin: center top;
-  will-change: transform, opacity;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-/* Base settled state — completely clean and fully interactive */
+/* Base settled state — completely clean, zero transforms, 100% sharp text */
 .luxury-transition-page.settled {
   opacity: 1;
-  transform: none;
+  transform: none !important;
+  will-change: auto !important;
   visibility: visible;
 }
 
-/* Active 1000ms smooth cinematic movement */
+/* Active 1000ms smooth movement only during page transitions */
 .luxury-transition-page.animating {
+  will-change: transform, opacity;
   animation: luxuryPageMoveIn 1000ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes luxuryPageMoveIn {
   0% {
     opacity: 0.94;
-    transform: translate3d(0, 10px, 0) scale(1.02);
+    transform: translate3d(0, 10px, 0);
   }
   100% {
     opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: none;
   }
 }
 
 /* =========================================================================
-   MOBILE & TABLET TUNING (Subtle motion, no horizontal overflow)
+   MOBILE & TABLET TUNING
    ========================================================================= */
 
 @media (max-width: 768px) {
   @keyframes luxuryPageMoveIn {
     0% {
       opacity: 0.96;
-      transform: translate3d(0, 6px, 0) scale(1.01);
+      transform: translate3d(0, 6px, 0);
     }
     100% {
       opacity: 1;
-      transform: translate3d(0, 0, 0) scale(1);
+      transform: none;
     }
   }
 }

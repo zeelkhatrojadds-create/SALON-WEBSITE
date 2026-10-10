@@ -7,15 +7,13 @@ export default function CategoryScrollTabs({
   onSelect,
   allLabel = 'ALL 72 TREATMENTS',
   showAll = true,
-  theme = 'dark',
+  theme = 'light',
   className = ''
 }) {
   const scrollContainerRef = useRef(null);
   const activeBtnRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
-
-  const isLight = theme === 'light';
 
   // Check scroll bounds accurately
   const checkScrollBounds = useCallback(() => {
@@ -44,7 +42,7 @@ export default function CategoryScrollTabs({
     };
   }, [checkScrollBounds, categories]);
 
-  // Auto-scroll active button smoothly inside horizontal container only (NEVER scrolls page window)
+  // Auto-scroll active button smoothly inside horizontal container only
   useEffect(() => {
     const container = scrollContainerRef.current;
     const btn = activeBtnRef.current;
@@ -53,7 +51,6 @@ export default function CategoryScrollTabs({
       const btnRect = btn.getBoundingClientRect();
       const offset = (btnRect.left + btnRect.width / 2) - (containerRect.left + containerRect.width / 2);
       
-      // Only scroll horizontally if actually out of center
       if (Math.abs(offset) > 10) {
         container.scrollBy({
           left: offset,
@@ -74,21 +71,13 @@ export default function CategoryScrollTabs({
   };
 
   const getInactiveBtnClass = () => {
-    if (isLight) {
-      return 'bg-white text-[#4A3E38] hover:text-[#1E1714] hover:bg-[#F2ECE4] border border-[#E0D5C7] hover:border-[#CFA46A] shadow-xs';
-    }
-    return 'bg-[#1A1416] text-[#E0D5C7]/75 hover:text-[#F7F1E8] hover:bg-[#241B1F] border border-[#CFA46A]/20 hover:border-[#CFA46A]/60';
+    return 'bg-white text-[#6B7068] hover:text-[#10110F] hover:bg-[#F7F4ED] border border-[#DCE1D8] hover:border-[#263D2B] shadow-xs';
   };
 
   const getArrowBtnClass = (canScroll) => {
-    if (isLight) {
-      return canScroll
-        ? 'bg-white border-[#CFA46A] text-[#A67C48] hover:bg-[#CFA46A] hover:text-white hover:scale-105 active:scale-95 shadow-sm cursor-pointer'
-        : 'bg-[#F2ECE4]/60 border-[#E8DFD3] text-[#A67C48]/30 cursor-not-allowed opacity-40';
-    }
     return canScroll
-      ? 'bg-[#1A1416] border-[#CFA46A]/60 text-[#CFA46A] hover:bg-[#CFA46A] hover:text-[#0D0B0B] hover:scale-105 active:scale-95 shadow-[0_4px_14px_rgba(0,0,0,0.6)] cursor-pointer'
-      : 'bg-[#140E11]/40 border-white/5 text-[#E0D5C7]/15 cursor-not-allowed opacity-35';
+      ? 'bg-white border-[#DCE1D8] text-[#263D2B] hover:bg-[#263D2B] hover:text-white hover:border-[#263D2B] hover:scale-105 active:scale-95 shadow-sm cursor-pointer'
+      : 'bg-[#F7F4ED]/80 border-[#DCE1D8] text-[#6B7068]/30 cursor-not-allowed opacity-40';
   };
 
   return (
@@ -104,7 +93,7 @@ export default function CategoryScrollTabs({
         <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
       </button>
 
-      {/* Center Horizontal Scrollable Category Track (Pills will NEVER be covered) */}
+      {/* Center Horizontal Scrollable Category Track */}
       <div className="flex-1 overflow-hidden min-w-0">
         <div
           ref={scrollContainerRef}
@@ -119,7 +108,7 @@ export default function CategoryScrollTabs({
               onClick={() => onSelect('all')}
               className={`px-4 sm:px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-200 cursor-pointer flex-shrink-0 ${
                 selectedId === 'all'
-                  ? 'bg-gradient-to-r from-[#CFA46A] via-[#E5C492] to-[#CFA46A] text-[#0D0B0B] font-extrabold shadow-[0_4px_16px_rgba(207,164,106,0.4)] scale-[1.02] border border-[#E5C492]'
+                  ? 'bg-[#263D2B] text-white font-extrabold shadow-sm scale-[1.02] border border-[#263D2B]'
                   : getInactiveBtnClass()
               }`}
             >
@@ -141,7 +130,7 @@ export default function CategoryScrollTabs({
                 onClick={() => onSelect(catId)}
                 className={`px-4 sm:px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-200 cursor-pointer flex-shrink-0 ${
                   isActive
-                    ? 'bg-gradient-to-r from-[#CFA46A] via-[#E5C492] to-[#CFA46A] text-[#0D0B0B] font-extrabold shadow-[0_4px_16px_rgba(207,164,106,0.4)] scale-[1.02] border border-[#E5C492]'
+                    ? 'bg-[#263D2B] text-white font-extrabold shadow-sm scale-[1.02] border border-[#263D2B]'
                     : getInactiveBtnClass()
                 }`}
               >

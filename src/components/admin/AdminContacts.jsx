@@ -50,25 +50,25 @@ export default function AdminContacts() {
   });
 
   return (
-    <div className="space-y-6 animate-fade-in text-white">
+    <div className="space-y-6 animate-fade-in text-[#10110F]">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white">Contact & Atelier Inquiries</h2>
-          <p className="text-white/60 text-xs sm:text-sm">Manage incoming inquiries submitted via the Contact page.</p>
+          <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#10110F]">Contact & Atelier Inquiries</h2>
+          <p className="text-[#6B7068] text-xs sm:text-sm">Manage incoming inquiries submitted via the Contact page.</p>
         </div>
       </div>
 
       {/* Filter and Search */}
-      <div className="bg-[#1C1418] rounded-2xl p-4 border border-white/10 shadow-lg grid grid-cols-1 sm:grid-cols-12 gap-3">
+      <div className="bg-white rounded-2xl p-4 border border-[#DCE1D8] shadow-sm grid grid-cols-1 sm:grid-cols-12 gap-3">
         <div className="sm:col-span-8 relative">
-          <Search className="w-4 h-4 text-white/40 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#6B7068] absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search inquiries by guest name, email, phone, subject..."
-            className="w-full h-10 pl-10 pr-4 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder-white/40 focus:border-[#CFA46A] outline-none"
+            className="w-full h-10 pl-10 pr-4 bg-[#F7F4ED]/50 border border-[#DCE1D8] rounded-xl text-xs text-[#10110F] placeholder-[#6B7068]/50 focus:border-[#263D2B] outline-none"
           />
         </div>
 
@@ -76,7 +76,7 @@ export default function AdminContacts() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full h-10 px-3 bg-[#24151E] border border-white/10 rounded-xl text-xs text-white focus:border-[#CFA46A] outline-none cursor-pointer"
+            className="w-full h-10 px-3 bg-[#F7F4ED]/50 border border-[#DCE1D8] rounded-xl text-xs text-[#10110F] focus:border-[#263D2B] outline-none cursor-pointer"
           >
             <option value="All">All Statuses</option>
             <option value="New">★ New Messages</option>
@@ -96,54 +96,54 @@ export default function AdminContacts() {
             return (
               <div
                 key={msg.id}
-                className={`p-5 rounded-2xl bg-[#1C1418] border transition-colors space-y-3 ${
-                  msg.status === 'New' ? 'border-[#CFA46A]/50 bg-[#CFA46A]/[0.03]' : 'border-white/10'
+                className={`p-5 rounded-2xl bg-white border transition-colors space-y-3 shadow-sm ${
+                  msg.status === 'New' ? 'border-[#263D2B]/50 bg-[#F7F4ED]/50' : 'border-[#DCE1D8]'
                 }`}
               >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/5 pb-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#DCE1D8] pb-3">
                   <div className="space-y-0.5">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-serif font-bold text-base text-white">{msg.name}</h3>
+                      <h3 className="font-serif font-bold text-base text-[#10110F]">{msg.name}</h3>
                       <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                         msg.status === 'New'
-                          ? 'bg-[#CFA46A]/20 text-[#CFA46A] border border-[#CFA46A]/40'
+                          ? 'bg-[#263D2B]/10 text-[#263D2B] border border-[#263D2B]/20'
                           : msg.status === 'Replied'
-                          ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                          : 'bg-white/10 text-white/70'
+                          ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                          : 'bg-[#F7F4ED] text-[#6B7068] border border-[#DCE1D8]'
                       }`}>
                         {msg.status}
                       </span>
                     </div>
-                    <p className="text-xs text-[#CFA46A] font-semibold">{msg.subject}</p>
+                    <p className="text-xs text-[#263D2B] font-semibold">{msg.subject}</p>
                   </div>
 
-                  <div className="flex items-center gap-2 text-xs text-white/50">
-                    <Clock className="w-3.5 h-3.5" />
+                  <div className="flex items-center gap-2 text-xs text-[#6B7068]">
+                    <Clock className="w-3.5 h-3.5 text-[#263D2B]" />
                     <span>{new Date(msg.createdAt).toLocaleString()}</span>
                   </div>
                 </div>
 
-                <p className="text-xs text-white/80 leading-relaxed bg-white/5 p-3.5 rounded-xl border border-white/5">
+                <p className="text-xs text-[#10110F] leading-relaxed bg-[#F7F4ED]/60 p-3.5 rounded-xl border border-[#DCE1D8]">
                   "{msg.message}"
                 </p>
 
                 <div className="flex flex-wrap items-center justify-between gap-3 pt-1 text-xs">
-                  <div className="flex flex-wrap items-center gap-4 text-white/60">
+                  <div className="flex flex-wrap items-center gap-4 text-[#6B7068]">
                     {msg.phone && (
-                      <a href={`tel:${msg.phone}`} className="flex items-center gap-1.5 hover:text-[#CFA46A]">
-                        <Phone className="w-3.5 h-3.5 text-[#CFA46A]" />
+                      <a href={`tel:${msg.phone}`} className="flex items-center gap-1.5 hover:text-[#263D2B]">
+                        <Phone className="w-3.5 h-3.5 text-[#263D2B]" />
                         <span>{msg.phone}</span>
                       </a>
                     )}
                     {msg.email && (
-                      <a href={`mailto:${msg.email}`} className="flex items-center gap-1.5 hover:text-[#CFA46A]">
-                        <Mail className="w-3.5 h-3.5 text-[#CFA46A]" />
+                      <a href={`mailto:${msg.email}`} className="flex items-center gap-1.5 hover:text-[#263D2B]">
+                        <Mail className="w-3.5 h-3.5 text-[#263D2B]" />
                         <span>{msg.email}</span>
                       </a>
                     )}
                     {msg.targetDate && (
-                      <span className="flex items-center gap-1.5 text-white/40">
-                        <Calendar className="w-3.5 h-3.5 text-[#CFA46A]" />
+                      <span className="flex items-center gap-1.5 text-[#6B7068]">
+                        <Calendar className="w-3.5 h-3.5 text-[#263D2B]" />
                         <span>Target: {msg.targetDate}</span>
                       </span>
                     )}
@@ -155,7 +155,7 @@ export default function AdminContacts() {
                         href={whatsappUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500 text-emerald-300 hover:text-white border border-emerald-500/30 text-[11px] font-bold transition-all"
+                        className="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-[#263D2B] text-[#263D2B] hover:text-white border border-[#DCE1D8] text-[11px] font-bold transition-all"
                       >
                         WhatsApp
                       </a>
@@ -164,7 +164,7 @@ export default function AdminContacts() {
                     <select
                       value={msg.status}
                       onChange={(e) => handleUpdateStatus(msg.id, e.target.value)}
-                      className="text-[11px] bg-[#24151E] text-white/80 border border-white/10 rounded-xl px-2.5 py-1.5 focus:border-[#CFA46A] outline-none cursor-pointer"
+                      className="text-[11px] bg-white text-[#10110F] border border-[#DCE1D8] rounded-xl px-2.5 py-1.5 focus:border-[#263D2B] outline-none cursor-pointer"
                     >
                       <option value="New">Set New</option>
                       <option value="Read">Set Read</option>
@@ -173,7 +173,7 @@ export default function AdminContacts() {
 
                     <button
                       onClick={() => handleDelete(msg.id, msg.name)}
-                      className="p-1.5 rounded-xl bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white transition-colors"
+                      className="p-1.5 rounded-xl bg-red-50 hover:bg-red-600 text-red-600 hover:text-white transition-colors"
                       title="Delete message"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -184,7 +184,7 @@ export default function AdminContacts() {
             );
           })
         ) : (
-          <div className="py-12 text-center text-white/50 text-xs bg-[#1C1418] rounded-3xl border border-white/10">
+          <div className="py-12 text-center text-[#6B7068] text-xs bg-white rounded-3xl border border-[#DCE1D8]">
             No contact inquiries found matching your filters.
           </div>
         )}

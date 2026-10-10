@@ -198,11 +198,11 @@ export default function AdminServices({ customServices = [], onUpdateServices })
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in text-[#10110F]">
       
       {/* Toast Notification */}
       {notification && (
-        <div className="fixed top-20 right-6 z-50 flex items-center gap-2 px-5 py-3 rounded-2xl bg-emerald-500 text-white font-semibold text-xs shadow-2xl animate-bounce">
+        <div className="fixed top-20 right-6 z-50 flex items-center gap-2 px-5 py-3 rounded-2xl bg-[#263D2B] text-white font-semibold text-xs shadow-2xl animate-bounce">
           <CheckCircle className="w-4 h-4" />
           <span>{notification}</span>
         </div>
@@ -211,18 +211,18 @@ export default function AdminServices({ customServices = [], onUpdateServices })
       {/* Header & Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#CFA46A]/10 border border-[#CFA46A]/30 text-[#CFA46A] text-[11px] font-bold tracking-widest uppercase mb-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F7F4ED] border border-[#DCE1D8] text-[#263D2B] text-[11px] font-bold tracking-widest uppercase mb-2">
             <Layers className="w-3.5 h-3.5" />
             <span>Master Services Engine</span>
           </div>
-          <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white">Treatment Menu Catalog</h2>
-          <p className="text-white/60 text-xs sm:text-sm">Manage pricing, duration, images, descriptions, and availability for all 72 treatments.</p>
+          <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#10110F]">Treatment Menu Catalog</h2>
+          <p className="text-[#6B7068] text-xs sm:text-sm">Manage pricing, duration, images, descriptions, and availability for all 72 treatments.</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={() => setShowValidationModal(true)}
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-lg shadow-emerald-900/30"
+            className="global-button inline-flex items-center gap-1.5 !px-4 !py-2.5 text-white text-xs font-bold uppercase tracking-wider cursor-pointer shadow-md"
           >
             <CheckCircle className="w-4 h-4" />
             <span>Validate 72 Images</span>
@@ -230,7 +230,7 @@ export default function AdminServices({ customServices = [], onUpdateServices })
 
           <button
             onClick={() => setShowAddModal(true)}
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-[#CFA46A] hover:bg-[#B88D57] text-[#100C0D] text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-lg shadow-[#CFA46A]/20"
+            className="global-button inline-flex items-center gap-1.5 !px-4 !py-2.5 text-white text-xs font-bold uppercase tracking-wider cursor-pointer shadow-md"
           >
             <Plus className="w-4 h-4" />
             <span>Add Treatment</span>
@@ -238,7 +238,7 @@ export default function AdminServices({ customServices = [], onUpdateServices })
 
           <button
             onClick={handleResetDefaults}
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/15 text-white text-xs font-semibold border border-white/10 transition-colors cursor-pointer"
+            className="global-button-secondary inline-flex items-center gap-1.5 !px-4 !py-2.5 text-xs font-semibold cursor-pointer"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             <span>Reset 72 Master Services</span>
@@ -247,16 +247,16 @@ export default function AdminServices({ customServices = [], onUpdateServices })
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-[#1C1418] rounded-2xl p-4 border border-white/10 shadow-lg space-y-3">
+      <div className="bg-white rounded-2xl p-4 border border-[#DCE1D8] shadow-sm space-y-3">
         <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
           <div className="sm:col-span-8 relative">
-            <Search className="w-4 h-4 text-white/40 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[#6B7068] absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search 72 treatments by name, category, or description..."
-              className="w-full h-10 pl-10 pr-4 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder-white/40 focus:outline-none focus:border-[#CFA46A]"
+              className="w-full h-10 pl-10 pr-4 bg-[#F7F4ED]/50 border border-[#DCE1D8] rounded-xl text-xs text-[#10110F] placeholder-[#6B7068]/50 focus:outline-none focus:border-[#263D2B]"
             />
           </div>
 
@@ -264,7 +264,7 @@ export default function AdminServices({ customServices = [], onUpdateServices })
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full h-10 px-3 bg-[#24151E] border border-white/10 rounded-xl text-xs text-white focus:outline-none focus:border-[#CFA46A] cursor-pointer"
+              className="w-full h-10 px-3 bg-[#F7F4ED]/50 border border-[#DCE1D8] rounded-xl text-xs text-[#10110F] focus:outline-none focus:border-[#263D2B] cursor-pointer"
             >
               <option value="all">All 11 Categories ({activeServicesList.length})</option>
               {CATEGORIES.map((c) => (
@@ -278,11 +278,11 @@ export default function AdminServices({ customServices = [], onUpdateServices })
       </div>
 
       {/* Services List Table */}
-      <div className="bg-[#1C1418] rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
+      <div className="bg-white rounded-3xl border border-[#DCE1D8] shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-white/10 bg-white/5 text-white/60 uppercase text-[10px] tracking-wider">
+              <tr className="border-b border-[#DCE1D8] bg-[#F7F4ED] text-[#6B7068] uppercase text-[10px] tracking-wider">
                 <th className="py-3.5 px-4 font-semibold">Treatment</th>
                 <th className="py-3.5 px-4 font-semibold">Category</th>
                 <th className="py-3.5 px-4 font-semibold">Duration</th>
@@ -291,13 +291,13 @@ export default function AdminServices({ customServices = [], onUpdateServices })
                 <th className="py-3.5 px-4 font-semibold text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-[#DCE1D8]">
               {filteredServices.map((service) => {
                 const isEditing = editingId === service.id;
                 const isActive = service.active !== false;
 
                 return (
-                  <tr key={service.id} className="hover:bg-white/[0.03] transition-colors">
+                  <tr key={service.id} className="hover:bg-[#F7F4ED]/40 transition-colors">
                     {/* Treatment Info & Image Preview */}
                     <td className="py-3.5 px-4 max-w-[320px]">
                       {isEditing ? (
@@ -307,20 +307,20 @@ export default function AdminServices({ customServices = [], onUpdateServices })
                             value={editForm.name}
                             onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                             placeholder="Treatment Name"
-                            className="w-full h-8 px-2 bg-white/10 border border-[#CFA46A] rounded-lg text-white text-xs font-semibold"
+                            className="w-full h-8 px-2 bg-white border border-[#263D2B] rounded-lg text-[#10110F] text-xs font-semibold"
                           />
                           <div className="flex items-center gap-2">
                             <SafeServiceImage
                               src={editForm.image || service.image}
                               alt="Preview"
-                              className="w-10 h-10 rounded-xl object-cover border border-[#CFA46A]"
+                              className="w-10 h-10 rounded-xl object-cover border border-[#263D2B]"
                             />
                             <input
                               type="text"
                               value={editForm.image}
                               onChange={(e) => setEditForm({ ...editForm, image: e.target.value })}
                               placeholder="Image URL"
-                              className="flex-1 h-8 px-2 bg-white/10 border border-white/20 rounded-lg text-white text-[11px]"
+                              className="flex-1 h-8 px-2 bg-white border border-[#DCE1D8] rounded-lg text-[#10110F] text-[11px]"
                             />
                           </div>
                           <textarea
@@ -328,7 +328,7 @@ export default function AdminServices({ customServices = [], onUpdateServices })
                             onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
                             rows={2}
                             placeholder="Short description..."
-                            className="w-full p-2 bg-white/10 border border-white/20 rounded-lg text-white text-[11px]"
+                            className="w-full p-2 bg-white border border-[#DCE1D8] rounded-lg text-[#10110F] text-[11px]"
                           />
                         </div>
                       ) : (
@@ -336,12 +336,12 @@ export default function AdminServices({ customServices = [], onUpdateServices })
                           <div className="relative group/img flex-shrink-0">
                             <SafeServiceImage 
                               service={service}
-                              className="w-12 h-12 rounded-xl object-cover border border-white/10 shadow-md"
+                              className="w-12 h-12 rounded-xl object-cover border border-[#DCE1D8] shadow-xs"
                             />
                           </div>
                           <div className="min-w-0">
-                            <div className="font-semibold text-white truncate">{service.name}</div>
-                            <div className="text-white/40 text-[10px] line-clamp-2">{service.description}</div>
+                            <div className="font-semibold text-[#10110F] truncate">{service.name}</div>
+                            <div className="text-[#6B7068] text-[10px] line-clamp-2">{service.description}</div>
                           </div>
                         </div>
                       )}
@@ -353,14 +353,14 @@ export default function AdminServices({ customServices = [], onUpdateServices })
                         <select
                           value={editForm.category}
                           onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
-                          className="h-8 px-2 bg-[#24151E] border border-[#CFA46A] rounded-lg text-white text-xs"
+                          className="h-8 px-2 bg-white border border-[#263D2B] rounded-lg text-[#10110F] text-xs"
                         >
                           {CATEGORIES.map(c => (
                             <option key={c.id} value={c.id}>{c.name}</option>
                           ))}
                         </select>
                       ) : (
-                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#CFA46A]/15 text-[#CFA46A] border border-[#CFA46A]/30">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#263D2B]/10 text-[#263D2B] border border-[#263D2B]/20">
                           {service.categoryName || service.category}
                         </span>
                       )}
@@ -373,11 +373,11 @@ export default function AdminServices({ customServices = [], onUpdateServices })
                           type="text"
                           value={editForm.duration}
                           onChange={(e) => setEditForm({ ...editForm, duration: e.target.value })}
-                          className="w-24 h-8 px-2 bg-white/10 border border-[#CFA46A] rounded-lg text-white text-xs"
+                          className="w-24 h-8 px-2 bg-white border border-[#263D2B] rounded-lg text-[#10110F] text-xs"
                         />
                       ) : (
-                        <div className="flex items-center gap-1.5 text-white/70">
-                          <Clock className="w-3.5 h-3.5 text-[#CFA46A]" />
+                        <div className="flex items-center gap-1.5 text-[#6B7068]">
+                          <Clock className="w-3.5 h-3.5 text-[#263D2B]" />
                           <span>{service.duration}</span>
                         </div>
                       )}
@@ -387,16 +387,16 @@ export default function AdminServices({ customServices = [], onUpdateServices })
                     <td className="py-3.5 px-4">
                       {isEditing ? (
                         <div className="flex items-center gap-1">
-                          <span className="text-white/60">$</span>
+                          <span className="text-[#6B7068]">$</span>
                           <input
                             type="number"
                             value={editForm.price}
                             onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
-                            className="w-20 h-8 px-2 bg-white/10 border border-[#CFA46A] rounded-lg text-white text-xs"
+                            className="w-20 h-8 px-2 bg-white border border-[#263D2B] rounded-lg text-[#10110F] text-xs"
                           />
                         </div>
                       ) : (
-                        <span className="font-bold text-emerald-400 font-mono text-sm">
+                        <span className="font-bold text-[#263D2B] font-mono text-sm">
                           ${service.price} CAD
                         </span>
                       )}
@@ -408,8 +408,8 @@ export default function AdminServices({ customServices = [], onUpdateServices })
                         onClick={() => handleToggleActive(service.id)}
                         className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-colors cursor-pointer ${
                           isActive
-                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                            : 'bg-white/10 text-white/40 border border-white/15'
+                            ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                            : 'bg-[#F7F4ED] text-[#6B7068] border border-[#DCE1D8]'
                         }`}
                       >
                         {isActive ? 'Available' : 'Disabled'}
@@ -422,14 +422,14 @@ export default function AdminServices({ customServices = [], onUpdateServices })
                         <div className="flex items-center justify-end gap-1.5">
                           <button
                             onClick={() => handleSaveEdit(service.id)}
-                            className="p-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer shadow-md"
+                            className="p-1.5 rounded-lg bg-[#263D2B] hover:bg-[#1C2E20] text-white cursor-pointer shadow-md"
                             title="Save treatment changes"
                           >
                             <Check className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => setEditingId(null)}
-                            className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white cursor-pointer"
+                            className="p-1.5 rounded-lg bg-[#F7F4ED] hover:bg-[#DCE1D8] text-[#10110F] cursor-pointer"
                             title="Cancel"
                           >
                             <X className="w-4 h-4" />
@@ -439,14 +439,14 @@ export default function AdminServices({ customServices = [], onUpdateServices })
                         <div className="flex items-center justify-end gap-1.5">
                           <button
                             onClick={() => handleStartEdit(service)}
-                            className="p-2 rounded-lg bg-white/5 hover:bg-[#CFA46A]/20 text-[#CFA46A] hover:text-white transition-colors cursor-pointer"
+                            className="p-2 rounded-lg bg-[#F7F4ED] hover:bg-[#263D2B] text-[#263D2B] hover:text-white transition-colors cursor-pointer"
                             title="Edit Treatment Details & Image"
                           >
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={() => handleDeleteService(service.id, service.name)}
-                            className="p-2 rounded-lg bg-white/5 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 transition-colors cursor-pointer"
+                            className="p-2 rounded-lg bg-red-50 hover:bg-red-600 text-red-600 hover:text-white transition-colors cursor-pointer"
                             title="Delete Treatment"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -465,16 +465,16 @@ export default function AdminServices({ customServices = [], onUpdateServices })
 
       {/* Add New Service Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-lg bg-[#1C1418] border border-[#CFA46A]/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
-            <div className="flex items-center justify-between border-b border-white/10 pb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+          <div className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto bg-white border border-[#DCE1D8] rounded-3xl p-5 sm:p-8 shadow-2xl space-y-5 sm:space-y-6">
+            <div className="flex items-center justify-between border-b border-[#DCE1D8] pb-4">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-[#CFA46A]" />
-                <h3 className="font-serif text-xl text-white font-semibold">Add New Salon Treatment</h3>
+                <Sparkles className="w-5 h-5 text-[#263D2B]" />
+                <h3 className="font-serif text-xl text-[#10110F] font-semibold">Add New Salon Treatment</h3>
               </div>
               <button
                 onClick={() => setShowAddModal(false)}
-                className="text-white/50 hover:text-white p-1 rounded-full"
+                className="text-[#6B7068] hover:text-[#10110F] p-1 rounded-full"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -482,24 +482,24 @@ export default function AdminServices({ customServices = [], onUpdateServices })
 
             <form onSubmit={handleCreateService} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-white/70 mb-1">Treatment Name</label>
+                <label className="block text-xs font-semibold text-[#10110F] mb-1">Treatment Name</label>
                 <input
                   type="text"
                   required
                   value={newServiceForm.name}
                   onChange={(e) => setNewServiceForm({ ...newServiceForm, name: e.target.value })}
                   placeholder="e.g. Royal Silk Facial"
-                  className="w-full h-10 px-3 bg-white/5 border border-white/15 rounded-xl text-xs text-white focus:outline-none focus:border-[#CFA46A]"
+                  className="w-full h-10 px-3 bg-[#F7F4ED]/50 border border-[#DCE1D8] rounded-xl text-xs text-[#10110F] focus:outline-none focus:border-[#263D2B]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-white/70 mb-1">Category</label>
+                  <label className="block text-xs font-semibold text-[#10110F] mb-1">Category</label>
                   <select
                     value={newServiceForm.category}
                     onChange={(e) => setNewServiceForm({ ...newServiceForm, category: e.target.value })}
-                    className="w-full h-10 px-3 bg-[#24151E] border border-white/15 rounded-xl text-xs text-white focus:outline-none focus:border-[#CFA46A]"
+                    className="w-full h-10 px-3 bg-[#F7F4ED]/50 border border-[#DCE1D8] rounded-xl text-xs text-[#10110F] focus:outline-none focus:border-[#263D2B]"
                   >
                     {CATEGORIES.map(c => (
                       <option key={c.id} value={c.id}>{c.name}</option>
@@ -508,49 +508,49 @@ export default function AdminServices({ customServices = [], onUpdateServices })
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-white/70 mb-1">Price (CAD $)</label>
+                  <label className="block text-xs font-semibold text-[#10110F] mb-1">Price (CAD $)</label>
                   <input
                     type="number"
                     required
                     value={newServiceForm.price}
                     onChange={(e) => setNewServiceForm({ ...newServiceForm, price: e.target.value })}
-                    className="w-full h-10 px-3 bg-white/5 border border-white/15 rounded-xl text-xs text-white focus:outline-none focus:border-[#CFA46A]"
+                    className="w-full h-10 px-3 bg-[#F7F4ED]/50 border border-[#DCE1D8] rounded-xl text-xs text-[#10110F] focus:outline-none focus:border-[#263D2B]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-white/70 mb-1">Duration</label>
+                <label className="block text-xs font-semibold text-[#10110F] mb-1">Duration</label>
                 <input
                   type="text"
                   required
                   value={newServiceForm.duration}
                   onChange={(e) => setNewServiceForm({ ...newServiceForm, duration: e.target.value })}
                   placeholder="e.g. 30 min"
-                  className="w-full h-10 px-3 bg-white/5 border border-white/15 rounded-xl text-xs text-white focus:outline-none focus:border-[#CFA46A]"
+                  className="w-full h-10 px-3 bg-[#F7F4ED]/50 border border-[#DCE1D8] rounded-xl text-xs text-[#10110F] focus:outline-none focus:border-[#263D2B]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-white/70 mb-1">Treatment Image URL</label>
+                <label className="block text-xs font-semibold text-[#10110F] mb-1">Treatment Image URL</label>
                 <input
                   type="text"
                   required
                   value={newServiceForm.image}
                   onChange={(e) => setNewServiceForm({ ...newServiceForm, image: e.target.value })}
                   placeholder="https://images.unsplash.com/..."
-                  className="w-full h-10 px-3 bg-white/5 border border-white/15 rounded-xl text-xs text-white focus:outline-none focus:border-[#CFA46A]"
+                  className="w-full h-10 px-3 bg-[#F7F4ED]/50 border border-[#DCE1D8] rounded-xl text-xs text-[#10110F] focus:outline-none focus:border-[#263D2B]"
                 />
                 {newServiceForm.image && (
-                  <div className="mt-2 flex items-center gap-3 p-2 bg-white/5 rounded-xl border border-white/10">
+                  <div className="mt-2 flex items-center gap-3 p-2 bg-[#F7F4ED] rounded-xl border border-[#DCE1D8]">
                     <img
                       src={newServiceForm.image}
                       alt="Live Preview"
-                      className="w-14 h-14 rounded-lg object-cover border border-[#CFA46A]"
+                      className="w-14 h-14 rounded-lg object-cover border border-[#263D2B]"
                       onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
                     />
-                    <div className="text-[11px] text-white/60">
-                      <span className="text-[#CFA46A] font-semibold block">Live Image Preview</span>
+                    <div className="text-[11px] text-[#6B7068]">
+                      <span className="text-[#263D2B] font-semibold block">Live Image Preview</span>
                       This image will appear across all service views.
                     </div>
                   </div>
@@ -558,26 +558,26 @@ export default function AdminServices({ customServices = [], onUpdateServices })
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-white/70 mb-1">Description</label>
+                <label className="block text-xs font-semibold text-[#10110F] mb-1">Description</label>
                 <textarea
                   rows={3}
                   value={newServiceForm.description}
                   onChange={(e) => setNewServiceForm({ ...newServiceForm, description: e.target.value })}
-                  className="w-full p-3 bg-white/5 border border-white/15 rounded-xl text-xs text-white focus:outline-none focus:border-[#CFA46A]"
+                  className="w-full p-3 bg-[#F7F4ED]/50 border border-[#DCE1D8] rounded-xl text-xs text-[#10110F] focus:outline-none focus:border-[#263D2B]"
                 />
               </div>
 
-              <div className="pt-4 flex justify-end gap-3 border-t border-white/10">
+              <div className="pt-4 flex justify-end gap-3 border-t border-[#DCE1D8]">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-5 py-2.5 rounded-full bg-white/10 text-white text-xs font-semibold hover:bg-white/20"
+                  className="global-button-secondary !px-5 !py-2.5 text-xs font-semibold cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-full bg-[#CFA46A] hover:bg-[#B88D57] text-[#100C0D] text-xs font-bold uppercase tracking-wider shadow-lg"
+                  className="global-button !px-6 !py-2.5 text-white text-xs font-bold uppercase tracking-wider shadow-md cursor-pointer"
                 >
                   Create Service
                 </button>

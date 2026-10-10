@@ -37,12 +37,12 @@ export default function SafeServiceImage({
   if (!imageSrc || isError) {
     return (
       <div
-        className={`flex flex-col items-center justify-center bg-gradient-to-br from-[#1C1418] via-[#24171E] to-[#140E11] text-[#CFA46A] p-2 text-center border border-[#CFA46A]/20 shadow-inner select-none ${className}`}
+        className={`flex flex-col items-center justify-center bg-[#F7F4ED] text-[#263D2B] p-2 text-center border border-[#DCE1D8] select-none ${className}`}
         style={{ minHeight: isSmallThumb ? '100%' : '120px', aspectRatio: isSmallThumb ? '1/1' : '16/10', ...style }}
         data-service-id={service?.id}
       >
         <svg
-          className={`${isSmallThumb ? 'w-4 h-4' : 'w-6 h-6 mb-1'} text-[#CFA46A]/80 opacity-90`}
+          className={`${isSmallThumb ? 'w-4 h-4' : 'w-6 h-6 mb-1'} text-[#263D2B] opacity-90`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -55,7 +55,7 @@ export default function SafeServiceImage({
           />
         </svg>
         {!isSmallThumb && showText && (
-          <span className="text-[11px] font-serif tracking-wider text-[#E0D5C7]/80 uppercase mt-1">
+          <span className="text-[11px] font-serif tracking-wider text-[#6B7068] uppercase mt-1">
             {service?.name || fallbackText}
           </span>
         )}

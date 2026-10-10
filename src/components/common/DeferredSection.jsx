@@ -99,10 +99,10 @@ export default function DeferredSection({
         children
       ) : (
         <div 
-          className={`w-full ${minHeight} flex items-center justify-center bg-[#140E11] text-[#CFA46A]/40`}
+          className={`w-full ${minHeight} flex items-center justify-center bg-[#F7F4ED] text-[#263D2B]/40`}
           aria-hidden="true"
         >
-          <div className="w-6 h-6 rounded-full border-2 border-[#CFA46A]/30 border-t-transparent animate-spin" />
+          <div className="w-6 h-6 rounded-full border-2 border-[#263D2B]/30 border-t-[#263D2B] animate-spin" />
         </div>
       )}
     </section>

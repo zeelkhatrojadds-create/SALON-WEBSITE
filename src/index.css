@@ -4,11 +4,17 @@
 
 @layer base {
   :root {
-    --color-primary: #100C0D;
-    --color-secondary: #F7F1E8;
-    --color-gold: #CFA46A;
-    --color-beige: #E8D8C4;
-    --color-muted-brown: #6F5542;
+    --bg-primary: #F7F4ED;
+    --bg-secondary: #FFFFFF;
+    --text-primary: #10110F;
+    --text-secondary: #6B7068;
+    --accent-forest: #263D2B;
+    --accent-sage: #A8B5A0;
+    --accent-olive: #465640;
+    --btn-primary: #263D2B;
+    --btn-primary-hover: #1C2E20;
+    --btn-text: #FFFFFF;
+    --border-color: #DCE1D8;
   }
 
   *, ::before, ::after {
@@ -26,34 +32,56 @@
   }
   
   body {
-    background-color: #100C0D;
-    color: #F7F1E8;
+    background-color: #F7F4ED;
+    color: #10110F;
+    margin: 0;
+    padding: 0;
+    border: none;
+    outline: none;
     overflow-x: hidden;
     max-width: 100%;
     width: 100%;
     position: relative;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
     font-family: 'DM Sans', sans-serif;
-    /* Safe area for notched/dynamic-island phones */
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
   }
 
-  /* Prevent any element from busting out of viewport */
-  *, *::before, *::after {
+  /* Global anti-blur text clarity guarantees across all browsers and devices */
+  html, body, h1, h2, h3, h4, h5, h6, p, span, a, button, input, textarea, select, label {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern" 1;
+    font-kerning: normal;
+  }
+
+  /* Prevent horizontal blowout while respecting flex shrink-0 and SVG sizing */
+  html, body {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+  }
+
+  img, video, canvas {
     max-width: 100%;
+    height: auto;
   }
 
-  /* Minimum 44px touch targets for interactive elements */
-  button, a {
+  /* Minimum 44px touch targets for buttons and primary interactive controls */
+  button, 
+  .global-button, 
+  .global-button-secondary,
+  .btn-luxury-primary,
+  .btn-primary {
     min-height: 44px;
-    min-width: 44px;
+    touch-action: manipulation;
   }
 
-  /* Exempt inline/icon-only elements */
+  /* Exempt inline buttons and icon buttons with explicit compact dimensions */
   button.inline-btn, a.inline-btn, 
-  button[data-icon], span > button, span > a {
+  button[data-icon], span > button {
     min-height: unset;
     min-width: unset;
   }
@@ -69,8 +97,8 @@
   }
 
   ::selection {
-    background-color: #CFA46A;
-    color: #100C0D;
+    background-color: #263D2B;
+    color: #FFFFFF;
   }
 }
 
@@ -86,11 +114,364 @@
   font-family: 'Cormorant Garamond', Georgia, serif;
 }
 
-/* GPU Hardware Acceleration & Smooth Motion Utilities */
-.smooth-gpu {
-  will-change: transform, opacity;
-  transform: translateZ(0);
-  backface-visibility: hidden;
+/* =========================================================================
+   PREMIUM LUXURY BUTTON HOVER SYSTEM
+   Tactile lift, soft ambient forest glow, silky specular sheen, and smooth micro-interactions
+   ========================================================================= */
+
+/* =========================================================================
+   PREMIUM LUXURY BUTTON ANIMATION ENGINE (HAUTE COUTURE EDITION)
+   Multi-tier elevation, specular light-beam gleam, emerald aura & tactile snap
+   ========================================================================= */
+
+/* =========================================================================
+   ANTIGRAVITY — GLOBAL ANIMATED BUTTON STYLE FOR THE ENTIRE WEBSITE
+   Pill-shaped, 300ms smooth left-to-right green sliding hover layer
+   Strict Black & Green Theme (No Cyan, Gold, or Orange)
+   ========================================================================= */
+
+:root {
+  --button-green: #263D2B;        /* Primary forest green */
+  --button-olive: #465640;        /* Olive green */
+  --button-hover-green: #263D2B;  /* Hover forest green */
+  --button-dark-green: #18271B;   /* Dark hover sliding fill green */
+  --button-text: #FFFFFF;         /* Crisp white text */
+  --button-cream: #F7F4ED;        /* Warm cream */
+  --button-black: #10110F;        /* Deep black */
+  --button-danger: #8B2626;       /* Red destructive action */
+  --button-danger-dark: #5E1818;  /* Dark red sliding fill */
+}
+
+/* -------------------------------------------------------------------------
+   1. PRIMARY GLOBAL BUTTON (Sliding Dark Green Fill on Hover)
+   ------------------------------------------------------------------------- */
+.global-button,
+.btn-luxury-primary,
+.btn-primary,
+.button a,
+.button button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  padding: 0.85rem 1.65rem;
+  border: 1px solid var(--button-green) !important;
+  border-radius: 999px !important;
+
+  background: var(--button-green) !important;
+  color: var(--button-text) !important;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12rem;
+  line-height: 1.4;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+
+  box-shadow: 0 4px 14px rgba(24, 39, 27, 0.15);
+
+  transition:
+    color 300ms ease,
+    border-color 300ms ease,
+    box-shadow 300ms ease,
+    transform 200ms ease !important;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.global-button::before,
+.btn-luxury-primary::before,
+.btn-primary::before,
+.button a::before,
+.button button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 0;
+  border-radius: inherit;
+  background: var(--button-dark-green) !important;
+  z-index: -1;
+  transition: width 300ms cubic-bezier(0.2, 0.8, 0.4, 1) !important;
+}
+
+.global-button:hover::before,
+.btn-luxury-primary:hover::before,
+.btn-primary:hover::before,
+.button a:hover::before,
+.button button:hover::before {
+  width: 100% !important;
+}
+
+.global-button:hover,
+.btn-luxury-primary:hover,
+.btn-primary:hover,
+.button a:hover,
+.button button:hover {
+  color: #FFFFFF !important;
+  border-color: var(--button-dark-green) !important;
+  box-shadow: 0 6px 20px rgba(24, 39, 27, 0.28);
+}
+
+.global-button:active,
+.btn-luxury-primary:active,
+.btn-primary:active,
+.button a:active,
+.button button:active {
+  transform: scale(0.98) !important;
+}
+
+.global-button:focus-visible,
+.btn-luxury-primary:focus-visible,
+.button a:focus-visible,
+.button button:focus-visible {
+  outline: 2px solid var(--button-green) !important;
+  outline-offset: 4px !important;
+}
+
+/* Neutralize legacy .button container spacing & remove 3D bottom backplate */
+.button {
+  position: relative;
+  display: inline-block;
+  margin: 0 !important;
+  isolation: isolate;
+}
+.button:after {
+  display: none !important;
+}
+
+/* -------------------------------------------------------------------------
+   2. SECONDARY / OUTLINE GLOBAL BUTTON (Sliding Forest Green Fill on Hover)
+   ------------------------------------------------------------------------- */
+.global-button-secondary,
+.btn-luxury-secondary,
+.btn-secondary,
+.btn-luxury-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  padding: 0.85rem 1.5rem;
+  border: 1px solid var(--button-green) !important;
+  border-radius: 999px !important;
+
+  background: transparent !important;
+  color: var(--button-green) !important;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12rem;
+  line-height: 1.4;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+
+  transition:
+    color 300ms ease,
+    border-color 300ms ease,
+    box-shadow 300ms ease,
+    transform 200ms ease !important;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.global-button-secondary::before,
+.btn-luxury-secondary::before,
+.btn-secondary::before,
+.btn-luxury-arrow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 0;
+  border-radius: inherit;
+  background: var(--button-green) !important;
+  z-index: -1;
+  transition: width 300ms cubic-bezier(0.2, 0.8, 0.4, 1) !important;
+}
+
+.global-button-secondary:hover::before,
+.btn-luxury-secondary:hover::before,
+.btn-secondary:hover::before,
+.btn-luxury-arrow:hover::before {
+  width: 100% !important;
+}
+
+.global-button-secondary:hover,
+.btn-luxury-secondary:hover,
+.btn-secondary:hover,
+.btn-luxury-arrow:hover {
+  color: #FFFFFF !important;
+  border-color: var(--button-green) !important;
+  box-shadow: 0 4px 16px rgba(38, 61, 43, 0.22);
+}
+
+.global-button-secondary:active,
+.btn-luxury-secondary:active,
+.btn-secondary:active,
+.btn-luxury-arrow:active {
+  transform: scale(0.98) !important;
+}
+
+/* Arrow micro-interaction in secondary buttons */
+.btn-luxury-arrow .arrow-symbol {
+  display: inline-block;
+  margin-left: 0.35rem;
+  transition: transform 300ms ease;
+}
+.btn-luxury-arrow:hover .arrow-symbol {
+  transform: translateX(4px);
+}
+
+/* -------------------------------------------------------------------------
+   3. DESTRUCTIVE / DANGER GLOBAL BUTTON (Sliding Dark Red Fill on Hover)
+   ------------------------------------------------------------------------- */
+.global-button-danger,
+.btn-danger,
+button[class*="bg-red"],
+a[class*="bg-red"],
+button[class*="text-red-600"]:not([disabled]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  padding: 0.75rem 1.4rem;
+  border: 1px solid var(--button-danger) !important;
+  border-radius: 999px !important;
+
+  background: var(--button-danger) !important;
+  color: #FFFFFF !important;
+  cursor: pointer;
+
+  transition:
+    color 300ms ease,
+    border-color 300ms ease,
+    box-shadow 300ms ease,
+    transform 200ms ease !important;
+}
+
+.global-button-danger::before,
+.btn-danger::before,
+button[class*="bg-red"]::before,
+a[class*="bg-red"]::before,
+button[class*="text-red-600"]:not([disabled])::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 0;
+  border-radius: inherit;
+  background: var(--button-danger-dark) !important;
+  z-index: -1;
+  transition: width 300ms cubic-bezier(0.2, 0.8, 0.4, 1) !important;
+}
+
+.global-button-danger:hover::before,
+.btn-danger:hover::before,
+button[class*="bg-red"]:hover::before,
+a[class*="bg-red"]:hover::before,
+button[class*="text-red-600"]:not([disabled]):hover::before {
+  width: 100% !important;
+}
+
+.global-button-danger:hover,
+.btn-danger:hover,
+button[class*="bg-red"]:hover,
+a[class*="bg-red"]:hover,
+button[class*="text-red-600"]:not([disabled]):hover {
+  border-color: var(--button-danger-dark) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(94, 24, 24, 0.35);
+}
+
+.global-button-danger:active,
+.btn-danger:active,
+button[class*="bg-red"]:active,
+a[class*="bg-red"]:active {
+  transform: scale(0.98) !important;
+}
+
+/* -------------------------------------------------------------------------
+   4. DISABLED & ACCESSIBILITY STATES
+   ------------------------------------------------------------------------- */
+.global-button:disabled,
+.global-button[aria-disabled="true"],
+button:disabled,
+button[disabled],
+.btn-disabled,
+[aria-disabled="true"],
+button[class*="disabled:opacity"],
+button[class*="disabled:cursor-not-allowed"] {
+  opacity: 0.55 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  pointer-events: none !important;
+  box-shadow: none !important;
+}
+
+.global-button:disabled::before,
+.global-button[aria-disabled="true"]::before,
+button:disabled::before,
+button[disabled]::before,
+[aria-disabled="true"]::before {
+  display: none !important;
+  width: 0 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .global-button,
+  .global-button::before,
+  .global-button-secondary,
+  .global-button-secondary::before,
+  .global-button-danger,
+  .global-button-danger::before,
+  .btn-luxury-primary,
+  .btn-luxury-secondary,
+  .btn-luxury-arrow,
+  button,
+  a[class*="btn"] {
+    transition: none !important;
+  }
+
+  .global-button:active,
+  .global-button-secondary:active,
+  .global-button-danger:active {
+    transform: none !important;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   5. STRICT EXCLUSIONS (Do NOT animate text inputs, checkboxes, pure text links)
+   ------------------------------------------------------------------------- */
+input,
+textarea,
+select,
+input[type="checkbox"],
+input[type="radio"],
+nav a:not([class*="btn"]):not([class*="bg-"]):not([class*="global-button"]),
+header nav a,
+footer a,
+.no-animate {
+  border-radius: initial;
+  overflow: visible;
+}
+input::before,
+textarea::before,
+select::before {
+  display: none !important;
 }
 
 .smooth-transition {
@@ -98,38 +479,38 @@
 }
 
 @layer utilities {
-  .text-gold {
-    color: #CFA46A;
+  .text-forest {
+    color: #263D2B;
   }
 
-  .bg-espresso {
-    background-color: #100C0D;
+  .bg-black-deep {
+    background-color: #10110F;
   }
 
-  .bg-gold {
-    background-color: #CFA46A;
+  .bg-forest {
+    background-color: #263D2B;
   }
 
-  .border-gold {
-    border-color: #CFA46A;
+  .border-forest {
+    border-color: #263D2B;
   }
 
-  .text-glow-gold {
-    text-shadow: 0 2px 14px rgba(207, 164, 106, 0.3);
+  .border-subtle {
+    border-color: #DCE1D8;
   }
   
   .glass-card-dark {
-    background: rgba(16, 12, 13, 0.85);
+    background: rgba(16, 17, 15, 0.9);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(207, 164, 106, 0.18);
+    border: 1px solid rgba(220, 225, 216, 0.15);
   }
 
   .glass-header {
-    background: rgba(16, 12, 13, 0.92);
+    background: rgba(247, 244, 237, 0.94);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(207, 164, 106, 0.15);
+    border-bottom: 1px solid #DCE1D8;
   }
 
   .scrollbar-none::-webkit-scrollbar,
@@ -152,16 +533,16 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #100C0D;
+  background: #F7F4ED;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #CFA46A;
+  background: #A8B5A0;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #E8D8C4;
+  background: #263D2B;
 }
 
 /* Force dark color scheme for native pickers */
@@ -242,6 +623,22 @@ img.object-cover {
   }
   /* Shrink oversize headings on very small screens */
   h1 { word-break: break-word; }
+  h1, h2, h3, h4 {
+    overflow-wrap: break-word;
+  }
+}
+
+/* Fluid responsive headings & wrap protection */
+h1, h2, h3, h4, p, span {
+  overflow-wrap: break-word;
+}
+
+/* Safe area helpers */
+.pb-safe {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+.pt-safe {
+  padding-top: max(1rem, env(safe-area-inset-top));
 }
 
 /* Avoid content hidden by fixed navbar on anchor jump */
@@ -295,7 +692,7 @@ img.object-cover {
   }
   100% {
     opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: none;
   }
 }
 

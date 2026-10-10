@@ -16,6 +16,7 @@ const TreatmentDetailPage = lazy(() => import('./pages/TreatmentDetailPage'));
 const GalleryPage = lazy(() => import('./pages/GalleryPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
+const ReviewsPage = lazy(() => import('./pages/ReviewsPage'));
 const CareersPage = lazy(() => import('./pages/CareersPage'));
 const AdminPage = lazy(() => import('./pages/AdminPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
@@ -24,8 +25,8 @@ const ReviewInvitePopup = lazy(() => import('./components/common/ReviewInvitePop
 // Lightweight page loading fallback
 function PageFallback() {
   return (
-    <div className="min-h-[50vh] flex items-center justify-center bg-[#100C0D] text-[#CFA46A]">
-      <div className="w-8 h-8 rounded-full border-2 border-[#CFA46A] border-t-transparent animate-spin" />
+    <div className="min-h-[50vh] flex items-center justify-center bg-[#F7F4ED] text-[#263D2B]">
+      <div className="w-8 h-8 rounded-full border-2 border-[#263D2B] border-t-transparent animate-spin" />
     </div>
   );
 }
@@ -76,7 +77,7 @@ function AppLayout() {
 
   if (isAdminRoute) {
     return (
-      <main className="min-h-screen">
+      <main className="min-h-screen bg-[#F7F4ED] text-[#10110F]">
         <ErrorBoundary>
           <Suspense fallback={<PageFallback />}>
             <Routes>
@@ -93,7 +94,7 @@ function AppLayout() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#100C0D] text-[#F7F1E8] font-body selection:bg-[#CFA46A] selection:text-[#100C0D]">
+    <div className="min-h-screen flex flex-col bg-[#F7F4ED] text-[#10110F] font-body selection:bg-[#263D2B] selection:text-[#FFFFFF]">
       <Navbar />
 
       {/* Main Application Pages with Luxury Silk Reveal Transition */}
@@ -109,6 +110,7 @@ function AppLayout() {
                 <Route path="/gallery" element={<GalleryPage />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/contact" element={<ContactPage />} />
+                <Route path="/reviews" element={<ReviewsPage />} />
                 <Route path="/careers" element={<CareersPage />} />
                 <Route path="/career" element={<CareersPage />} />
 

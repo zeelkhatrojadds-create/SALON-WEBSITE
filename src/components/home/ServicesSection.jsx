@@ -28,20 +28,20 @@ export default function ServicesSection() {
   }).slice(0, 8);
 
   return (
-    <section id="services" className="w-full bg-[#100C0D] py-20 sm:py-28 border-t border-white/5">
+    <section id="services" className="w-full bg-[#F7F4ED] py-20 sm:py-28 border-t border-[#DCE1D8]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 xl:px-16">
 
         {/* Section heading */}
         <ScrollReveal className="text-center mb-12 sm:mb-16" stagger={true}>
-          <div className="inline-flex items-center gap-3 text-[#CFA46A] mb-4">
-            <span className="w-8 h-px bg-[#CFA46A]/50" />
-            <span className="text-[11px] uppercase tracking-[0.22em] font-semibold">Master 72-Treatment Menu</span>
-            <span className="w-8 h-px bg-[#CFA46A]/50" />
+          <div className="inline-flex items-center gap-3 text-[#263D2B] mb-4">
+            <span className="w-8 h-px bg-[#263D2B]/50" />
+            <span className="text-[11px] uppercase tracking-[0.22em] font-semibold">Master Treatment Menu</span>
+            <span className="w-8 h-px bg-[#263D2B]/50" />
           </div>
-          <h2 className="font-serif font-normal text-[#F7F1E8] text-3xl sm:text-4xl lg:text-5xl leading-tight mb-3">
-            Signature <span className="italic text-[#CFA46A]">Treatments</span>
+          <h2 className="font-serif font-normal text-[#10110F] text-3xl sm:text-4xl lg:text-5xl leading-tight mb-3">
+            Signature <span className="italic text-[#263D2B]">Treatments</span>
           </h2>
-          <p className="text-[#F7F1E8]/60 text-sm sm:text-base max-w-xl mx-auto">
+          <p className="text-[#6B7068] text-sm sm:text-base max-w-xl mx-auto font-sans">
             Every treatment is performed with luxury salon mastery, pure botanical ingredients, and private one-on-one appointments.
           </p>
         </ScrollReveal>
@@ -67,17 +67,17 @@ export default function ServicesSection() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-14">
           <Link
             to="/services"
-            className="inline-flex items-center gap-2 bg-[#CFA46A] hover:bg-[#B88D57] text-[#100C0D] text-xs font-bold uppercase tracking-widest px-10 py-4 rounded-full transition-all duration-200 shadow-xl shadow-[#CFA46A]/20 hover:scale-[1.02]"
+            className="inline-flex items-center gap-2 bg-[#263D2B] hover:bg-[#1C2E20] text-white text-xs font-bold uppercase tracking-widest px-10 py-4 rounded-full transition-all duration-200 shadow-md hover:scale-[1.02]"
           >
             VIEW ALL SERVICES
             <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
             to="/book-appointment"
-            className="inline-flex items-center gap-2 bg-[#CFA46A] hover:bg-[#B88D57] text-[#100C0D] text-xs font-bold uppercase tracking-widest px-10 py-4 rounded-full transition-all duration-200 shadow-xl shadow-[#CFA46A]/20 hover:scale-[1.02]"
+            className="inline-flex items-center gap-2 bg-white hover:bg-[#F7F4ED] text-[#10110F] border border-[#263D2B] text-xs font-bold uppercase tracking-widest px-10 py-4 rounded-full transition-all duration-200 shadow-sm hover:scale-[1.02]"
           >
             BOOK APPOINTMENT
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-4 h-4 text-[#263D2B]" />
           </Link>
         </div>
       </div>

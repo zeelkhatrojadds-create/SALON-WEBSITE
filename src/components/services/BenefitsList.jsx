@@ -9,14 +9,14 @@ export default function BenefitsList({ benefits = [] }) {
       {benefits.map((benefit, index) => (
         <div 
           key={index}
-          className="flex items-center gap-3 text-sm sm:text-base text-white/90 group"
+          className="flex items-center gap-3 text-sm sm:text-base text-[#10110F] group font-sans"
         >
-          {/* Vibrant Red/Pink Checkmark */}
-          <div className="w-5 h-5 rounded-md bg-brand-pink/20 border border-brand-pink/40 flex items-center justify-center flex-shrink-0 text-brand-pink group-hover:bg-brand-pink group-hover:text-white transition-colors">
+          {/* Forest Green Checkmark */}
+          <div className="w-5 h-5 rounded-md bg-[#263D2B]/10 border border-[#263D2B]/30 flex items-center justify-center flex-shrink-0 text-[#263D2B] group-hover:bg-[#263D2B] group-hover:text-white transition-colors">
             <Check className="w-3.5 h-3.5 stroke-[2.5]" />
           </div>
 
-          <span className="font-medium text-white/90">{benefit}</span>
+          <span className="font-medium text-[#10110F]">{benefit}</span>
         </div>
       ))}
     </div>

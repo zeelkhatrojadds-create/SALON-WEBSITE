@@ -20,8 +20,8 @@ function getSharedObserver() {
         });
       },
       {
-        threshold: 0.1,
-        rootMargin: '50px 0px 0px 0px'
+        threshold: 0.05,
+        rootMargin: '60px 0px 0px 0px'
       }
     );
   }
@@ -34,7 +34,7 @@ export default function ScrollReveal({
   delay = 0,
   stagger = false,
   direction = 'zoom-out',
-  threshold = 0.1,
+  threshold = 0.05,
   once = true,
   as: Component = 'div',
   ...props
@@ -46,6 +46,7 @@ export default function ScrollReveal({
     }
     return false;
   });
+  const [isSettled, setIsSettled] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
@@ -54,6 +55,7 @@ export default function ScrollReveal({
     const observer = getSharedObserver();
     if (!observer) {
       setIsVisible(true);
+      setIsSettled(true);
       return;
     }
 
@@ -71,13 +73,24 @@ export default function ScrollReveal({
     };
   }, [isVisible]);
 
-  const style = delay ? { transitionDelay: `${delay}ms` } : undefined;
+  // Once revealed, transition to isSettled to release all GPU texture memory and ensure razor-sharp text
+  useEffect(() => {
+    if (isVisible && !isSettled) {
+      const timer = setTimeout(() => {
+        setIsSettled(true);
+      }, 900 + (delay || 0));
+      return () => clearTimeout(timer);
+    }
+  }, [isVisible, isSettled, delay]);
+
+  const style = delay && !isSettled ? { transitionDelay: `${delay}ms` } : undefined;
 
   const classes = [
     'scroll-reveal',
     `reveal-${direction}`,
     stagger ? 'reveal-stagger' : '',
     isVisible ? 'is-visible' : '',
+    isSettled ? 'is-settled' : '',
     className
   ].filter(Boolean).join(' ');
 

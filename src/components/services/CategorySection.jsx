@@ -21,18 +21,18 @@ export default function CategorySection({
   const getCategoryIcon = (catId) => {
     switch (catId) {
       case 'hair':
-        return <Scissors className="w-5 h-5 text-brand-pink" />;
+        return <Scissors className="w-5 h-5 text-[#263D2B]" />;
       case 'skin':
-        return <Sparkles className="w-5 h-5 text-brand-pink" />;
+        return <Sparkles className="w-5 h-5 text-[#263D2B]" />;
       case 'nails':
-        return <Hand className="w-5 h-5 text-brand-pink" />;
+        return <Hand className="w-5 h-5 text-[#263D2B]" />;
       case 'makeup':
-        return <Palette className="w-5 h-5 text-brand-pink" />;
+        return <Palette className="w-5 h-5 text-[#263D2B]" />;
       case 'spa':
-        return <Flower2 className="w-5 h-5 text-brand-pink" />;
+        return <Flower2 className="w-5 h-5 text-[#263D2B]" />;
       case 'waxing':
       default:
-        return <Sparkle className="w-5 h-5 text-brand-pink" />;
+        return <Sparkle className="w-5 h-5 text-[#263D2B]" />;
     }
   };
 
@@ -41,7 +41,7 @@ export default function CategorySection({
       case 'hair':
         return 'Precision haircuts, balayage couture, scalp rejuvenation & bridal hair artistry.';
       case 'skin':
-        return 'Clinical-grade facials, 24K gold hydration, lymphatic therapy & glass skin rituals.';
+        return 'Clinical-grade facials, cellular hydration, lymphatic therapy & glass skin rituals.';
       case 'nails':
         return 'Express gel manicures, luxury botanical pedicures & bespoke crystal nail art.';
       case 'makeup':
@@ -59,30 +59,30 @@ export default function CategorySection({
   return (
     <section 
       id={`services-${category.id}`} 
-      className="py-10 sm:py-14 border-t border-white/10 first:border-t-0"
+      className="py-10 sm:py-14 border-t border-[#DCE1D8] first:border-t-0"
     >
       {/* Category Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 sm:mb-10">
-        <div className="space-y-2 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/5 border border-white/10 text-[#E95E92] text-[11px] font-bold uppercase tracking-wider">
+        <div className="space-y-2 max-w-2xl text-left">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#263D2B]/10 border border-[#263D2B]/20 text-[#263D2B] text-[11px] font-bold uppercase tracking-wider">
             {getCategoryIcon(category.id)}
             <span>{category.name}</span>
-            <span className="text-white/40">•</span>
-            <span className="text-brand-pink-light font-mono">{services.length} Treatments</span>
+            <span className="text-[#6B7068]">•</span>
+            <span className="text-[#465640] font-mono">{services.length} Treatments</span>
           </div>
 
-          <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight">
+          <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-normal text-[#10110F] tracking-tight">
             {category.name} Menu
           </h2>
 
-          <p className="text-xs sm:text-sm text-[#F2ECE4]/70 leading-relaxed">
+          <p className="text-xs sm:text-sm text-[#6B7068] leading-relaxed">
             {getCategoryTagline(category.id)}
           </p>
         </div>
 
         {/* Quick category jump badge */}
-        <div className="hidden sm:flex items-center gap-2 text-xs text-white/50 bg-white/5 px-4 py-2 rounded-full border border-white/10 self-start md:self-auto">
-          <Clock className="w-3.5 h-3.5 text-brand-pink" />
+        <div className="hidden sm:flex items-center gap-2 text-xs text-[#6B7068] bg-white px-4 py-2 rounded-full border border-[#DCE1D8] self-start md:self-auto shadow-2xs">
+          <Clock className="w-3.5 h-3.5 text-[#263D2B]" />
           <span>Average Duration: 30–90 mins</span>
         </div>
       </div>
