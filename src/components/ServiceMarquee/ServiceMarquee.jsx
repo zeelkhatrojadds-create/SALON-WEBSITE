@@ -14,6 +14,7 @@ const MAIN_CATEGORIES = [
   { name: 'HAIR COLOUR', query: 'Hair Colour' },
   { name: 'HAIR TREATMENTS', query: 'Hair Treatments' },
   { name: 'LASHES', query: 'Lashes' },
+  { name: 'NAIL ART & CARE', query: 'nails' },
 ];
 
 export default function ServiceMarquee() {

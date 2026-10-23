@@ -63,7 +63,8 @@ export const createAppointment = async (req, res) => {
       time,
       price,
       paymentMethod,
-      specialRequest
+      specialRequest,
+      customizations
     } = req.body;
 
     if (!customerName || !phone || !date || !time) {
@@ -115,7 +116,8 @@ export const createAppointment = async (req, res) => {
       status: 'pending',
       paymentMethod: paymentMethod || 'COD',
       paymentStatus: 'pending',
-      specialRequest: specialRequest || ''
+      specialRequest: specialRequest || '',
+      customizations: customizations || null
     });
 
     return res.status(201).json({

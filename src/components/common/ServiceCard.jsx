@@ -29,15 +29,15 @@ export default function ServiceCard({ service, onQuickBook, onViewDetails }) {
   };
 
   return (
-    <ScrollReveal className="w-full">
+    <ScrollReveal className="w-full h-full flex flex-col">
       <div 
-        className="group relative flex flex-col bg-white rounded-xl border border-[#DCE1D8] hover:border-[#263D2B]/50 overflow-hidden transition-all duration-300 shadow-2xs hover:shadow-md w-full text-left"
+        className="group relative flex flex-col bg-white rounded-xl border border-[#DCE1D8] hover:border-[#263D2B]/50 overflow-hidden transition-all duration-300 shadow-2xs hover:shadow-md w-full h-full text-left"
       >
         {/* Top Image Container */}
         <div className="relative aspect-[16/10] overflow-hidden bg-[#F7F4ED]">
           <SafeServiceImage
             service={service}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
             loading="lazy"
           />
 
@@ -56,7 +56,7 @@ export default function ServiceCard({ service, onQuickBook, onViewDetails }) {
         <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between">
           <div>
             {/* Eyebrow & Price Header Row */}
-            <div className="flex items-baseline justify-between gap-2 mb-2">
+            <div className="flex items-baseline justify-between gap-2 mb-2 min-h-[1.5rem]">
               <span className="text-[10.5px] font-bold tracking-[0.18em] uppercase text-[#263D2B]">
                 {categoryLabel}
               </span>
@@ -66,14 +66,14 @@ export default function ServiceCard({ service, onQuickBook, onViewDetails }) {
             </div>
 
             {/* Service Title */}
-            <h3 className="font-serif text-lg sm:text-[20px] font-normal text-[#10110F] leading-snug group-hover:text-[#263D2B] transition-colors mb-2">
-              <Link to={detailUrl}>
+            <h3 className="font-serif text-lg sm:text-[20px] font-normal text-[#10110F] leading-snug group-hover:text-[#263D2B] transition-colors mb-2 min-h-[3rem] line-clamp-2 flex items-center">
+              <Link to={detailUrl} className="line-clamp-2">
                 {service.name}
               </Link>
             </h3>
 
             {/* Description */}
-            <p className="font-sans text-xs sm:text-[13px] text-[#6B7068] line-clamp-2 leading-relaxed mb-6">
+            <p className="font-sans text-xs sm:text-[13px] text-[#6B7068] line-clamp-2 leading-relaxed mb-6 min-h-[2.5rem]">
               {service.description}
             </p>
           </div>

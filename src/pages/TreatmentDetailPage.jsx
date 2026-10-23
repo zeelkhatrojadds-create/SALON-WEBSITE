@@ -21,40 +21,51 @@ export default function TreatmentDetailPage() {
   const { category: categoryParam, slug: slugParam } = useParams();
   const navigate = useNavigate();
 
-  const [isLoading, setIsLoading] = useState(true);
+  const searchKey = slugParam || categoryParam;
+  const initialService = () => {
+    try {
+      return salonDB.getServiceBySlug(searchKey) || salonDB.getServiceById(searchKey);
+    } catch (e) {
+      return null;
+    }
+  };
+
+  const [isLoading, setIsLoading] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [service, setService] = useState(null);
-  const [category, setCategory] = useState(null);
-  const [relatedServices, setRelatedServices] = useState([]);
+  const [service, setService] = useState(() => initialService());
+  const [category, setCategory] = useState(() => {
+    const s = initialService();
+    return s ? salonDB.getCategoryBySlug(s.category || categoryParam) : null;
+  });
+  const [relatedServices, setRelatedServices] = useState(() => {
+    const s = initialService();
+    return s ? salonDB.getRelatedServices(s.id, s.category, 4) : [];
+  });
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
-    setIsLoading(true);
-
-    const timer = setTimeout(() => {
-      const searchKey = slugParam || categoryParam;
-      const foundService = salonDB.getServiceBySlug(searchKey) || salonDB.getServiceById(searchKey);
-      
-      if (foundService && foundService.active !== false) {
-        setService(foundService);
-        const cat = salonDB.getCategoryBySlug(foundService.category || categoryParam);
-        setCategory(cat);
-        const related = salonDB.getRelatedServices(foundService.id, foundService.category, 4);
-        setRelatedServices(related);
-      } else {
-        setService(null);
-      }
-      setIsLoading(false);
-    }, 150);
-
-    return () => clearTimeout(timer);
+    const key = slugParam || categoryParam;
+    const foundService = salonDB.getServiceBySlug(key) || salonDB.getServiceById(key);
+    
+    if (foundService && foundService.active !== false) {
+      setService(foundService);
+      const cat = salonDB.getCategoryBySlug(foundService.category || categoryParam);
+      setCategory(cat);
+      const related = salonDB.getRelatedServices(foundService.id, foundService.category, 4);
+      setRelatedServices(related);
+    } else {
+      setService(null);
+      setCategory(null);
+      setRelatedServices([]);
+    }
+    setIsLoading(false);
   }, [categoryParam, slugParam]);
 
   // Subscribe to real-time database changes
   useEffect(() => {
     const handleDbChange = () => {
-      const searchKey = slugParam || categoryParam;
-      const foundService = salonDB.getServiceBySlug(searchKey) || salonDB.getServiceById(searchKey);
+      const key = slugParam || categoryParam;
+      const foundService = salonDB.getServiceBySlug(key) || salonDB.getServiceById(key);
       if (foundService && foundService.active !== false) {
         setService(foundService);
         const cat = salonDB.getCategoryBySlug(foundService.category || categoryParam);
@@ -102,32 +113,33 @@ export default function TreatmentDetailPage() {
 
   // Not Found State
   if (!service) {
+    const validCategory = categoryParam && salonDB.getCategoryBySlug(categoryParam);
     return (
       <div className="min-h-screen bg-[#F7F4ED] text-[#10110F] pt-32 pb-24 flex items-center justify-center">
         <div className="max-w-md mx-auto px-4 text-center">
-          <div className="bg-white rounded-3xl p-8 sm:p-10 border border-[#DCE1D8] shadow-xl">
-            <div className="w-16 h-16 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto mb-4 border border-rose-200">
+          <div className="bg-white rounded-3xl p-8 sm:p-10 border border-[#DCE1D8] shadow-xl space-y-4">
+            <div className="w-16 h-16 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto border border-rose-200">
               <AlertCircle className="w-8 h-8" />
             </div>
-            <h1 className="font-serif text-2xl sm:text-3xl font-normal text-[#10110F] mb-2 uppercase">
+            <h1 className="font-serif text-2xl sm:text-3xl font-normal text-[#10110F]">
               Service Not Found
             </h1>
-            <p className="text-[#6B7068] text-sm mb-6 leading-relaxed font-sans">
+            <p className="text-[#6B7068] text-sm leading-relaxed font-sans">
               The beauty treatment you are looking for does not exist or may have been unlisted.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <div className="pt-2 flex flex-col sm:flex-row gap-3 justify-center">
               <Link
-                to={categoryParam ? `/services/${categoryParam}` : '/services'}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-[#263D2B] hover:bg-[#1C2E20] text-white text-xs font-bold uppercase tracking-wider transition-all shadow-md"
+                to={validCategory ? `/services/${categoryParam}` : '/services'}
+                className="global-button w-full sm:w-auto min-h-[44px] !px-6 !py-2.5 text-white text-xs font-bold uppercase tracking-wider shadow-md flex items-center justify-center gap-2 cursor-pointer"
               >
                 <ArrowLeft className="w-4 h-4" />
-                <span>{categoryParam ? `Back to ${categoryParam}` : 'Back to Services'}</span>
+                <span>{validCategory ? `Back to ${validCategory.name}` : 'Explore Services'}</span>
               </Link>
               <Link
-                to="/services"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-[#DCE1D8] hover:border-[#10110F] text-xs text-[#10110F] font-medium transition-all bg-white"
+                to="/"
+                className="global-button-secondary w-full sm:w-auto min-h-[44px] !px-6 !py-2.5 text-xs font-semibold flex items-center justify-center gap-2 uppercase tracking-wider cursor-pointer"
               >
-                All Categories
+                <span>Back to Home</span>
               </Link>
             </div>
           </div>

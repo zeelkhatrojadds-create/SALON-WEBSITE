@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   Building2, 
   Phone, 
@@ -9,63 +9,14 @@ import {
   Sparkles, 
   Calendar, 
   Crown, 
-  Navigation, 
-  ArrowRight, 
-  Check, 
   Lock, 
-  Compass, 
-  Flower2 
+  Compass 
 } from 'lucide-react';
 import ScrollReveal from '../ScrollReveal/ScrollReveal';
 import salonDB from '../../db/salonDatabase';
 
 export default function ContactSection() {
   const settings = salonDB.getSettings();
-
-  // Form State
-  const [salutation, setSalutation] = useState('Ms.');
-  const [fullName, setFullName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [inquiryType, setInquiryType] = useState('BESPOKE BRIDAL PRIVÉ');
-  const [preferredContactMode, setPreferredContactMode] = useState('Discreet Phone Call');
-  const [targetDate, setTargetDate] = useState('');
-  const [notes, setNotes] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-
-  const inquiryOptions = [
-    'BESPOKE BRIDAL PRIVÉ',
-    'DERMAL & FACIAL PROTOCOL',
-    'HAUTE COIFFURE CONSULTATION',
-    'PRIVATE ATELIER SANCTUARY BUYOUT',
-    'PRESS, BRAND PARTNERSHIP & CONCIERGE GIFTING'
-  ];
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!fullName.trim() || !email.trim()) return;
-
-    // Save directly to the Master Database
-    salonDB.addContactMessage({
-      name: `${salutation} ${fullName.trim()}`,
-      email: email.trim(),
-      phone: phone.trim(),
-      subject: inquiryType,
-      message: notes.trim(),
-      targetDate,
-      preferredContactMode
-    });
-
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setFullName('');
-      setPhone('');
-      setEmail('');
-      setNotes('');
-      setTargetDate('');
-    }, 4000);
-  };
 
   const handleCallConcierge = () => {
     window.location.href = `tel:${settings.phone || '+16162550549'}`;
@@ -79,259 +30,123 @@ export default function ContactSection() {
     <div id="contact" className="w-full bg-[#F7F4ED] text-[#10110F] font-sans antialiased selection:bg-[#263D2B] selection:text-white">
       
       {/* ========================================================================= */}
-      {/* 1. HERO HEADER                                                           */}
+      {/* 1. HERO HEADER (MATCHING REFERENCE IMAGE)                                 */}
       {/* ========================================================================= */}
-      <section className="pt-20 sm:pt-28 pb-14 sm:pb-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto text-center">
-        <ScrollReveal stagger={true}>
+      <section className="relative w-full min-h-[580px] sm:min-h-[640px] lg:min-h-[700px] flex items-center bg-[#07130A] text-white overflow-hidden">
+        {/* Salon Interior Background Image */}
+        <div 
+          className="absolute inset-0 w-full h-full bg-cover bg-[center_35%] lg:bg-center"
+          style={{ backgroundImage: "url('/contact-hero-clean.webp')" }}
+          aria-hidden="true"
+        />
 
-          {/* Headline */}
-          <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl text-[#10110F] font-normal tracking-tight leading-[1.15] mb-5">
-            Connect with the{' '}
-            <span className="italic font-normal text-[#263D2B]">
-              Maison & Concierge
-            </span>
-            .
-          </h1>
+        {/* Carefully tuned Dark Gradient Overlay for Maximum Readability and Atmosphere */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#061108]/95 via-[#061108]/85 via-45% to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#061108]/80 via-transparent to-[#061108]/60 pointer-events-none" />
 
-          {/* Subtitle */}
-          <p className="max-w-3xl mx-auto text-[#6B7068] text-xs sm:text-sm md:text-[15px] leading-relaxed mb-8">
-            Whether reserving an exclusive bridal takeover, inquiring about tailored dermatological protocols, or arranging discreet arrival at our Ottawa flagship, our concierge atelier awaits your dialogue.
-          </p>
+        {/* Hero Content Container */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 pt-24 sm:pt-28 lg:pt-32 pb-16 sm:pb-20">
+          <div className="max-w-xl text-left">
 
-          {/* 3 Pill Badges Row */}
-          <div className="flex flex-wrap items-center justify-center gap-3 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.16em] text-[#10110F]">
-            <div className="px-4 py-2 rounded-full bg-white border border-[#DCE1D8] flex items-center gap-2">
-              <Lock className="w-3.5 h-3.5 text-[#263D2B]" />
-              <span>DISCREET SINGLE-GUEST PRIVACY</span>
+            {/* Small Eyebrow: GET IN TOUCH */}
+            <div className="flex items-center gap-3 mb-4 sm:mb-6">
+              <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.25em] text-[#C2D0C4]">
+                GET IN TOUCH
+              </span>
+              <span className="w-12 sm:w-16 h-[1px] bg-white/35" />
             </div>
 
-            <div className="px-4 py-2 rounded-full bg-white border border-[#DCE1D8] flex items-center gap-2">
-              <MapPin className="w-3.5 h-3.5 text-[#263D2B]" />
-              <span>405 EUPHORIA CRESCENT, OTTAWA</span>
+            {/* Heading: Your Beauty, Our Priority */}
+            <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-[68px] font-normal tracking-tight leading-[1.08] mb-4 sm:mb-5 text-white">
+              Your Beauty,<br />
+              <span className="italic font-normal text-[#97AA93]">
+                Our Priority
+              </span>
+            </h1>
+
+            {/* Description */}
+            <p className="text-white/80 text-xs sm:text-sm md:text-[14px] leading-relaxed max-w-md font-sans mb-8 sm:mb-10">
+              Have a question, need more information, or want to book an appointment? We’re here to help. Fill out the form and we’ll get back to you as soon as possible.
+            </p>
+
+            {/* Contact Information Row */}
+            <div className="flex flex-wrap sm:flex-nowrap items-start gap-5 sm:gap-6 lg:gap-8 mb-8 sm:mb-10 text-white">
+              
+              {/* Phone */}
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-black/45 border border-white/20 flex items-center justify-center text-[#97AA93] shrink-0 shadow-xs">
+                  <Phone className="w-4 h-4 text-[#97AA93]" />
+                </div>
+                <div>
+                  <span className="block text-[9px] font-bold uppercase tracking-[0.18em] text-white/60 mb-0.5">
+                    CALL US
+                  </span>
+                  <a 
+                    href="tel:+16135550123"
+                    className="text-xs sm:text-[13px] font-medium text-white hover:text-[#97AA93] transition-colors whitespace-nowrap"
+                  >
+                    +1 (613) 555–0123
+                  </a>
+                </div>
+              </div>
+
+              {/* Email */}
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-black/45 border border-white/20 flex items-center justify-center text-[#97AA93] shrink-0 shadow-xs">
+                  <Mail className="w-4 h-4 text-[#97AA93]" />
+                </div>
+                <div>
+                  <span className="block text-[9px] font-bold uppercase tracking-[0.18em] text-white/60 mb-0.5">
+                    EMAIL US
+                  </span>
+                  <a 
+                    href="mailto:Glamgirlbyjanki@gmail.com"
+                    className="text-xs sm:text-[13px] font-medium text-white hover:text-[#97AA93] transition-colors whitespace-nowrap"
+                  >
+                    Glamgirlbyjanki@gmail.com
+                  </a>
+                </div>
+              </div>
+
+              {/* Address */}
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-black/45 border border-white/20 flex items-center justify-center text-[#97AA93] shrink-0 shadow-xs">
+                  <MapPin className="w-4 h-4 text-[#97AA93]" />
+                </div>
+                <div>
+                  <span className="block text-[9px] font-bold uppercase tracking-[0.18em] text-white/60 mb-0.5">
+                    VISIT US
+                  </span>
+                  <address className="not-italic text-xs sm:text-[12px] font-medium text-white leading-tight">
+                    <span>405 EUPHORIA CRESCENT,</span><br />
+                    <span className="text-white/90">OTTAWA, ON K2J 7M7</span>
+                  </address>
+                </div>
+              </div>
+
             </div>
 
-            <div className="px-4 py-2 rounded-full bg-white border border-[#DCE1D8] flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-[#263D2B]" />
-              <span>COMPLIMENTARY VALET ASSISTANCE</span>
+            {/* Small Decorative Script Text */}
+            <div className="pt-1">
+              <p className="font-serif italic text-lg sm:text-xl text-white/90 tracking-wide leading-tight">
+                Beauty is better<br />
+                when shared
+              </p>
+              <div className="w-16 h-[1px] bg-white/40 mt-3" />
             </div>
+
           </div>
-        </ScrollReveal>
+        </div>
       </section>
 
       {/* ========================================================================= */}
-      {/* 2. MAIN 2-COLUMN GRID (FORM & ATELIER DETAILS)                            */}
+      {/* 2. MAISON PROVENANCE & ATELIER DETAILS                                    */}
       {/* ========================================================================= */}
-      <section className="pb-20 sm:pb-28 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
-        <ScrollReveal className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+      <section className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+        <ScrollReveal className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* LEFT COLUMN: THE ATELIER INQUIRY PROTOCOL FORM (7 COLS) */}
-          <div className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-10 border border-[#DCE1D8] shadow-md relative overflow-hidden">
-            
-            {/* Corner Decorative Icon */}
-            <div className="absolute top-6 right-6 text-[#263D2B]/20 pointer-events-none">
-              <Flower2 className="w-8 h-8 stroke-[1.25]" />
-            </div>
-
-            {/* Form Header */}
-            <div className="mb-6">
-              <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#263D2B] block mb-1">
-                DOSSIER PROTOCOL · DIRECT TRANSMISSION
-              </span>
-              <h2 className="font-serif text-2xl sm:text-3xl text-[#10110F] font-normal">
-                The Atelier Inquiry Protocol
-              </h2>
-            </div>
-
-            {submitted ? (
-              <div className="py-12 text-center space-y-4 bg-[#F7F4ED] rounded-2xl border border-[#DCE1D8]">
-                <div className="w-14 h-14 rounded-full bg-[#263D2B] text-white flex items-center justify-center mx-auto shadow-md">
-                  <Check className="w-7 h-7" />
-                </div>
-                <h3 className="font-serif text-2xl text-[#10110F]">Dossier Transmitted</h3>
-                <p className="text-xs sm:text-sm text-[#6B7068] max-w-md mx-auto leading-relaxed">
-                  Thank you, <strong>{salutation} {fullName || 'Valued Guest'}</strong>. Your inquiry has been routed to founder Janki Khatroja and senior concierge liaisons. We will contact you via {preferredContactMode.toLowerCase()}.
-                </p>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-5">
-                
-                {/* Salutation & Full Legal Name */}
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4">
-                  <div className="sm:col-span-4">
-                    <label htmlFor="contact-salutation" className="block text-[10px] font-bold uppercase tracking-wider text-[#10110F] mb-1">
-                      SALUTATION
-                    </label>
-                    <select
-                      id="contact-salutation"
-                      value={salutation}
-                      onChange={(e) => setSalutation(e.target.value)}
-                      className="w-full h-11 px-3.5 bg-[#F7F4ED] border border-[#DCE1D8] rounded-xl text-xs text-[#10110F] focus:outline-none focus:border-[#263D2B] cursor-pointer"
-                    >
-                      <option>Ms.</option>
-                      <option>Mrs.</option>
-                      <option>Mr.</option>
-                      <option>Dr.</option>
-                      <option>Mx.</option>
-                    </select>
-                  </div>
-
-                  <div className="sm:col-span-8">
-                    <label htmlFor="contact-fullname" className="block text-[10px] font-bold uppercase tracking-wider text-[#10110F] mb-1">
-                      FULL LEGAL NAME *
-                    </label>
-                    <input
-                      id="contact-fullname"
-                      type="text"
-                      required
-                      placeholder="e.g. Catherine Vanderbilt"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      className="w-full h-11 px-4 bg-[#F7F4ED] border border-[#DCE1D8] rounded-xl text-xs text-[#10110F] placeholder-[#6B7068]/60 focus:outline-none focus:border-[#263D2B]"
-                    />
-                  </div>
-                </div>
-
-                {/* Telephone & Email */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                  <div>
-                    <label htmlFor="contact-phone" className="block text-[10px] font-bold uppercase tracking-wider text-[#10110F] mb-1">
-                      TELEPHONE (DIRECT CELL) *
-                    </label>
-                    <div className="flex items-center">
-                      <span className="h-11 px-3 bg-white border border-r-0 border-[#DCE1D8] rounded-l-xl text-[11px] font-bold text-[#10110F] flex items-center justify-center">
-                        +1 (CAN/US)
-                      </span>
-                      <input
-                        id="contact-phone"
-                        type="tel"
-                        required
-                        placeholder="613-555-0192"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        className="flex-1 min-w-0 w-full h-11 px-3 sm:px-4 bg-[#F7F4ED] border border-[#DCE1D8] rounded-r-xl text-xs text-[#10110F] placeholder-[#6B7068]/60 focus:outline-none focus:border-[#263D2B]"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="contact-email" className="block text-[10px] font-bold uppercase tracking-wider text-[#10110F] mb-1">
-                      DIRECT EMAIL ADDRESS *
-                    </label>
-                    <input
-                      id="contact-email"
-                      type="email"
-                      required
-                      placeholder="catherine@domain.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full h-11 px-4 bg-[#F7F4ED] border border-[#DCE1D8] rounded-xl text-xs text-[#10110F] placeholder-[#6B7068]/60 focus:outline-none focus:border-[#263D2B]"
-                    />
-                  </div>
-                </div>
-
-                {/* Nature of Inquiry & Sanctuary Experience */}
-                <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-[#10110F] mb-2">
-                    NATURE OF INQUIRY & SANCTUARY EXPERIENCE
-                  </label>
-                  <div className="flex flex-wrap gap-2">
-                    {inquiryOptions.map((opt) => {
-                      const isSelected = inquiryType === opt;
-                      return (
-                        <button
-                          key={opt}
-                          type="button"
-                          onClick={() => setInquiryType(opt)}
-                          className={`px-3.5 py-2 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer ${
-                            isSelected
-                              ? 'bg-[#263D2B] text-white shadow-sm border border-[#263D2B]'
-                              : 'bg-[#F7F4ED] text-[#10110F] border border-[#DCE1D8] hover:border-[#263D2B]'
-                          }`}
-                        >
-                          {opt}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Mode of Contact & Desired Timeline */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                  <div>
-                    <label htmlFor="contact-mode" className="block text-[10px] font-bold uppercase tracking-wider text-[#10110F] mb-1">
-                      PREFERRED MODE OF CONTACT
-                    </label>
-                    <select
-                      id="contact-mode"
-                      value={preferredContactMode}
-                      onChange={(e) => setPreferredContactMode(e.target.value)}
-                      className="w-full h-11 px-3.5 bg-[#F7F4ED] border border-[#DCE1D8] rounded-xl text-xs text-[#10110F] focus:outline-none focus:border-[#263D2B] cursor-pointer"
-                    >
-                      <option>Discreet Phone Call</option>
-                      <option>Encrypted Email</option>
-                      <option>SMS Text Liaison</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label htmlFor="contact-targetdate" className="block text-[10px] font-bold uppercase tracking-wider text-[#10110F] mb-1">
-                      DESIRED TIMELINE / TARGET RITUAL DATE
-                    </label>
-                    <input
-                      id="contact-targetdate"
-                      type="date"
-                      value={targetDate}
-                      onChange={(e) => setTargetDate(e.target.value)}
-                      className="w-full h-11 px-4 bg-[#F7F4ED] border border-[#DCE1D8] rounded-xl text-xs text-[#10110F] focus:outline-none focus:border-[#263D2B]"
-                    />
-                  </div>
-                </div>
-
-                {/* Notes Textarea */}
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label htmlFor="contact-notes" className="block text-[10px] font-bold uppercase tracking-wider text-[#10110F]">
-                      INTIMATE NOTES OR BESPOKE ACCOMMODATIONS
-                    </label>
-                    <span className="text-[9px] font-semibold text-[#6B7068] uppercase tracking-wider">
-                      Skin notes, herbal tea, VIP arrival
-                    </span>
-                  </div>
-                  <textarea
-                    id="contact-notes"
-                    rows={4}
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    placeholder="Detail any dermal sensitivities, specific aesthetic desires, acoustic ambience preferences, beverage ritual specifications, or private arrival discretion requests..."
-                    className="w-full p-4 bg-[#F7F4ED] border border-[#DCE1D8] rounded-2xl text-xs text-[#10110F] placeholder-[#6B7068]/60 focus:outline-none focus:border-[#263D2B] resize-none"
-                  />
-                </div>
-
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  className="global-button w-full flex items-center justify-center gap-2.5 text-center text-xs sm:text-sm font-bold uppercase tracking-[0.16em]"
-                >
-                  <span className="whitespace-normal sm:whitespace-nowrap">TRANSMIT INQUIRY TO CONCIERGE</span>
-                  <ArrowRight className="w-4 h-4 shrink-0 text-white/80" />
-                </button>
-
-                {/* Confidentiality Footer */}
-                <div className="flex items-center justify-center gap-1.5 text-[10px] text-[#6B7068] pt-1 text-center">
-                  <Lock className="w-3 h-3 text-[#263D2B]" />
-                  <span>All inquiries are handled with absolute confidentiality by founder Janki Khatroja and our senior concierge liaisons.</span>
-                </div>
-
-              </form>
-            )}
-
-          </div>
-
-          {/* RIGHT COLUMN: MAISON PROVENANCE & HOURS (5 COLS) */}
-          <div className="lg:col-span-5 space-y-6">
-            
-            {/* CARD 1: MAISON PROVENANCE · OTTAWA */}
-            <div className="bg-white rounded-3xl overflow-hidden border border-[#DCE1D8] shadow-md">
+          {/* CARD 1: MAISON PROVENANCE · OTTAWA (7 COLS ON DESKTOP) */}
+          <div className="lg:col-span-7 bg-white rounded-3xl overflow-hidden border border-[#DCE1D8] shadow-md">
               
               {/* Flagship Salon Image Banner */}
               <div className="relative aspect-[16/9] overflow-hidden bg-[#F7F4ED]">
@@ -437,6 +252,9 @@ export default function ContactSection() {
 
             </div>
 
+          {/* RIGHT COLUMN: ATELIER SANCTUARY HOURS & APPOINTMENTS (5 COLS ON DESKTOP) */}
+          <div className="lg:col-span-5 space-y-6">
+            
             {/* CARD 2: ATELIER SANCTUARY HOURS */}
             <div className="bg-white rounded-3xl p-5 sm:p-6 border border-[#DCE1D8] shadow-md">
               <div className="flex items-center justify-between mb-4 border-b border-[#DCE1D8] pb-3">
@@ -469,6 +287,32 @@ export default function ContactSection() {
                 <Sparkles className="w-3 h-3 text-[#263D2B]" />
                 <span>BY PRIOR CONFIRMED APPOINTMENT ONLY</span>
               </div>
+            </div>
+
+            {/* CARD 3: SANCTUARY RESERVATIONS */}
+            <div className="bg-white rounded-3xl p-5 sm:p-6 border border-[#DCE1D8] shadow-md">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-9 h-9 rounded-full bg-[#F7F4ED] border border-[#DCE1D8] flex items-center justify-center text-[#263D2B]">
+                  <Calendar className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="font-serif text-sm sm:text-base text-[#10110F] font-medium">
+                    Sanctuary Reservations
+                  </h4>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#263D2B]">
+                    Direct Online Booking
+                  </span>
+                </div>
+              </div>
+              <p className="text-xs text-[#6B7068] leading-relaxed mb-4">
+                To guarantee complete privacy and individualized aesthetic attention, appointments can be reserved directly online.
+              </p>
+              <a
+                href="/book-appointment"
+                className="w-full py-2.5 px-4 rounded-full bg-[#100C0D] text-white hover:bg-[#CFA46A] hover:text-[#100C0D] text-[11px] font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-300"
+              >
+                <span>RESERVE APPOINTMENT</span>
+              </a>
             </div>
 
           </div>

@@ -44,15 +44,22 @@ export default function Footer() {
 
           {/* Quick links */}
           <div className="lg:col-span-2 space-y-3">
-            <h4 className="font-serif font-semibold text-[#10110F] text-sm tracking-wider uppercase">Navigation</h4>
+            <h3 className="font-serif font-semibold text-[#10110F] text-sm tracking-wider uppercase">Navigation</h3>
             <ul className="space-y-2.5 text-sm text-[#6B7068] font-body">
               {[
                 { label: 'Home', path: '/' },
                 { label: 'About', path: '/about' },
                 { label: 'Services', path: '/services' },
-                { label: 'Treatments', path: '/treatments' },
+                { label: 'Plan Your Salon Day', path: '/plan-salon-day' },
+                { label: 'Special Treatments', path: '/special-treatments' },
+                { label: 'Nail Art Studio', path: '/nail-art' },
+                { label: 'Hair Colour Atelier', path: '/hair-colour' },
+                { label: 'Price List', path: '/price-list' },
+                { label: 'Beauty Guide', path: '/beauty-guide' },
                 { label: 'Gallery', path: '/gallery' },
-                { label: 'Reviews', path: '/#reviews' },
+                { label: 'Reviews', path: '/reviews' },
+                { label: 'Terms & Conditions', path: '/terms-and-conditions' },
+                { label: 'Privacy Policy', path: '/privacy-policy' },
                 { label: 'Contact', path: '/contact' },
               ].map(({ label, path }) => (
                 <li key={path}>
@@ -79,7 +86,7 @@ export default function Footer() {
 
           {/* Services */}
           <div className="lg:col-span-2 space-y-3">
-            <h4 className="font-serif font-semibold text-[#10110F] text-sm tracking-wider uppercase">Rituals</h4>
+            <h3 className="font-serif font-semibold text-[#10110F] text-sm tracking-wider uppercase">Rituals</h3>
             <ul className="space-y-2.5 text-sm text-[#6B7068] font-body">
               {[
                 { name: 'Threading & Brows', path: '/services/threading' },
@@ -105,7 +112,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div className="sm:col-span-2 lg:col-span-4 space-y-4">
-            <h4 className="font-serif font-semibold text-[#10110F] text-sm tracking-wider uppercase">Atelier & Concierge</h4>
+            <h3 className="font-serif font-semibold text-[#10110F] text-sm tracking-wider uppercase">Atelier &amp; Concierge</h3>
             <div className="space-y-3 text-sm text-[#6B7068] font-body">
               <div className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-[#263D2B] flex-shrink-0 mt-0.5" />
@@ -139,8 +146,25 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#6B7068] font-body">
           <p>© {new Date().getFullYear()} GLAM GIRL BY JANKI — Ottawa, Canada. All rights reserved.</p>
-          <div className="flex items-center gap-5">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-5">
+            <Link
+              to="/terms-and-conditions"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })}
+              className="hover:text-[#10110F] transition-colors"
+            >
+              Terms &amp; Conditions
+            </Link>
+            <span>•</span>
+            <Link
+              to="/privacy-policy"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })}
+              className="hover:text-[#10110F] transition-colors"
+            >
+              Privacy Policy
+            </Link>
+            <span>•</span>
             <Link to="/admin" className="hover:text-[#10110F] transition-colors font-medium">Staff Portal</Link>
+            <span>•</span>
             <span className="flex items-center gap-1">
               Made with <Heart className="w-3 h-3 text-[#263D2B] fill-[#263D2B] mx-0.5" /> for Ottawa
             </span>

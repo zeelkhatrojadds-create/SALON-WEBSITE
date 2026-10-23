@@ -1,0 +1,305 @@
+/* ========================================================================= */
+/* GLAM GIRL BY JANKI — REALISTIC 3D NOTEBOOK PAGE-TURNING ANIMATION          */
+/* ========================================================================= */
+
+.book-3d-scene {
+  perspective: 2500px;
+  perspective-origin: 50% 50%;
+}
+
+.book-3d-stage {
+  transform-style: preserve-3d;
+  position: relative;
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.7),
+    0 10px 20px -5px rgba(0, 0, 0, 0.5);
+}
+
+/* Layered Paper Edge Simulation (Page Thickness on left and right) */
+.paper-edge-left {
+  box-shadow: 
+    -1px 0 0 #F7F4ED,
+    -2px 0 0 #E2DDD2,
+    -3px 0 0 #D5CFBF,
+    -4px 0 0 #C9C2B1,
+    -5px 0 0 #BCB4A1,
+    -6px 0 0 #AEA591,
+    -12px 6px 24px rgba(0, 0, 0, 0.55);
+}
+
+.paper-edge-right {
+  box-shadow: 
+    1px 0 0 #F7F4ED,
+    2px 0 0 #E2DDD2,
+    3px 0 0 #D5CFBF,
+    4px 0 0 #C9C2B1,
+    5px 0 0 #BCB4A1,
+    6px 0 0 #AEA591,
+    12px 6px 24px rgba(0, 0, 0, 0.55);
+}
+
+/* Book Spine Gradient Shadow */
+.book-spine-gutter-left {
+  background: linear-gradient(to left, rgba(16, 17, 15, 0.22) 0%, rgba(16, 17, 15, 0.08) 12%, transparent 100%);
+}
+
+.book-spine-gutter-right {
+  background: linear-gradient(to right, rgba(16, 17, 15, 0.22) 0%, rgba(16, 17, 15, 0.08) 12%, transparent 100%);
+}
+
+/* ========================================================================= */
+/* 3D TURNING LEAF KEYFRAME ANIMATIONS (PHYSICAL ROTATION AROUND SPINE)      */
+/* ========================================================================= */
+
+/* FLIP NEXT: Right page lifts up, rotates around spine (0% 50%), lands on left */
+.leaf-flipping-next {
+  transform-origin: 0% 50%;
+  transform-style: preserve-3d;
+  animation: flipNextAction 0.75s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  will-change: transform, box-shadow;
+  z-index: 60 !important;
+}
+
+@keyframes flipNextAction {
+  0% {
+    transform: perspective(2500px) rotateY(0deg) translateZ(1px);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+  35% {
+    box-shadow: -15px 10px 30px rgba(0, 0, 0, 0.45);
+  }
+  50% {
+    transform: perspective(2500px) rotateY(-90deg) scale(1.015) translateZ(20px);
+    box-shadow: -25px 15px 45px rgba(0, 0, 0, 0.5);
+  }
+  70% {
+    box-shadow: -15px 10px 25px rgba(0, 0, 0, 0.35);
+  }
+  100% {
+    transform: perspective(2500px) rotateY(-180deg) translateZ(1px);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
+/* FLIP PREV: Left page lifts up, rotates around spine (100% 50%), lands on right */
+.leaf-flipping-prev {
+  transform-origin: 100% 50%;
+  transform-style: preserve-3d;
+  animation: flipPrevAction 0.75s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  will-change: transform, box-shadow;
+  z-index: 60 !important;
+}
+
+@keyframes flipPrevAction {
+  0% {
+    transform: perspective(2500px) rotateY(0deg) translateZ(1px);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+  35% {
+    box-shadow: 15px 10px 30px rgba(0, 0, 0, 0.45);
+  }
+  50% {
+    transform: perspective(2500px) rotateY(90deg) scale(1.015) translateZ(20px);
+    box-shadow: 25px 15px 45px rgba(0, 0, 0, 0.5);
+  }
+  70% {
+    box-shadow: 15px 10px 25px rgba(0, 0, 0, 0.35);
+  }
+  100% {
+    transform: perspective(2500px) rotateY(180deg) translateZ(1px);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
+/* MOBILE SINGLE-PAGE 3D FLIP */
+.leaf-flipping-mobile-next {
+  transform-origin: 0% 50%;
+  transform-style: preserve-3d;
+  animation: flipMobileNext 0.7s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  will-change: transform;
+  z-index: 60 !important;
+}
+
+@keyframes flipMobileNext {
+  0% {
+    transform: perspective(1800px) rotateY(0deg);
+  }
+  50% {
+    transform: perspective(1800px) rotateY(-90deg) scale(1.02);
+  }
+  100% {
+    transform: perspective(1800px) rotateY(-180deg);
+  }
+}
+
+.leaf-flipping-mobile-prev {
+  transform-origin: 0% 50%;
+  transform-style: preserve-3d;
+  animation: flipMobilePrev 0.7s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  will-change: transform;
+  z-index: 60 !important;
+}
+
+@keyframes flipMobilePrev {
+  0% {
+    transform: perspective(1800px) rotateY(-180deg);
+  }
+  50% {
+    transform: perspective(1800px) rotateY(-90deg) scale(1.02);
+  }
+  100% {
+    transform: perspective(1800px) rotateY(0deg);
+  }
+}
+
+/* Double Faces of Turning Leaf */
+.leaf-face-front {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+}
+
+.leaf-face-back {
+  position: absolute;
+  inset: 0;
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+}
+
+.leaf-face-back-prev {
+  position: absolute;
+  inset: 0;
+  transform: rotateY(-180deg);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+}
+
+/* Dynamic Lighting and Shadow Overlays during Flip */
+.leaf-shadow-overlay-next-front {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: shadowDarkenFront 0.75s ease forwards;
+}
+
+@keyframes shadowDarkenFront {
+  0% { background: rgba(0, 0, 0, 0); }
+  45% { background: rgba(0, 0, 0, 0.38); }
+  100% { background: rgba(0, 0, 0, 0.5); }
+}
+
+.leaf-shadow-overlay-next-back {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: shadowLightenBack 0.75s ease forwards;
+}
+
+@keyframes shadowLightenBack {
+  0% { background: rgba(0, 0, 0, 0.5); }
+  55% { background: rgba(0, 0, 0, 0.35); }
+  100% { background: rgba(0, 0, 0, 0); }
+}
+
+.leaf-shadow-overlay-prev-front {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: shadowDarkenFront 0.75s ease forwards;
+}
+
+.leaf-shadow-overlay-prev-back {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: shadowLightenBack 0.75s ease forwards;
+}
+
+/* Interactive Dog-Ear Corner Curls */
+.page-corner-curl {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 38px;
+  height: 38px;
+  background: linear-gradient(135deg, transparent 50%, rgba(38, 61, 43, 0.2) 50%, rgba(168, 181, 160, 0.5) 100%);
+  border-top-left-radius: 6px;
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 25;
+}
+
+.page-corner-curl:hover {
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, transparent 50%, rgba(38, 61, 43, 0.3) 50%, rgba(168, 181, 160, 0.8) 100%);
+  filter: drop-shadow(-3px -3px 4px rgba(0, 0, 0, 0.3));
+}
+
+.page-corner-curl-left {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 38px;
+  height: 38px;
+  background: linear-gradient(-135deg, transparent 50%, rgba(38, 61, 43, 0.2) 50%, rgba(168, 181, 160, 0.5) 100%);
+  border-top-right-radius: 6px;
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 25;
+}
+
+.page-corner-curl-left:hover {
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(-135deg, transparent 50%, rgba(38, 61, 43, 0.3) 50%, rgba(168, 181, 160, 0.8) 100%);
+  filter: drop-shadow(3px -3px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Silk Ribbon Bookmark */
+.book-ribbon {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 108%;
+  background: linear-gradient(to right, #465640, #A8B5A0, #344833);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+  z-index: 45;
+  pointer-events: none;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 94%, 50% 100%, 0% 94%);
+}
+
+/* Notebook Stitching */
+.notebook-stitched {
+  border: 1px dashed rgba(168, 181, 160, 0.45);
+}
+
+/* Respect Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .leaf-flipping-next,
+  .leaf-flipping-prev,
+  .leaf-flipping-mobile-next,
+  .leaf-flipping-mobile-prev {
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* Print Overrides */
+@media print {
+  .book-3d-scene,
+  .book-controls-bar,
+  .book-thumbnails-drawer {
+    display: none !important;
+  }
+}

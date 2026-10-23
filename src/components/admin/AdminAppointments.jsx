@@ -135,6 +135,7 @@ export default function AdminAppointments({
       'Email', 
       'Service', 
       'Price (CAD)', 
+      'Payment Method',
       'Date', 
       'Time', 
       'Status', 
@@ -151,6 +152,7 @@ export default function AdminAppointments({
       `"${a.email || ''}"`,
       `"${a.service || ''}"`,
       `"${a.servicePrice || 85}"`,
+      `"${a.paymentMethod || 'Cash on Delivery'}"`,
       `"${a.date || ''}"`,
       `"${a.time || ''}"`,
       `"${a.status || a.appointmentStatus || 'Confirmed'}"`,
@@ -186,6 +188,8 @@ export default function AdminAppointments({
       serviceId: matchedService.id,
       servicePrice: matchedService.price,
       serviceDuration: matchedService.duration,
+      paymentMethod: 'Cash on Delivery',
+      paymentStatus: 'Pending (Due at Appointment)',
       date: newForm.date,
       time: newForm.time,
       notes: newForm.notes.trim(),
@@ -455,6 +459,43 @@ export default function AdminAppointments({
                         <div className="text-[#263D2B] text-[11px] font-semibold">
                           ${booking.servicePrice || 85} CAD • {booking.serviceDuration || '60 mins'}
                         </div>
+                        <div className="text-[#465640] text-[10.5px] font-medium flex items-center gap-1 mt-0.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#263D2B]"></span>
+                          <span>Payment Method: Cash on Delivery</span>
+                        </div>
+                        {booking.isSalonDay && booking.itineraryServices && booking.itineraryServices.length > 0 && (
+                          <div className="mt-1.5 p-2 rounded-xl bg-[#263D2B]/5 border border-[#263D2B]/20 text-[10.5px] space-y-1 max-w-[240px]">
+                            <span className="font-bold text-[#263D2B] uppercase tracking-wider block text-[9.5px] flex items-center gap-1">
+                              <Sparkles className="w-3 h-3 text-[#263D2B]" />
+                              <span>Salon Day ({booking.itineraryServices.length} Treatments):</span>
+                            </span>
+                            <div className="space-y-0.5 max-h-[90px] overflow-y-auto pr-1">
+                              {booking.itineraryServices.map((svc, sIdx) => (
+                                <div key={sIdx} className="text-[#10110F] text-[10px] flex items-center justify-between gap-1">
+                                  <span className="truncate">{sIdx + 1}. {svc.name}</span>
+                                  <span className="text-[#6B7068] font-mono shrink-0 text-[9px]">{svc.duration}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        {booking.customizations && (
+                          <div className="mt-1.5 p-1.5 rounded-lg bg-[#263D2B]/5 border border-[#263D2B]/15 text-[10px] space-y-0.5 max-w-[220px]">
+                            <span className="font-bold text-[#263D2B] uppercase tracking-wider block text-[9px]">
+                              ✨ Tailored Customizations:
+                            </span>
+                            {booking.customizations.selectedOption && (
+                              <div className="text-[#10110F] font-medium truncate" title={booking.customizations.selectedOption.name}>
+                                • {booking.customizations.selectedOption.name}
+                              </div>
+                            )}
+                            {booking.customizations.selectedAddons && booking.customizations.selectedAddons.length > 0 && (
+                              <div className="text-[#465640] font-light truncate" title={booking.customizations.selectedAddons.map(a => a.name).join(', ')}>
+                                + {booking.customizations.selectedAddons.map(a => a.name).join(', ')}
+                              </div>
+                            )}
+                          </div>
+                        )}
                         {booking.notes && (
                           <div className="text-[#6B7068] italic text-[10px] truncate max-w-[180px] mt-0.5" title={booking.notes}>
                             "{booking.notes}"
@@ -554,6 +595,20 @@ export default function AdminAppointments({
                               <CheckCircle2 className="w-4 h-4 text-white" />
                               <span>{loadingAction === 'completing' ? 'Completing treatment...' : 'COMPLETE TREATMENT'}</span>
                             </button>
+                          )}
+
+                          {/* 2.5 COMPLETED ACTIONS: View Confirmation & Aftercare */}
+                          {isCompleted && (
+                            <a
+                              href={`/treatment-confirmation?id=${booking.id}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#263D2B] text-white hover:bg-[#1a2b1e] text-[11px] font-bold shadow-xs transition-colors cursor-pointer"
+                              title="Open customer treatment confirmation and aftercare"
+                            >
+                              <Sparkles className="w-3.5 h-3.5 text-emerald-300" />
+                              <span>View Aftercare & Confirmation</span>
+                            </a>
                           )}
 
                           {/* 3. PENDING ACTIONS (Approve / Confirm) */}
@@ -715,6 +770,14 @@ export default function AdminAppointments({
                       <option key={t} value={t}>{t}</option>
                     ))}
                   </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[#10110F] font-semibold mb-1">Payment Method</label>
+                <div className="w-full h-10 px-3.5 bg-[#F7F4ED] border border-[#DCE1D8] rounded-xl flex items-center justify-between text-xs text-[#263D2B] font-semibold">
+                  <span>Cash on Delivery (Pay at Appointment)</span>
+                  <span className="text-[10px] uppercase tracking-wider bg-[#263D2B]/10 px-2 py-0.5 rounded text-[#263D2B] font-bold">Default</span>
                 </div>
               </div>
 

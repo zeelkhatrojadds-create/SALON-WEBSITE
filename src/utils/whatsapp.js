@@ -48,9 +48,15 @@ export const generateWhatsAppBookingMessage = (booking) => {
   const selectedService = booking.service || 'Salon Treatment';
   const servicePrice = booking.servicePrice ? ` ($${booking.servicePrice} CAD)` : '';
   const preferredDate = booking.date || 'N/A';
-  const preferredTime = booking.time || 'N/A';
+  const preferredTime = booking.endTime
+    ? `${booking.startTime || booking.time} – ${booking.endTime} (${booking.serviceDuration || `${booking.durationMinutes} min`})`
+    : (booking.time || 'N/A');
   const additionalNotes = booking.notes && booking.notes.trim() ? booking.notes.trim() : 'None';
   const bookingId = booking.id || `GLFY-${Math.floor(100000 + Math.random() * 900000)}`;
+
+  const festivalOfferLine = booking.offerTitle
+    ? `\n🎁 *Festival Offer:* ${booking.festival ? `${booking.festival} — ` : ''}${booking.offerTitle}${booking.discountAmount ? ` (Save $${booking.discountAmount} CAD)` : ''}`
+    : '';
 
   const message = 
 `🌸 *NEW APPOINTMENT BOOKING* 🌸
@@ -58,7 +64,7 @@ export const generateWhatsAppBookingMessage = (booking) => {
 
 👤 *Customer Name:* ${customerName}
 📱 *Mobile Number:* ${mobileNumber}
-✨ *Selected Service:* ${selectedService}${servicePrice}
+✨ *Selected Service:* ${selectedService}${servicePrice}${festivalOfferLine}
 📅 *Preferred Date:* ${preferredDate}
 ⏰ *Preferred Time:* ${preferredTime}
 📝 *Any Additional Message / Details:* ${additionalNotes}

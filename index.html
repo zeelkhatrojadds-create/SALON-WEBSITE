@@ -32,29 +32,122 @@
     <link 
       rel="preload" 
       as="image" 
-      href="/hero-mobile.webp"
+      href="/facial-atelier-clean-480.avif"
       media="(max-width: 767px)"
       fetchpriority="high" 
-      type="image/webp" 
+      type="image/avif" 
     />
     <link 
       rel="preload" 
       as="image" 
-      href="/facial-atelier-clean-1920.webp"
-      imagesrcset="/facial-atelier-clean-1920.webp 1920w, /facial-atelier-clean-1200.webp 1200w"
+      href="/facial-atelier-clean-1200.avif"
+      imagesrcset="/facial-atelier-clean-1200.avif 1200w, /facial-atelier-clean-1920.avif 1920w"
       imagesizes="100vw"
       media="(min-width: 768px)"
       fetchpriority="high" 
-      type="image/webp" 
+      type="image/avif" 
     />
 
-    <!-- High-Performance Google Fonts Preconnect & Direct Sharp Loading (Complete Weight Matrix) -->
+    <!-- High-Performance Asynchronous Non-Blocking Google Fonts with Instant System Fallback -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400;1,9..40,600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600;1,700&display=swap">
+    <link 
+      rel="preload" 
+      as="style" 
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+    />
+    <link 
+      rel="stylesheet" 
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" 
+      media="print" 
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+    </noscript>
+    <style>
+      .ssr-desktop { display: none; }
+      .ssr-mobile { display: block; }
+      @media (min-width: 768px) {
+        .ssr-desktop { display: flex !important; }
+        .ssr-mobile { display: none !important; }
+      }
+    </style>
   </head>
-  <body class="bg-[#F7F4ED] text-[#10110F] antialiased font-sans selection:bg-[#263D2B] selection:text-[#FFFFFF] m-0 p-0">
-    <div id="root"></div>
+  <body class="bg-[#F7F4ED] text-[#10110F] antialiased font-sans selection:bg-[#263D2B] selection:text-[#FFFFFF] m-0 p-0" data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false">
+    <div id="root">
+      <header style="width: 100%; height: 76px; position: fixed; top: 0; left: 0; z-index: 50; background: rgba(247, 244, 237, 0.95); border-bottom: 1px solid #DCE1D8; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <img src="/salon-logo.png" alt="GLAM GIRL BY JANKI" width="36" height="36" style="width: 36px; height: 36px; object-fit: contain;" />
+          <span style="font-family: serif; font-size: 0.9rem; font-weight: 600; letter-spacing: 0.15em; color: #10110F;">GLAM GIRL BY JANKI</span>
+        </div>
+      </header>
+      <main style="width: 100%; min-height: 100vh; background: #F7F4ED;">
+        <section id="home" style="position: relative; width: 100%; background: #F7F4ED; overflow-x: hidden;">
+          <!-- MOBILE CRITICAL SKELETON (< 768px) -->
+          <div class="ssr-mobile" style="width: 100%; padding-top: 76px; background: #F7F4ED;">
+            <div style="width: 100%; aspect-ratio: 480 / 720; overflow: hidden; background: #F7F4ED;">
+              <img
+                src="/facial-atelier-clean-480.avif"
+                alt="GLAM GIRL BY JANKI luxury women's salon"
+                width="480"
+                height="720"
+                fetchpriority="high"
+                decoding="async"
+                loading="eager"
+                style="width: 100%; height: auto; aspect-ratio: 480 / 720; display: block; object-fit: cover; object-position: center top;"
+              />
+            </div>
+            <div style="width: 100%; padding: 1.5rem 1rem; background: #F7F4ED; border-top: 1px solid #DCE1D8;">
+              <h1 style="font-family: 'Playfair Display', serif; font-weight: 400; font-size: 34px; line-height: 0.98; letter-spacing: -0.02em; color: #10110F; margin: 0 0 1rem 0;">
+                <span style="display: block;">Beauty</span>
+                <span style="display: block;">Begins With</span>
+                <span style="display: block;">You.</span>
+              </h1>
+              <div style="width: 48px; height: 2px; background: #263D2B; border-radius: 9999px; margin-bottom: 1rem;"></div>
+              <p style="font-family: 'DM Sans', sans-serif; font-size: 13.5px; line-height: 1.65; color: #6B7068; margin: 0 0 1.5rem 0; font-weight: 300;">
+                Personalized beauty rituals, designed around you.<br />
+                Discover your glow with care, confidence, and elegance.
+              </p>
+            </div>
+          </div>
+
+          <!-- DESKTOP CRITICAL SKELETON (>= 768px) -->
+          <div class="ssr-desktop" style="position: relative; width: 100%; min-height: 100vh; flex-direction: column; justify-content: space-between; background: #F7F4ED; overflow: hidden;">
+            <div style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; background: #F7F4ED; display: flex; align-items: flex-end; justify-content: flex-end;">
+              <picture style="width: 100%; height: 100%; display: flex; align-items: flex-end; justify-content: flex-end;">
+                <source type="image/avif" srcset="/facial-atelier-clean-1200.avif 1200w, /facial-atelier-clean-1920.avif 1920w" sizes="100vw" />
+                <source type="image/webp" srcset="/facial-atelier-clean-1200.webp 1200w, /facial-atelier-clean-1920.webp 1920w" sizes="100vw" />
+                <img
+                  src="/facial-atelier-clean-1200.webp"
+                  alt="GLAM GIRL BY JANKI Luxury Salon Interior"
+                  width="1200"
+                  height="675"
+                  fetchpriority="high"
+                  decoding="async"
+                  style="width: 100%; height: 100%; object-fit: cover; object-position: 75% center;"
+                />
+              </picture>
+            </div>
+            <div style="position: absolute; inset: 0; z-index: 10; pointer-events: none; background: linear-gradient(90deg, #F7F4ED 0%, rgba(247, 244, 237, 0.98) 42%, rgba(247, 244, 237, 0.85) 58%, rgba(247, 244, 237, 0.15) 80%, transparent 100%);"></div>
+            <div style="position: relative; z-index: 20; flex: 1; display: flex; flex-direction: column; justify-content: center; width: 100%; max-width: 1600px; margin: 0 auto; padding: 96px 6% 48px;">
+              <div style="width: 100%; max-width: 560px; text-align: left; display: flex; flex-direction: column; align-items: flex-start;">
+                <h1 style="font-family: 'Playfair Display', Georgia, serif; font-weight: 400; font-size: 76px; line-height: 0.98; letter-spacing: -0.02em; color: #10110F; margin: 0 0 20px 0;">
+                  <span style="display: block;">Beauty</span>
+                  <span style="display: block;">Begins With</span>
+                  <span style="display: block;">You.</span>
+                </h1>
+                <div style="width: 56px; height: 2px; background: #263D2B; border-radius: 9999px; margin-bottom: 20px;"></div>
+                <p style="font-family: 'DM Sans', system-ui, sans-serif; font-size: 16px; line-height: 1.65; color: #6B7068; margin: 0 0 32px 0; font-weight: 300;">
+                  Personalized beauty rituals, designed around you.<br />
+                  Discover your glow with care, confidence, and elegance.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

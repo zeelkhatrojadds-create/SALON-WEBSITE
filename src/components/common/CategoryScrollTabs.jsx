@@ -5,7 +5,7 @@ export default function CategoryScrollTabs({
   categories = [],
   selectedId = 'all',
   onSelect,
-  allLabel = 'ALL 72 TREATMENTS',
+  allLabel = 'ALL TREATMENTS',
   showAll = true,
   theme = 'light',
   className = ''

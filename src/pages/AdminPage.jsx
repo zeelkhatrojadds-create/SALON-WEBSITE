@@ -20,12 +20,17 @@ import {
   MessageSquare,
   Tag,
   Users,
-  Send
+  Send,
+  HelpCircle,
+  Layers,
+  FileText,
+  HeartHandshake
 } from 'lucide-react';
 import Logo from '../components/common/Logo';
 import AdminDashboard from '../components/admin/AdminDashboard';
 import AdminAppointments from '../components/admin/AdminAppointments';
 import AdminServices from '../components/admin/AdminServices';
+import AdminAftercare from '../components/admin/AdminAftercare';
 import AdminSettings from '../components/admin/AdminSettings';
 import AdminReviews from '../components/admin/AdminReviews';
 import AdminGallery from '../components/admin/AdminGallery';
@@ -33,6 +38,11 @@ import AdminContacts from '../components/admin/AdminContacts';
 import AdminOffers from '../components/admin/AdminOffers';
 import AdminNewsletter from '../components/admin/AdminNewsletter';
 import AdminUsers from '../components/admin/AdminUsers';
+import AdminCustomers from '../components/admin/AdminCustomers';
+import AdminFaq from '../components/admin/AdminFaq';
+import AdminComboPackages from '../components/admin/AdminComboPackages';
+import AdminSeasonalMenu from '../components/admin/AdminSeasonalMenu';
+import AdminDownloadableMenu from '../components/admin/AdminDownloadableMenu';
 import { ALL_SERVICES } from '../data/servicesData';
 import salonDB from '../db/salonDatabase';
 
@@ -58,6 +68,9 @@ export default function AdminPage() {
   const [appointments, setAppointments] = useState(() => salonDB.getAppointments());
   const [customServices, setCustomServices] = useState(() => salonDB.getServices());
   const [reviews, setReviews] = useState(() => salonDB.getReviews());
+  const [faqs, setFaqs] = useState(() => salonDB.getFaqs(true));
+  const [comboPackages, setComboPackages] = useState(() => salonDB.getComboPackages());
+  const [seasonalHighlights, setSeasonalHighlights] = useState(() => salonDB.getSeasonalHighlights());
 
   // Subscribe to live database updates across tabs and bookings
   useEffect(() => {
@@ -65,6 +78,9 @@ export default function AdminPage() {
       setAppointments(salonDB.getAppointments());
       setCustomServices(salonDB.getServices());
       setReviews(salonDB.getReviews());
+      setFaqs(salonDB.getFaqs(true));
+      setComboPackages(salonDB.getComboPackages());
+      setSeasonalHighlights(salonDB.getSeasonalHighlights());
     };
 
     syncAll();
@@ -244,6 +260,7 @@ export default function AdminPage() {
   const unreadMessagesCount = salonDB.getContactMessages().filter(m => m.status === 'New').length;
   const subscribersCount = salonDB.getNewsletterSubscribers().length;
   const offersCount = salonDB.getActiveOffers().length;
+  const customersCount = salonDB.getCustomers().length;
 
   const navGroups = [
     {
@@ -251,6 +268,7 @@ export default function AdminPage() {
       items: [
         { id: 'dashboard', name: 'Executive Overview', icon: LayoutDashboard },
         { id: 'appointments', name: 'Appointments Queue', icon: CalendarCheck, badge: appointments.length },
+        { id: 'customers', name: 'Customers & Patrons', icon: Users, badge: customersCount },
         { id: 'messages', name: 'Guest Inquiries', icon: MessageSquare, badge: unreadMessagesCount > 0 ? unreadMessagesCount : undefined, badgeColor: 'bg-[#263D2B]/15 text-[#263D2B]' },
       ]
     },
@@ -258,6 +276,9 @@ export default function AdminPage() {
       groupTitle: 'CATALOG & MEDIA',
       items: [
         { id: 'services', name: '72 Service Catalog', icon: Sparkles, badge: customServices.length },
+        { id: 'aftercare', name: 'Aftercare & Products', icon: HeartHandshake },
+        { id: 'combos', name: 'Combo Packages', icon: Layers, badge: comboPackages.length },
+        { id: 'faq', name: 'FAQ Management', icon: HelpCircle, badge: faqs.length },
         { id: 'reviews', name: 'Client Reviews', icon: Star, badge: reviews.length },
         { id: 'gallery', name: 'Radiance Archive', icon: ImageIcon },
       ]
@@ -266,6 +287,8 @@ export default function AdminPage() {
       groupTitle: 'COMMERCE & ENGAGEMENT',
       items: [
         { id: 'offers', name: 'Offers & Promos', icon: Tag, badge: offersCount > 0 ? offersCount : undefined },
+        { id: 'seasonal', name: 'Seasonal Menu', icon: Sparkles, badge: seasonalHighlights.filter(h => h.status === 'Active').length > 0 ? seasonalHighlights.filter(h => h.status === 'Active').length : undefined },
+        { id: 'pdfMenu', name: 'Beauty Menu PDF', icon: FileText },
         { id: 'newsletter', name: 'Newsletter Audience', icon: Send, badge: subscribersCount > 0 ? subscribersCount : undefined },
       ]
     },
@@ -487,6 +510,10 @@ export default function AdminPage() {
           />
         )}
 
+        {activeTab === 'customers' && (
+          <AdminCustomers />
+        )}
+
         {activeTab === 'reviews' && (
           <AdminReviews
             reviews={reviews}
@@ -506,6 +533,14 @@ export default function AdminPage() {
           <AdminOffers />
         )}
 
+        {activeTab === 'seasonal' && (
+          <AdminSeasonalMenu />
+        )}
+
+        {activeTab === 'pdfMenu' && (
+          <AdminDownloadableMenu />
+        )}
+
         {activeTab === 'newsletter' && (
           <AdminNewsletter />
         )}
@@ -518,6 +553,21 @@ export default function AdminPage() {
           <AdminServices
             customServices={customServices}
             onUpdateServices={handleUpdateServices}
+          />
+        )}
+
+        {activeTab === 'combos' && (
+          <AdminComboPackages />
+        )}
+
+        {activeTab === 'aftercare' && (
+          <AdminAftercare />
+        )}
+
+        {activeTab === 'faq' && (
+          <AdminFaq
+            faqs={faqs}
+            onUpdateFaqs={() => setFaqs(salonDB.getFaqs(true))}
           />
         )}
 

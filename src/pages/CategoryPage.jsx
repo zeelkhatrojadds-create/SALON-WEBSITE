@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from 'react';
+// GLAM GIRL BY JANKI — Dedicated Category Detail Page
+// Displays all individual services belonging to a selected category with working back navigation and booking.
+
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { 
   Clock, 
@@ -7,12 +10,14 @@ import {
   Sparkles, 
   AlertCircle, 
   ShieldCheck,
-  Check,
-  ChevronRight
+  Search,
+  SlidersHorizontal,
+  X,
+  Calendar
 } from 'lucide-react';
 import Breadcrumbs from '../components/services/Breadcrumbs';
 import salonDB from '../db/salonDatabase';
-import { CATEGORIES } from '../data/servicesData';
+import { MAIN_SERVICE_CATEGORIES, findMainCategory, getServicesForCategory } from '../data/mainCategoriesData';
 import ServiceCard from '../components/common/ServiceCard';
 import ScrollReveal from '../components/ScrollReveal/ScrollReveal';
 
@@ -20,151 +25,305 @@ export default function CategoryPage() {
   const { category: categoryParam } = useParams();
   const navigate = useNavigate();
   const [servicesData, setServicesData] = useState(() => salonDB.getServices());
-  const [categories, setCategories] = useState(() => salonDB.getCategories());
+  const [searchFilter, setSearchFilter] = useState('');
+  const [sortBy, setSortBy] = useState('default');
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
+    setSearchFilter('');
   }, [categoryParam]);
 
   useEffect(() => {
     const handleUpdate = () => {
       setServicesData(salonDB.getServices());
-      setCategories(salonDB.getCategories());
     };
     const unsubscribe = salonDB.subscribe(handleUpdate);
     return () => unsubscribe();
   }, []);
 
-  // Find category object
-  const currentCategory = categories.find((c) => {
-    const target = String(categoryParam || '').toLowerCase();
-    const cSlug = String(c.slug || c.id || '').toLowerCase();
-    const cId = String(c.id || '').toLowerCase();
-    return cSlug === target || cId === target;
-  });
+  // 1. Direct Service Redirect Check:
+  // If user navigated to /services/:slug or /treatments/:slug directly where slug is a service, redirect to treatment detail
+  const matchingService = salonDB.getServiceBySlug(categoryParam) || salonDB.getServiceById(categoryParam);
+  useEffect(() => {
+    if (matchingService) {
+      navigate(`/services/${matchingService.category || 'all'}/${matchingService.slug || matchingService.id}`, { replace: true });
+    }
+  }, [matchingService, navigate]);
 
-  // If not found in CATEGORIES list, fallback to matching first service's categoryName
-  const categoryId = currentCategory?.id || categoryParam;
-  const categoryName = currentCategory?.name || (categoryParam ? categoryParam.charAt(0).toUpperCase() + categoryParam.slice(1).replace(/-/g, ' ') : 'Category');
-  const categoryDesc = currentCategory?.description || `Discover our bespoke ${categoryName.toLowerCase()} treatments designed for exquisite beauty and natural confidence.`;
-  const categoryImage = currentCategory?.image;
+  if (matchingService) {
+    return (
+      <div className="min-h-screen bg-[#F7F4ED] flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-2 border-[#263D2B] border-t-transparent animate-spin" />
+      </div>
+    );
+  }
 
-  // Filter active treatments for this category
-  const categoryTreatments = servicesData.filter((s) => {
-    if (s.active === false) return false;
-    const target = String(categoryId).toLowerCase();
-    const sCat = String(s.category || '').toLowerCase();
-    const sCatSlug = String(s.category || '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    return sCat === target || sCatSlug === target || sCatSlug === String(categoryParam).toLowerCase();
-  });
+  // Normalization map for category aliases
+  const normalizeCategory = (slug) => {
+    const s = String(slug || '').toLowerCase().trim();
+    if (s === 'hair-styling') return 'hairstyling';
+    if (s === 'hair-treatment') return 'hair-treatments';
+    if (s === 'hair-color') return 'hair-colour';
+    if (s === 'mehndi') return 'henna';
+    if (s === 'spa') return 'massage';
+    if (s === 'skin' || s === 'skincare') return 'facial';
+    return s;
+  };
 
-  if (!currentCategory && categoryTreatments.length === 0) {
+  const normalizedTarget = normalizeCategory(categoryParam);
+
+  // Match against our master 13 main categories registry
+  const mainCatDef = findMainCategory(categoryParam);
+
+  let categoryName = '';
+  let categorySubtitle = '';
+  let categoryDesc = '';
+  let categoryImage = '';
+  let categoryBadge = 'ATELIER CATEGORY';
+  let rawTreatments = [];
+
+  if (mainCatDef) {
+    categoryName = mainCatDef.name;
+    categorySubtitle = mainCatDef.subtitle;
+    categoryDesc = mainCatDef.description;
+    categoryImage = mainCatDef.image;
+    categoryBadge = mainCatDef.badge;
+    rawTreatments = getServicesForCategory(mainCatDef, servicesData);
+  } else {
+    // Fallback to legacy categories
+    const categories = salonDB.getCategories();
+    const currentCategory = categories.find((c) => {
+      const cSlug = String(c.slug || c.id || '').toLowerCase();
+      const cId = String(c.id || '').toLowerCase();
+      return cSlug === normalizedTarget || cId === normalizedTarget;
+    });
+
+    categoryName = currentCategory?.name || (categoryParam ? categoryParam.charAt(0).toUpperCase() + categoryParam.slice(1).replace(/-/g, ' ') : 'Category');
+    categorySubtitle = currentCategory?.subtitle || 'Bespoke Rituals & Treatments';
+    categoryDesc = currentCategory?.description || `Discover our bespoke ${categoryName.toLowerCase()} treatments designed for exquisite beauty and natural confidence.`;
+    categoryImage = currentCategory?.image;
+    rawTreatments = servicesData.filter((s) => {
+      if (s.active === false) return false;
+      const target = String(currentCategory?.id || normalizedTarget).toLowerCase();
+      const sCat = String(s.category || '').toLowerCase();
+      const sCatSlug = String(s.category || '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      return sCat === target || sCatSlug === target;
+    });
+  }
+
+  // Filter & sort treatments within category
+  const categoryTreatments = useMemo(() => {
+    let list = rawTreatments.filter((treatment) => {
+      if (!searchFilter.trim()) return true;
+      const q = searchFilter.toLowerCase().trim();
+      return (
+        treatment.name.toLowerCase().includes(q) ||
+        (treatment.description && treatment.description.toLowerCase().includes(q))
+      );
+    });
+
+    if (sortBy === 'price-low') {
+      list.sort((a, b) => (a.price || 0) - (b.price || 0));
+    } else if (sortBy === 'price-high') {
+      list.sort((a, b) => (b.price || 0) - (a.price || 0));
+    } else if (sortBy === 'duration') {
+      list.sort((a, b) => parseInt(a.duration || 0) - parseInt(b.duration || 0));
+    }
+
+    return list;
+  }, [rawTreatments, searchFilter, sortBy]);
+
+  // Set document title
+  useEffect(() => {
+    if (categoryName) {
+      document.title = `${categoryName} Services — GLAM GIRL BY JANKI`;
+    }
+  }, [categoryName]);
+
+  // 404 Empty Category handler
+  if (!mainCatDef && rawTreatments.length === 0) {
     return (
       <div className="min-h-screen bg-[#F7F4ED] text-[#10110F] pt-32 pb-24 flex items-center justify-center">
         <div className="max-w-md mx-auto px-4 text-center">
-          <div className="bg-white rounded-3xl p-8 sm:p-10 border border-[#DCE1D8] shadow-lg">
-            <div className="w-16 h-16 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto mb-4 border border-rose-200">
+          <div className="bg-white rounded-3xl p-8 sm:p-10 border border-[#DCE1D8] shadow-lg space-y-4">
+            <div className="w-16 h-16 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto border border-rose-200">
               <AlertCircle className="w-8 h-8" />
             </div>
-            <h1 className="font-serif text-2xl font-bold text-[#10110F] mb-2">Category Not Found</h1>
-            <p className="text-[#6B7068] text-sm mb-6 font-sans">
-              The service category "{categoryParam}" could not be located in our salon database.
+            <h1 className="font-serif text-2xl font-bold text-[#10110F]">Category Not Found</h1>
+            <p className="text-[#6B7068] text-sm font-sans leading-relaxed">
+              The service category &ldquo;{categoryParam}&rdquo; could not be located in our salon database.
             </p>
-            <Link
-              to="/services"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#263D2B] hover:bg-[#1C2E20] text-white text-xs font-bold uppercase tracking-wider transition-all shadow-md"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Back to All Categories</span>
-            </Link>
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Link
+                to="/services"
+                className="global-button w-full sm:w-auto min-h-[44px] !px-6 !py-2.5 text-white text-xs font-bold uppercase tracking-wider shadow-md flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Back to All Services</span>
+              </Link>
+              <Link
+                to="/"
+                className="global-button-secondary w-full sm:w-auto min-h-[44px] !px-6 !py-2.5 text-xs font-semibold flex items-center justify-center gap-2 uppercase tracking-wider cursor-pointer"
+              >
+                <span>Back to Home</span>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
     );
   }
 
-  const categorySlug = currentCategory?.slug || categoryParam;
+  const categorySlug = mainCatDef?.slug || categoryParam;
 
   return (
-    <div className="min-h-screen bg-[#F7F4ED] text-[#10110F] pt-24 sm:pt-28 pb-20 selection:bg-[#263D2B] selection:text-white">
-      {/* Editorial Header Section */}
+    <div className="min-h-screen bg-[#F7F4ED] text-[#10110F] pt-24 sm:pt-28 pb-20 selection:bg-[#263D2B] selection:text-white font-sans antialiased">
+      
+      {/* 1. EDITORIAL HEADER & BREADCRUMBS */}
       <div className="relative border-b border-[#DCE1D8] bg-[#F7F4ED] pb-12 sm:pb-16 pt-4">
         <ScrollReveal className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" stagger={true}>
-          <Breadcrumbs categoryName={categoryName} categorySlug={categorySlug} />
+          
+          {/* Top navigation row with Breadcrumbs and Back Button */}
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+            <Breadcrumbs categoryName={categoryName} categorySlug={categorySlug} />
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mt-4">
-            <div className="lg:col-span-8">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#263D2B]/10 border border-[#263D2B]/20 text-[#263D2B] text-xs font-bold tracking-widest uppercase mb-4">
+            <Link
+              to="/services"
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#DCE1D8] hover:border-[#263D2B] text-xs font-bold uppercase tracking-wider text-[#10110F] hover:text-[#263D2B] transition-all shadow-xs"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to All Categories</span>
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 items-center mt-6">
+            
+            {/* Left Column: Title & Description */}
+            <div className="lg:col-span-8 space-y-4">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white border border-[#DCE1D8] text-[#263D2B] text-xs font-bold tracking-widest uppercase shadow-xs">
                 <Sparkles className="w-3.5 h-3.5 text-[#263D2B]" />
-                <span>Dedicated Collection</span>
+                <span>{categoryBadge}</span>
               </div>
 
-              <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-[#10110F] mb-4 leading-tight">
+              <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-[#10110F] leading-tight">
                 {categoryName}
               </h1>
 
-              <p className="text-[#6B7068] text-base sm:text-lg max-w-2xl font-light leading-relaxed mb-6 font-sans">
+              {categorySubtitle && (
+                <p className="text-sm sm:text-base font-serif italic text-[#465640]">
+                  {categorySubtitle}
+                </p>
+              )}
+
+              <p className="text-[#6B7068] text-sm sm:text-base max-w-2xl font-light leading-relaxed">
                 {categoryDesc}
               </p>
 
-              <div className="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-[#6B7068] font-sans">
-                <span className="px-3.5 py-1.5 rounded-full bg-white border border-[#DCE1D8] text-[#10110F] font-medium shadow-xs">
-                  <strong className="text-[#10110F] font-bold">{categoryTreatments.length}</strong> Signature Treatments Available
+              {/* Trust Badges */}
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-2 text-xs sm:text-sm text-[#465640]">
+                <span className="px-3.5 py-1.5 rounded-full bg-white border border-[#DCE1D8] text-[#10110F] font-bold shadow-xs">
+                  {rawTreatments.length} {rawTreatments.length === 1 ? 'Treatment' : 'Treatments'} in Catalog
                 </span>
                 <span className="flex items-center gap-1.5 font-medium">
-                  <ShieldCheck className="w-4 h-4 text-[#263D2B]" /> Certified Beauty Specialists
+                  <ShieldCheck className="w-4 h-4 text-[#263D2B]" /> Single-Guest Private Suite
                 </span>
                 <span className="flex items-center gap-1.5 font-medium">
-                  <Sparkles className="w-4 h-4 text-[#263D2B]" /> 100% Gentle Formulas
+                  <Sparkles className="w-4 h-4 text-[#263D2B]" /> Transparent Canadian Pricing
                 </span>
               </div>
             </div>
 
+            {/* Right Column: Hero Category Image */}
             {categoryImage && (
-              <div className="lg:col-span-4 hidden lg:block">
-                <div className="relative rounded-2xl overflow-hidden aspect-[4/3] border border-[#DCE1D8] shadow-xl group bg-white">
+              <div className="lg:col-span-4">
+                <div className="relative rounded-3xl overflow-hidden aspect-[4/3] border border-[#DCE1D8] shadow-xl group bg-white">
                   <img
                     src={categoryImage}
                     alt={categoryName}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    onError={(e) => {
+                      e.currentTarget.src = '/images/threading/sitara-full-face-threading.jpg';
+                    }}
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+                  <div className="absolute bottom-3 left-4 right-4 text-white text-[11px] font-medium">
+                    GLAM GIRL BY JANKI Atelier Collection
+                  </div>
                 </div>
               </div>
             )}
+
           </div>
         </ScrollReveal>
       </div>
 
-      {/* Main Treatments Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-        <div className="flex items-center justify-between mb-8 pb-4 border-b border-[#DCE1D8]">
+      {/* 2. MAIN TREATMENTS GRID SECTION */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+        
+        {/* Toolbar: Counter & Search & Sort */}
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8 pb-5 border-b border-[#DCE1D8]">
           <div>
             <h2 className="font-serif text-2xl sm:text-3xl text-[#10110F] font-normal">
-              All {categoryName} Treatments
+              All {categoryName} Services
             </h2>
-            <p className="text-xs sm:text-sm text-[#6B7068] mt-1 font-sans">
-              Select a treatment to view full details, included steps, and reserve your private appointment.
+            <p className="text-xs sm:text-sm text-[#6B7068] mt-1 font-light">
+              Showing {categoryTreatments.length} of {rawTreatments.length} approved treatments. Select any service to book your appointment.
             </p>
           </div>
 
-          <Link
-            to="/services"
-            className="hidden sm:inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#10110F] hover:text-[#263D2B] transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>All Categories</span>
-          </Link>
+          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+            {/* Search filter within category */}
+            <div className="relative flex-1 md:w-60">
+              <Search className="w-3.5 h-3.5 text-[#6B7068] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                type="text"
+                value={searchFilter}
+                onChange={(e) => setSearchFilter(e.target.value)}
+                placeholder={`Search ${categoryName}...`}
+                className="w-full pl-9 pr-8 py-2 rounded-full bg-white border border-[#DCE1D8] text-xs text-[#10110F] placeholder-[#6B7068] focus:outline-none focus:border-[#263D2B] shadow-2xs"
+              />
+              {searchFilter && (
+                <button
+                  type="button"
+                  onClick={() => setSearchFilter('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#6B7068] hover:text-[#10110F]"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            {/* Sort Dropdown */}
+            <div className="flex items-center gap-1.5 bg-white border border-[#DCE1D8] rounded-full px-3 py-1.5 shadow-2xs text-xs">
+              <SlidersHorizontal className="w-3.5 h-3.5 text-[#263D2B]" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="bg-transparent text-xs text-[#10110F] font-medium focus:outline-none cursor-pointer"
+                aria-label="Sort services"
+              >
+                <option value="default">Default Order</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="duration">Duration</option>
+              </select>
+            </div>
+          </div>
         </div>
 
+        {/* Treatment Cards Grid */}
         {categoryTreatments.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-2xl border border-[#DCE1D8] p-8">
-            <p className="text-[#6B7068] mb-4 font-sans">No treatments are currently available in this category.</p>
-            <Link
-              to="/services"
-              className="global-button inline-flex items-center gap-2 !px-5 !py-2.5 text-white text-xs font-bold uppercase tracking-wider"
+          <div className="text-center py-16 bg-white rounded-3xl border border-[#DCE1D8] p-8 max-w-md mx-auto shadow-xs space-y-3">
+            <p className="text-sm text-[#6B7068]">
+              No treatments matched &ldquo;{searchFilter}&rdquo; in {categoryName}.
+            </p>
+            <button
+              type="button"
+              onClick={() => setSearchFilter('')}
+              className="global-button !px-5 !py-2 text-xs uppercase"
             >
-              Browse All Services
-            </Link>
+              Clear Search
+            </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
@@ -174,25 +333,45 @@ export default function CategoryPage() {
           </div>
         )}
 
-        {/* Other Categories Quick Navigation */}
-        <div className="mt-20 pt-10 border-t border-[#DCE1D8]">
-          <h3 className="font-serif text-xl sm:text-2xl text-[#10110F] mb-6 text-center">
-            Explore Other Salon Categories
-          </h3>
-          <div className="flex flex-wrap justify-center gap-2.5 sm:gap-3">
-            {categories
-              .filter((c) => (c.slug || c.id) !== categorySlug)
+        {/* 3. EXPLORE OTHER SALON CATEGORIES FOOTER */}
+        <div className="mt-20 pt-12 border-t border-[#DCE1D8]">
+          <div className="text-center space-y-2 mb-8">
+            <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#263D2B]">
+              COMPLETE BEAUTY REPERTOIRE
+            </span>
+            <h3 className="font-serif text-2xl sm:text-3xl text-[#10110F] font-normal">
+              Explore Other Salon Categories
+            </h3>
+            <p className="text-xs sm:text-sm text-[#6B7068] font-light max-w-md mx-auto">
+              Browse our other specialized atelier disciplines for hair, skin, nails, and bridal beauty.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-2.5 sm:gap-3 max-w-5xl mx-auto">
+            {MAIN_SERVICE_CATEGORIES
+              .filter((c) => c.slug !== categorySlug && c.id !== categorySlug)
               .map((c) => (
                 <Link
                   key={c.id}
-                  to={`/services/${c.slug || c.id}`}
-                  className="px-4 py-2 rounded-full bg-white hover:bg-[#263D2B] border border-[#DCE1D8] hover:border-[#263D2B] text-xs sm:text-sm text-[#10110F] hover:text-white transition-all font-medium font-sans"
+                  to={`/services/${c.slug}`}
+                  className="px-4 py-2.5 rounded-full bg-white hover:bg-[#263D2B] border border-[#DCE1D8] hover:border-[#263D2B] text-xs font-semibold text-[#10110F] hover:text-white transition-all shadow-2xs hover:shadow-sm"
                 >
                   {c.name}
                 </Link>
               ))}
           </div>
+
+          <div className="pt-8 text-center">
+            <Link
+              to="/services"
+              className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#263D2B] hover:text-[#10110F] transition-colors"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Return to All Services Main Page</span>
+            </Link>
+          </div>
         </div>
+
       </div>
     </div>
   );

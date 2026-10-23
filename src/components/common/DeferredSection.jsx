@@ -55,37 +55,16 @@ export default function DeferredSection({
         }
       },
       {
-        rootMargin: '600px 0px 600px 0px',
+        rootMargin: '200px 0px 200px 0px',
         threshold: 0.01
       }
     );
 
     observer.observe(el);
 
-    // Idle hydration fallback
-    let idleId = null;
-    let timerId = null;
-
-    if (typeof window.requestIdleCallback === 'function') {
-      idleId = window.requestIdleCallback(
-        () => {
-          setIsHydrated(true);
-        },
-        { timeout: 3500 }
-      );
-    } else {
-      timerId = setTimeout(() => {
-        setIsHydrated(true);
-      }, 3500);
-    }
-
     return () => {
       observer.disconnect();
       window.removeEventListener('hashchange', checkHash);
-      if (idleId && typeof window.cancelIdleCallback === 'function') {
-        window.cancelIdleCallback(idleId);
-      }
-      if (timerId) clearTimeout(timerId);
     };
   }, [isHydrated, id]);
 

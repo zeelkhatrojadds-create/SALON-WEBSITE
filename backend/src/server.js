@@ -12,6 +12,8 @@ import offerRoutes from './routes/offerRoutes.js';
 import galleryRoutes from './routes/galleryRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
+import faqRoutes from './routes/faqRoutes.js';
+import comboRoutes from './routes/comboRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 dotenv.config();
@@ -53,6 +55,8 @@ app.use('/api/offers', offerRoutes);
 app.use('/api/gallery', galleryRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/faqs', faqRoutes);
+app.use('/api/combos', comboRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

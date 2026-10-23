@@ -1,215 +1,321 @@
-import React, { useState, useEffect } from 'react';
-import './LuxuryLoader.css';
+// GLAM GIRL BY JANKI — 5-Second Real WebGL 3D Animation Loading Screen
+// Powered by Three.js with rotating 3D faceted crystal jewel, dual orbital rings, and swirling galaxy particles.
+// Clean, luxury presentation with zero awkward bottom debug text.
 
-/**
- * LuxuryLoader — Exact 5.0-Second Cinematic Opening Experience
- * GLAM GIRL BY JANKI — HAUTE BEAUTÉ · ATELIER · OTTAWA
- *
- * Sequence:
- * 0.0s - 1.2s: Deep ambient glow & 3D gyroscopic rings ignite
- * 1.2s - 2.4s: 3D Diamond Star emblem emerges with forest halo burst
- * 2.4s - 3.8s: "GLAM GIRL" couture title & "BY JANKI" subtitle with specular light sweep
- * 3.8s - 4.4s: Full prestige brand lockup in equilibrium + micro progress track
- * 4.4s - 5.0s: Smooth silk reveal fade-out (0.6s transition)
- * 5.0s: Exact unmount and seamless Home presentation
- */
+import React, { useState, useEffect, useRef } from 'react';
+import * as THREE from 'three';
+import { Leaf } from 'lucide-react';
+
 export default function LuxuryLoader({ onComplete }) {
-  const [isMounted, setIsMounted] = useState(true);
-  const [animationPhase, setAnimationPhase] = useState(0); // 0: rings, 1: emblem, 2: title, 3: full lockup, 4: fading
+  const canvasRef = useRef(null);
+  const [isExiting, setIsExiting] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [progressPercent, setProgressPercent] = useState(0);
+
+  const DURATION_MS = 5000; // Exact 5.0 seconds
 
   useEffect(() => {
-    // Stage 1: 3D Emblem Reveal at 1.0s
-    const t1 = setTimeout(() => setAnimationPhase(1), 1000);
+    // Lock scroll during opening animation
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+    }
 
-    // Stage 2: Typography & Light Sweep at 2.2s
-    const t2 = setTimeout(() => setAnimationPhase(2), 2200);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-    // Stage 3: Full Lockup & Atelier Tag at 3.4s
-    const t3 = setTimeout(() => setAnimationPhase(3), 3400);
+    // -------------------------------------------------------------------------
+    // THREE.JS SCENE SETUP
+    // -------------------------------------------------------------------------
+    const scene = new THREE.Scene();
+    
+    // Camera
+    const camera = new THREE.PerspectiveCamera(
+      45,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      100
+    );
+    camera.position.set(0, 0, 8.5);
 
-    // Stage 4: Fade Out Transition at 4.4s
-    const t4 = setTimeout(() => setAnimationPhase(4), 4400);
+    // WebGL Renderer
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance'
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
 
-    // Stage 5: Final Unmount at EXACTLY 5000ms (5.0s)
-    const tFinal = setTimeout(() => {
-      setIsMounted(false);
-      document.body.style.overflow = '';
-      document.documentElement.style.overflow = '';
-      if (onComplete) onComplete();
-    }, 5000);
+    // -------------------------------------------------------------------------
+    // 3D OBJECTS: CRYSTAL JEWEL, ORBITAL RINGS & PARTICLE GALAXY
+    // -------------------------------------------------------------------------
+    
+    // 1. Faceted Emerald Crystal Jewel
+    const jewelGroup = new THREE.Group();
+    scene.add(jewelGroup);
 
+    // Outer faceted diamond icosahedron
+    const jewelGeom = new THREE.IcosahedronGeometry(1.45, 0);
+    const jewelMat = new THREE.MeshPhysicalMaterial({
+      color: 0x263D2B,
+      roughness: 0.15,
+      metalness: 0.75,
+      transmission: 0.35,
+      ior: 1.55,
+      transparent: true,
+      opacity: 0.95,
+      flatShading: true
+    });
+    const jewelMesh = new THREE.Mesh(jewelGeom, jewelMat);
+    jewelGroup.add(jewelMesh);
+
+    // Sage wireframe cage highlighting the facets
+    const wireframeGeom = new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(1.46, 0));
+    const wireframeMat = new THREE.LineBasicMaterial({
+      color: 0xA8B5A0,
+      transparent: true,
+      opacity: 0.55
+    });
+    const wireframeLines = new THREE.LineSegments(wireframeGeom, wireframeMat);
+    jewelGroup.add(wireframeLines);
+
+    // 2. Dual 3D Gyroscopic Orbital Rings
+    const ring1Geom = new THREE.TorusGeometry(2.35, 0.022, 16, 100);
+    const ring1Mat = new THREE.MeshStandardMaterial({
+      color: 0xA8B5A0,
+      roughness: 0.3,
+      metalness: 0.85
+    });
+    const ring1 = new THREE.Mesh(ring1Geom, ring1Mat);
+    ring1.rotation.x = Math.PI / 3;
+    ring1.rotation.y = Math.PI / 6;
+    scene.add(ring1);
+
+    const ring2Geom = new THREE.TorusGeometry(2.8, 0.018, 16, 100);
+    const ring2Mat = new THREE.MeshStandardMaterial({
+      color: 0x465640,
+      roughness: 0.4,
+      metalness: 0.7
+    });
+    const ring2 = new THREE.Mesh(ring2Geom, ring2Mat);
+    ring2.rotation.x = -Math.PI / 4;
+    ring2.rotation.z = Math.PI / 4;
+    scene.add(ring2);
+
+    // 3. 3D Swirling Stardust Particle Galaxy
+    const particleCount = 380;
+    const particlePositions = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i++) {
+      const radius = 2.2 + Math.random() * 3.5;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = (Math.random() - 0.5) * Math.PI;
+
+      particlePositions[i * 3] = radius * Math.cos(theta) * Math.cos(phi);
+      particlePositions[i * 3 + 1] = radius * Math.sin(phi);
+      particlePositions[i * 3 + 2] = radius * Math.sin(theta) * Math.cos(phi);
+    }
+    const particleGeom = new THREE.BufferGeometry();
+    particleGeom.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+    const particleMat = new THREE.PointsMaterial({
+      color: 0xA8B5A0,
+      size: 0.045,
+      transparent: true,
+      opacity: 0.65
+    });
+    const particlePoints = new THREE.Points(particleGeom, particleMat);
+    scene.add(particlePoints);
+
+    // -------------------------------------------------------------------------
+    // LIGHTS
+    // -------------------------------------------------------------------------
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+    scene.add(ambientLight);
+
+    const pointLightSage = new THREE.PointLight(0xA8B5A0, 3.5, 25);
+    pointLightSage.position.set(4, 5, 4);
+    scene.add(pointLightSage);
+
+    const pointLightForest = new THREE.PointLight(0x263D2B, 4.5, 25);
+    pointLightForest.position.set(-4, -4, 3);
+    scene.add(pointLightForest);
+
+    // -------------------------------------------------------------------------
+    // ANIMATION & TIMER LOOP (3000ms)
+    // -------------------------------------------------------------------------
+    let animationFrameId;
+    let startTime = null;
+
+    const animate = (timestamp) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(1, elapsed / DURATION_MS);
+      setProgressPercent(Math.floor(progress * 100));
+
+      // 3D Rotations
+      jewelGroup.rotation.x += 0.012;
+      jewelGroup.rotation.y += 0.018;
+
+      ring1.rotation.z += 0.015;
+      ring1.rotation.y += 0.008;
+
+      ring2.rotation.x += 0.01;
+      ring2.rotation.z -= 0.012;
+
+      particlePoints.rotation.y += 0.003;
+      particlePoints.rotation.z += 0.001;
+
+      // Cinematic dolly zoom (8.5 to 6.2)
+      camera.position.z = 8.5 - progress * 2.3;
+
+      renderer.render(scene, camera);
+
+      if (elapsed < DURATION_MS) {
+        animationFrameId = requestAnimationFrame(animate);
+      } else {
+        // Complete -> trigger silky smooth reveal
+        setIsExiting(true);
+        setTimeout(() => {
+          setIsVisible(false);
+          if (typeof document !== 'undefined') {
+            document.body.style.overflow = '';
+            document.documentElement.style.overflow = '';
+          }
+          if (onComplete) onComplete();
+        }, 450);
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    // Handle Window Resize
+    const handleResize = () => {
+      if (!canvas) return;
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+    window.addEventListener('resize', handleResize);
+
+    // Escape Key to Skip
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsExiting(true);
+        setTimeout(() => {
+          setIsVisible(false);
+          if (typeof document !== 'undefined') {
+            document.body.style.overflow = '';
+            document.documentElement.style.overflow = '';
+          }
+          if (onComplete) onComplete();
+        }, 200);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Cleanup Three.js on unmount
     return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-      clearTimeout(t4);
-      clearTimeout(tFinal);
-      document.body.style.overflow = '';
-      document.documentElement.style.overflow = '';
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('keydown', handleKeyDown);
+
+      jewelGeom.dispose();
+      jewelMat.dispose();
+      wireframeGeom.dispose();
+      wireframeMat.dispose();
+      ring1Geom.dispose();
+      ring1Mat.dispose();
+      ring2Geom.dispose();
+      ring2Mat.dispose();
+      particleGeom.dispose();
+      particleMat.dispose();
+      renderer.dispose();
+
+      if (typeof document !== 'undefined') {
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+      }
     };
   }, [onComplete]);
 
-  if (!isMounted) return null;
+  const handleSkip = () => {
+    setIsExiting(true);
+    setTimeout(() => {
+      setIsVisible(false);
+      if (typeof document !== 'undefined') {
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+      }
+      if (onComplete) onComplete();
+    }, 200);
+  };
 
-  const isFading = animationPhase >= 4;
+  if (!isVisible) return null;
 
   return (
     <aside
-      role="status"
+      aria-label="Loading GLAM GIRL BY JANKI"
       aria-live="polite"
-      aria-label="GLAM GIRL BY JANKI Atelier Opening"
-      className={`luxury-loader-container ${isFading ? 'luxury-loader-fading' : ''}`}
+      className={`fixed inset-0 z-[999999] bg-[#10110F] text-[#F7F4ED] flex flex-col items-center justify-between p-6 sm:p-10 select-none overflow-hidden transition-all duration-500 ease-out ${
+        isExiting ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100'
+      }`}
     >
-      {/* Deep Ambient Lighting & Radial Bloom */}
-      <div className="luxury-loader-ambient-glow" />
-      <div className={`luxury-loader-radial-burst ${animationPhase >= 1 ? 'active' : ''}`} />
+      {/* Real Full-Screen WebGL 3D Canvas */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full pointer-events-none"
+      />
 
-      {/* 3D Gyroscopic Stage */}
-      <div className="luxury-loader-3d-stage">
-        {/* Orbiting Rings */}
-        <div className={`luxury-3d-rings-wrapper ${animationPhase >= 0 ? 'visible' : ''}`}>
-          <div className="luxury-3d-ring luxury-3d-ring-outer">
-            <div className="luxury-ring-specular-orb" />
-          </div>
-          <div className="luxury-3d-ring luxury-3d-ring-inner">
-            <div className="luxury-ring-specular-orb-reverse" />
-          </div>
-          <div className={`luxury-halo-pulse ${animationPhase >= 1 ? 'active' : ''}`} />
+      {/* Atmospheric Vignette Overlay */}
+      <div className="absolute inset-0 pointer-events-none bg-radial-[at_center] from-transparent via-[#10110F]/30 to-[#10110F]/90" />
+
+      {/* Minimal Header with Brand Monogram & Skip */}
+      <div className="w-full max-w-5xl flex items-center justify-between relative z-10 pt-2">
+        <div className="flex items-center gap-2">
+          <Leaf className="w-3.5 h-3.5 text-[#A8B5A0]" />
+          <span className="text-[10px] font-bold uppercase tracking-[0.26em] text-[#A8B5A0]">
+            GLAM GIRL BY JANKI
+          </span>
         </div>
 
-        {/* Brand Showcase */}
-        <div 
-          className={`luxury-brand-showcase ${
-            animationPhase === 1 ? 'stage-active' :
-            animationPhase === 2 ? 'stage-active logo-revealed' :
-            animationPhase >= 3 ? 'stage-active logo-revealed full-lockup' : ''
-          }`}
+        <button
+          type="button"
+          onClick={handleSkip}
+          className="px-3 py-1 rounded-full border border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10 text-[10px] uppercase tracking-wider text-[#A8B5A0] hover:text-white transition-all cursor-pointer backdrop-blur-xs"
+          aria-label="Skip 3D loading"
         >
-          {/* Haute Couture Salon Hairdressing Shears Emblem */}
-          <div className="luxury-emblem-container">
-            <div className="luxury-emblem-3d-diamond">
-              <svg viewBox="0 0 54 54" className="luxury-emblem-svg" fill="none">
-                <defs>
-                  {/* Multi-tier Forest-Green Gradient */}
-                  <linearGradient id="forestShearGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#FFFFFF" />
-                    <stop offset="25%" stopColor="#F7F4ED" />
-                    <stop offset="60%" stopColor="#A8B5A0" />
-                    <stop offset="100%" stopColor="#263D2B" />
-                  </linearGradient>
+          Skip (ESC)
+        </button>
+      </div>
 
-                  <linearGradient id="forestShearGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor="#F7F4ED" />
-                    <stop offset="40%" stopColor="#465640" />
-                    <stop offset="80%" stopColor="#263D2B" />
-                    <stop offset="100%" stopColor="#10110F" />
-                  </linearGradient>
+      {/* Elegant Brand Signature Center Display */}
+      <div className="relative z-10 text-center space-y-2 mt-auto mb-10 pointer-events-none">
+        <h1 className="font-serif text-3xl sm:text-4xl text-[#F7F4ED] font-normal tracking-wide drop-shadow-lg">
+          GLAM GIRL BY JANKI
+        </h1>
+        <p className="font-serif text-xs sm:text-sm text-[#A8B5A0] italic font-light tracking-widest drop-shadow-md">
+          Haute Coiffure • Organic Henna • Aesthetic Wellness
+        </p>
+      </div>
 
-                  {/* Metallic Ambient Sheen Glow */}
-                  <filter id="luxuryShearsAura" x="-25%" y="-25%" width="150%" height="150%">
-                    <feDropShadow dx="0" dy="2" stdDeviation="2.5" floodColor="#263D2B" floodOpacity="0.8"/>
-                    <feDropShadow dx="0" dy="5" stdDeviation="6" floodColor="#465640" floodOpacity="0.4"/>
-                  </filter>
-                </defs>
-
-                <g filter="url(#luxuryShearsAura)" className="luxury-shears-group">
-                  {/* Blade 1 (Upper Left to Lower Right Blade) */}
-                  <path
-                    d="M21 21 L39 5.5 C40 6.5 35 15.5 28 22.5 L21 21 Z"
-                    fill="url(#forestShearGrad1)"
-                    stroke="url(#forestShearGrad1)"
-                    strokeWidth="0.5"
-                    strokeLinejoin="round"
-                  />
-                  {/* Blade 1 Edge Highlight */}
-                  <path
-                    d="M39 5.5 L21 21"
-                    stroke="#FFFFFF"
-                    strokeWidth="0.8"
-                    strokeLinecap="round"
-                    opacity="0.9"
-                  />
-
-                  {/* Blade 2 (Upper Right to Lower Left Blade) */}
-                  <path
-                    d="M33 21 L15 5.5 C14 6.5 19 15.5 26 22.5 L33 21 Z"
-                    fill="url(#forestShearGrad2)"
-                    stroke="url(#forestShearGrad2)"
-                    strokeWidth="0.5"
-                    strokeLinejoin="round"
-                  />
-                  {/* Blade 2 Edge Highlight */}
-                  <path
-                    d="M15 5.5 L33 21"
-                    stroke="#F7F4ED"
-                    strokeWidth="0.8"
-                    strokeLinecap="round"
-                    opacity="0.9"
-                  />
-
-                  {/* Left Shank & Ergonomic Finger Loop */}
-                  <path
-                    d="M24 24.5 L19 32.5 C16.5 36.5 11 38.5 7.5 35 C4 31.5 6 26 10 23.5 C13.5 21.5 17.5 24 19 28"
-                    stroke="url(#forestShearGrad1)"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    fill="none"
-                  />
-                  {/* Left Finger Ring Inner Hole Shadow */}
-                  <ellipse cx="9.5" cy="30.5" rx="3.5" ry="4.5" fill="#10110F" opacity="0.65" />
-
-                  {/* Right Shank & Finger Loop with Rest Tang */}
-                  <path
-                    d="M30 24.5 L35 32.5 C37.5 36.5 43 38.5 46.5 35 C50 31.5 48 26 44 23.5 C40.5 21.5 36.5 24 35 28"
-                    stroke="url(#forestShearGrad2)"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    fill="none"
-                  />
-                  {/* Right Finger Ring Inner Hole Shadow */}
-                  <ellipse cx="44.5" cy="30.5" rx="3.5" ry="4.5" fill="#10110F" opacity="0.65" />
-
-                  {/* Sculpted Finger Rest / Tang */}
-                  <path
-                    d="M46.5 35 C48.5 38.5 51.5 39.5 52.5 40"
-                    stroke="url(#forestShearGrad1)"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    fill="none"
-                  />
-
-                  {/* Central Jeweler's Pivot Screw */}
-                  <circle cx="27" cy="21.5" r="2.8" fill="url(#forestShearGrad1)" stroke="#10110F" strokeWidth="0.8" />
-                  <circle cx="27" cy="21.5" r="1.1" fill="#FFFFFF" opacity="0.95" />
-                  <line x1="25.8" y1="21.5" x2="28.2" y2="21.5" stroke="#10110F" strokeWidth="0.5" />
-                </g>
-              </svg>
-            </div>
-          </div>
-
-          {/* Typography */}
-          <div className="luxury-text-reveal-box">
-            <div className="luxury-brand-title">
-              <span className="luxury-title-text">GLAM GIRL</span>
-              <span className={`luxury-light-sweep ${animationPhase >= 2 ? 'active' : ''}`} />
-            </div>
-
-            <div className={`luxury-brand-subtitle-wrapper ${animationPhase >= 2 ? 'visible' : ''}`}>
-              <div className="luxury-sub-line-left" />
-              <span className="luxury-brand-subtitle">BY JANKI</span>
-              <div className="luxury-sub-line-right" />
-            </div>
-
-            <div className={`luxury-atelier-tag ${animationPhase >= 3 ? 'visible' : ''}`}>
-              <span>HAUTE BEAUTÉ · ATELIER · OTTAWA</span>
-            </div>
-          </div>
+      {/* Ultra-Clean Hairline Progress Line (NO Awkward Text Strings) */}
+      <div className="w-full max-w-xs relative z-10 pb-6 pointer-events-none">
+        <div 
+          className="w-full h-[2px] rounded-full bg-white/10 overflow-hidden relative"
+          role="progressbar"
+          aria-valuenow={progressPercent}
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-label="Opening 3D Loading Progress"
+        >
+          <div
+            className="h-full bg-gradient-to-r from-[#263D2B] via-[#465640] to-[#A8B5A0] rounded-full transition-all duration-75 ease-linear shadow-[0_0_8px_rgba(168,181,160,0.8)]"
+            style={{ width: `${progressPercent}%` }}
+          />
         </div>
       </div>
 
-      <span className="sr-only">GLAM GIRL BY JANKI Atelier is loading</span>
     </aside>
   );
 }

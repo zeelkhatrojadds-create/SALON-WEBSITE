@@ -8,10 +8,42 @@ import salonDB from '../db/salonDatabase';
 export const api = {
   // 1. Auth & Users
   login: async (email, password) => salonDB.authenticateUser(email, password),
-  signup: async (userData) => salonDB.registerUser(userData),
+  signup: async (userData) => salonDB.registerCustomer(userData),
+  registerCustomer: async (userData) => salonDB.registerCustomer(userData),
   getCurrentUser: () => salonDB.getCurrentUser(),
   logout: () => salonDB.logoutUser(),
   getUsers: async () => salonDB.getUsers(),
+  requestPasswordReset: async (email) => salonDB.requestPasswordReset(email),
+  resetPasswordWithToken: async (email, token, newPassword) => salonDB.resetPasswordWithToken(email, token, newPassword),
+  changePassword: async (userId, currentPass, newPass) => salonDB.changeCustomerPassword(userId, currentPass, newPass),
+  updateCustomerProfile: async (userId, updates) => salonDB.updateCustomerProfile(userId, updates),
+  requestDataExport: async (userId) => salonDB.requestCustomerDataExport(userId),
+  requestAccountDeletion: async (userId, reason) => salonDB.requestCustomerAccountDeletion(userId, reason),
+
+  // Customer Appointments & Booking Actions
+  getCustomerAppointments: async (idOrEmail) => salonDB.getCustomerAppointments(idOrEmail),
+  rescheduleAppointment: async (id, newDate, newTime, custId) => salonDB.rescheduleAppointment(id, newDate, newTime, custId),
+  cancelAppointmentByCustomer: async (id, custId, reason) => salonDB.cancelAppointmentByCustomer(id, custId, reason),
+
+  // Customer Reviews
+  getCustomerReviews: async (idOrEmail) => salonDB.getCustomerReviews(idOrEmail),
+  canReviewAppointment: (custId, apptId) => salonDB.canReviewAppointment(custId, apptId),
+  addCustomerReview: async (data) => salonDB.addCustomerReview(data),
+  updateCustomerReview: async (revId, custId, data) => salonDB.updateCustomerReview(revId, custId, data),
+  deleteCustomerReview: async (revId, custId) => salonDB.deleteCustomerReview(revId, custId),
+
+  // Notifications
+  getNotifications: async () => salonDB.getNotifications(),
+  getCustomerNotifications: async (idOrEmail) => salonDB.getCustomerNotifications(idOrEmail),
+  markNotificationRead: async (id) => salonDB.markNotificationRead(id),
+  markAllNotificationsRead: async (idOrEmail) => salonDB.markAllNotificationsRead(idOrEmail),
+
+  // Admin Customer Management
+  getCustomers: async () => salonDB.getCustomers(),
+  adminAddCustomerNote: async (userId, noteText, author) => salonDB.adminAddCustomerNote(userId, noteText, author),
+  adminUpdateCustomerStatus: async (userId, status) => salonDB.adminUpdateCustomerStatus(userId, status),
+  adminProcessDataRequest: async (userId, reqId, status, notes) => salonDB.adminProcessDataRequest(userId, reqId, status, notes),
+  adminUpdateCustomerProfile: async (userId, data) => salonDB.adminUpdateCustomerProfile(userId, data),
 
   // 2. Services (72 Master Services)
   getServices: async () => salonDB.getServices(),
@@ -22,8 +54,8 @@ export const api = {
 
   // 3. Appointments & Availability
   getAppointments: async () => salonDB.getAppointments(),
-  getAppointmentById: async (id) => salonDB.getAppointmentById(id),
-  checkAvailability: async (date, time) => salonDB.checkSlotAvailability(date, time),
+  checkAvailability: async (date, time, duration, stylistId) => salonDB.checkSlotAvailability(date, time, duration, stylistId),
+  isSlotBooked: async (date, time, duration, stylistId) => salonDB.isSlotBooked(date, time, duration, stylistId),
   createAppointment: async (data) => salonDB.addAppointment(data),
   updateAppointmentStatus: async (id, status) => salonDB.updateAppointmentStatus(id, status),
   startTreatment: async (id) => salonDB.startTreatment(id),
@@ -63,7 +95,13 @@ export const api = {
   getActiveOffers: async () => salonDB.getActiveOffers(),
   createOffer: async (data) => salonDB.addOffer(data),
   updateOffer: async (id, data) => salonDB.updateOffer(id, data),
-  deleteOffer: async (id) => salonDB.deleteOffer(id),
+  // 8.5. Combo Packages (Curated Service Combinations)
+  getComboPackages: async () => salonDB.getComboPackages(),
+  getActiveComboPackages: async () => salonDB.getActiveComboPackages(),
+  getComboPackageById: async (id) => salonDB.getComboPackageById(id),
+  createComboPackage: async (data) => salonDB.addComboPackage(data),
+  updateComboPackage: async (id, data) => salonDB.updateComboPackage(id, data),
+  deleteComboPackage: async (id) => salonDB.deleteComboPackage(id),
 
   // 9. Settings
   getSettings: async () => salonDB.getSettings(),
@@ -73,8 +111,29 @@ export const api = {
   getTreatments: async () => salonDB.getTreatments(),
   updateTreatment: async (id, data) => salonDB.updateTreatment(id, data),
 
-  // 11. Dashboard Analytics
+  // 11. FAQ Master Management
+  getFaqs: async (includeUnpublished = false) => salonDB.getFaqs(includeUnpublished),
+  getFaqById: async (id) => salonDB.getFaqById(id),
+  createFaq: async (data) => salonDB.addFaq(data),
+  updateFaq: async (id, data) => salonDB.updateFaq(id, data),
+  toggleFaqPublish: async (id) => salonDB.toggleFaqPublish(id),
+  deleteFaq: async (id) => salonDB.deleteFaq(id),
+  resetFaqs: async () => salonDB.resetFaqsToDefault(),
+
+  // 12. Dashboard Analytics
   getDashboardStats: () => salonDB.getDashboardStats(),
+
+  // 13. Aftercare & Product Recommendations
+  getAftercareSettings: async () => salonDB.getAftercareSettings(),
+  getAftercareForService: (name, cat, slug) => salonDB.getAftercareForService(name, cat, slug),
+  updateAftercareCategory: async (id, data) => salonDB.updateAftercareCategory(id, data),
+  updateAftercareInstruction: async (catId, instId, data) => salonDB.updateAftercareInstruction(catId, instId, data),
+  addAftercareInstruction: async (catId, data) => salonDB.addAftercareInstruction(catId, data),
+  deleteAftercareInstruction: async (catId, instId) => salonDB.deleteAftercareInstruction(catId, instId),
+  resetAftercareCategory: async (catId) => salonDB.resetAftercareCategoryToDefault(catId),
+  saveCustomerAftercareRecommendation: async (userId, payload) => salonDB.saveCustomerAftercareRecommendation(userId, payload),
+  getCustomerSavedRecommendations: async (userId) => salonDB.getCustomerSavedRecommendations(userId),
+  removeCustomerSavedRecommendation: async (userId, savedId) => salonDB.removeCustomerSavedRecommendation(userId, savedId),
 
   // Live Subscription
   subscribe: (callback) => salonDB.subscribe(callback)

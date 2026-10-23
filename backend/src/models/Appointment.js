@@ -66,6 +66,10 @@ const appointmentSchema = new mongoose.Schema(
       type: String,
       default: ''
     },
+    customizations: {
+      type: mongoose.Schema.Types.Mixed,
+      default: null
+    },
     rejectionReason: {
       type: String,
       default: ''

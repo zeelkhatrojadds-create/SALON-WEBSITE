@@ -163,31 +163,31 @@ export default function AboutSection() {
               </div>
 
               {/* Stats Row */}
-              <div className="grid grid-cols-1 min-[420px]:grid-cols-3 gap-3 sm:gap-4 pt-2 border-t border-[#DCE1D8]">
+              <div className="grid grid-cols-3 gap-2 sm:gap-4 pt-2 border-t border-[#DCE1D8]">
                 <div>
-                  <div className="font-serif text-2xl sm:text-3xl text-[#10110F] font-normal">
+                  <div className="font-serif text-xl sm:text-2xl lg:text-3xl text-[#10110F] font-normal">
                     14+ Yrs
                   </div>
-                  <div className="text-[9px] sm:text-[10px] text-[#6B7068] uppercase tracking-wider font-semibold mt-0.5">
-                    Founder Practice & Artistry
+                  <div className="text-[8.5px] sm:text-[10px] text-[#6B7068] uppercase tracking-wider font-semibold mt-0.5">
+                    Founder Practice
                   </div>
                 </div>
 
                 <div>
-                  <div className="font-serif text-2xl sm:text-3xl text-[#10110F] font-normal">
+                  <div className="font-serif text-xl sm:text-2xl lg:text-3xl text-[#10110F] font-normal">
                     99.8%
                   </div>
-                  <div className="text-[9px] sm:text-[10px] text-[#6B7068] uppercase tracking-wider font-semibold mt-0.5">
-                    Positive Client Satisfaction
+                  <div className="text-[8.5px] sm:text-[10px] text-[#6B7068] uppercase tracking-wider font-semibold mt-0.5">
+                    Satisfaction
                   </div>
                 </div>
 
                 <div>
-                  <div className="font-serif text-2xl sm:text-3xl text-[#10110F] font-normal">
+                  <div className="font-serif text-xl sm:text-2xl lg:text-3xl text-[#10110F] font-normal">
                     100%
                   </div>
-                  <div className="text-[9px] sm:text-[10px] text-[#6B7068] uppercase tracking-wider font-semibold mt-0.5">
-                    Bespoke Beauty Protocols
+                  <div className="text-[8.5px] sm:text-[10px] text-[#6B7068] uppercase tracking-wider font-semibold mt-0.5">
+                    Bespoke Care
                   </div>
                 </div>
               </div>
@@ -243,7 +243,7 @@ export default function AboutSection() {
               return (
                 <div 
                   key={idx}
-                  className="bg-white rounded-3xl p-6 sm:p-8 border border-[#DCE1D8] shadow-xs hover:shadow-md hover:border-[#263D2B] transition-all duration-300 flex flex-col justify-between group"
+                  className="bg-white rounded-3xl p-5 sm:p-6 lg:p-8 border border-[#DCE1D8] shadow-xs hover:shadow-md hover:border-[#263D2B] transition-all duration-300 flex flex-col justify-between group"
                 >
                   <div>
                     {/* Top Circle Icon */}

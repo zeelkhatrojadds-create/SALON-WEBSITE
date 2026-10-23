@@ -216,7 +216,7 @@ export default function AdminServices({ customServices = [], onUpdateServices })
             <span>Master Services Engine</span>
           </div>
           <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#10110F]">Treatment Menu Catalog</h2>
-          <p className="text-[#6B7068] text-xs sm:text-sm">Manage pricing, duration, images, descriptions, and availability for all 72 treatments.</p>
+          <p className="text-[#6B7068] text-xs sm:text-sm">Manage pricing, duration, images, descriptions, and availability for all {services.length} treatments.</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
@@ -225,7 +225,7 @@ export default function AdminServices({ customServices = [], onUpdateServices })
             className="global-button inline-flex items-center gap-1.5 !px-4 !py-2.5 text-white text-xs font-bold uppercase tracking-wider cursor-pointer shadow-md"
           >
             <CheckCircle className="w-4 h-4" />
-            <span>Validate 72 Images</span>
+            <span>Validate Images</span>
           </button>
 
           <button
@@ -241,8 +241,18 @@ export default function AdminServices({ customServices = [], onUpdateServices })
             className="global-button-secondary inline-flex items-center gap-1.5 !px-4 !py-2.5 text-xs font-semibold cursor-pointer"
           >
             <RefreshCw className="w-3.5 h-3.5" />
-            <span>Reset 72 Master Services</span>
+            <span>Reset Master Services</span>
           </button>
+
+          <a
+            href="/mehndi-design-studio#mehndi-process-price-time"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="global-button-secondary inline-flex items-center gap-1.5 !px-4 !py-2.5 text-xs font-semibold cursor-pointer text-[#263D2B]"
+          >
+            <Clock className="w-3.5 h-3.5" />
+            <span>Mehndi Process Pricing (16 Services)</span>
+          </a>
         </div>
       </div>
 
@@ -255,7 +265,7 @@ export default function AdminServices({ customServices = [], onUpdateServices })
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search 72 treatments by name, category, or description..."
+              placeholder={`Search ${services.length} treatments by name, category, or description...`}
               className="w-full h-10 pl-10 pr-4 bg-[#F7F4ED]/50 border border-[#DCE1D8] rounded-xl text-xs text-[#10110F] placeholder-[#6B7068]/50 focus:outline-none focus:border-[#263D2B]"
             />
           </div>

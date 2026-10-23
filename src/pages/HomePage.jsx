@@ -5,7 +5,10 @@ import HeroSection from '../components/home/HeroSection';
 import ServiceMarquee from '../components/ServiceMarquee/ServiceMarquee';
 import DeferredSection from '../components/common/DeferredSection';
 
-// Lazy load below-the-fold sections to boost Initial Page Load, FCP, LCP, and reduce TBT
+// Lazy load below-the-fold and modal components to maximize Lighthouse performance
+const FestivalOfferPopup = lazy(() => import('../components/home/FestivalOfferPopup'));
+const FestivalOffersSection = lazy(() => import('../components/home/FestivalOffersSection'));
+const SeasonalBeautyMenuSection = lazy(() => import('../components/home/SeasonalBeautyMenuSection'));
 const ServicesPage = lazy(() => import('./ServicesPage'));
 const GalleryPage = lazy(() => import('./GalleryPage'));
 const AboutPage = lazy(() => import('./AboutPage'));
@@ -45,13 +48,18 @@ export default function HomePage({ defaultSection = null }) {
       }, 120);
 
       return () => clearTimeout(scrollTimer);
-    } else {
+    } else if (typeof window !== 'undefined' && window.scrollY > 0) {
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
   }, [location.hash, defaultSection]);
 
   return (
     <div className="w-full min-h-screen bg-[#F7F4ED] text-[#10110F] overflow-x-hidden">
+      {/* Dynamic Festival Special Offers Modal Popup */}
+      <Suspense fallback={null}>
+        <FestivalOfferPopup />
+      </Suspense>
+
       {/* 1. HERO SECTION (id="home") — Immediate Critical Paint */}
       <section id="home" className="w-full relative">
         <HeroSection />
@@ -59,6 +67,20 @@ export default function HomePage({ defaultSection = null }) {
 
       {/* CONTINUOUS MAIN SERVICES MARQUEE STRIP */}
       <ServiceMarquee />
+
+      {/* FESTIVAL BEAUTY OFFERS PROMOTION SECTION */}
+      <DeferredSection id="festival-offers" minHeight="min-h-[500px]">
+        <Suspense fallback={<SectionSkeleton height="min-h-[500px]" />}>
+          <FestivalOffersSection />
+        </Suspense>
+      </DeferredSection>
+
+      {/* SEASONAL BEAUTY MENU SECTION */}
+      <DeferredSection id="seasonal-menu" minHeight="min-h-[500px]">
+        <Suspense fallback={<SectionSkeleton height="min-h-[500px]" />}>
+          <SeasonalBeautyMenuSection />
+        </Suspense>
+      </DeferredSection>
 
       {/* 2. SERVICES SECTION (id="services") — Asynchronously hydrated on scroll */}
       <DeferredSection id="services" minHeight="min-h-[600px]" className="border-t border-[#DCE1D8]">
@@ -80,7 +102,7 @@ export default function HomePage({ defaultSection = null }) {
           </h2>
 
           <p className="text-[#6B7068] text-sm sm:text-lg max-w-xl mx-auto leading-relaxed font-body font-light">
-            Choose from 86 luxury hair, facial, nail, and spa rituals. Select your preferred date, time, and specialist on our dedicated booking page.
+            Choose from 84 luxury hair, facial, nail, and spa rituals. Select your preferred date, time, and specialist on our dedicated booking page.
           </p>
 
           <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">

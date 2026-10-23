@@ -243,9 +243,9 @@ export default function GallerySection() {
         </ScrollReveal>
 
         {/* ========================================================================= */}
-        {/* 4. ROW 2: THREE-COLUMN TRANSFORMATION CARDS                               */}
+        {/* 4. ROW 2: RESPONSIVE TRANSFORMATION CARDS (MOBILE 1, IPAD 2, LAPTOP 3)    */}
         {/* ========================================================================= */}
-        <ScrollReveal stagger={true} className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 mb-10 sm:mb-14 font-sans">
+        <ScrollReveal stagger={true} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-10 sm:mb-14 font-sans">
           {filteredCards.map((card) => (
             <div
               key={card.id}

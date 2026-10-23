@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CATEGORIES } from '../../data/salonData';
+import { CATEGORIES } from '../../data/servicesData';
 import { CategoryIcon } from '../common/CategoryIcons';
 
 export default function CategoryBar({ selectedCategory, onSelectCategory }) {

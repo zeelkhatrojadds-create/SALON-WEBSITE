@@ -13,7 +13,7 @@ export const protect = async (req, res, next) => {
       );
       req.user = await User.findById(decoded.id).select('-password');
       return next();
-    } catch (error) {
+    } catch (_error) {
       return res.status(401).json({
         success: false,
         message: 'Not authorized, token failed'
