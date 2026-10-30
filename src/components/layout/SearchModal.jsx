@@ -10,8 +10,9 @@ export default function SearchModal({ isOpen, onClose }) {
   const navigate = useNavigate();
 
   useEffect(() => {
+    let focusTimer;
     if (isOpen) {
-      setTimeout(() => inputRef.current?.focus(), 100);
+      focusTimer = setTimeout(() => inputRef.current?.focus(), 100);
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
@@ -19,6 +20,7 @@ export default function SearchModal({ isOpen, onClose }) {
       setSelectedCategory('all');
     }
     return () => {
+      clearTimeout(focusTimer);
       document.body.style.overflow = 'auto';
     };
   }, [isOpen]);

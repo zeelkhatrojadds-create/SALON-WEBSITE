@@ -4,8 +4,9 @@ import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import HomePage from './pages/HomePage';
 import ErrorBoundary from './components/common/ErrorBoundary';
-import SalonLoader from './components/common/SalonLoader';
 import LuxuryPageTransition from './components/common/LuxuryPageTransition';
+
+const SalonLoader = lazy(() => import('./components/common/SalonLoader'));
 
 // Code-split / Lazy load subpages to boost Initial Performance & reduce initial payload
 const BookingPage = lazy(() => import('./pages/BookingPage'));
@@ -234,12 +235,27 @@ function AppLayout() {
 }
 
 export default function App() {
-  const [hasInitialLoaded, setHasInitialLoaded] = React.useState(false);
+  const [hasInitialLoaded, setHasInitialLoaded] = React.useState(() => {
+    try {
+      return sessionStorage.getItem('glfy_initial_loader_shown') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const handleLoaderComplete = React.useCallback(() => {
+    try {
+      sessionStorage.setItem('glfy_initial_loader_shown', 'true');
+    } catch {}
+    setHasInitialLoaded(true);
+  }, []);
 
   return (
     <Router>
       {!hasInitialLoaded && (
-        <SalonLoader onComplete={() => setHasInitialLoaded(true)} />
+        <Suspense fallback={null}>
+          <SalonLoader onComplete={handleLoaderComplete} />
+        </Suspense>
       )}
       <RouteScrollManager />
       <ErrorBoundary>

@@ -22,19 +22,35 @@ export default function SafeServiceImage({
   showText = true,
   ...props
 }) {
-  const [isError, setIsError] = useState(false);
+  const initialSrc = service?.image || src || '';
+  const [currentSrc, setCurrentSrc] = useState(initialSrc);
+  const [retryStage, setRetryStage] = useState(0); // 0: initial, 1: alternate ext, 2: failed
 
-  let imageSrc = service?.image || src;
-  if (imageSrc && typeof imageSrc === 'string' && (imageSrc.endsWith('.jpg') || imageSrc.endsWith('.png'))) {
-    // If it has an equivalent webp asset available, use webp
-    const webpCandidate = imageSrc.replace(/\.(jpg|png)$/i, '.webp');
-    imageSrc = webpCandidate;
-  }
+  // If props change, reset
+  React.useEffect(() => {
+    setCurrentSrc(service?.image || src || '');
+    setRetryStage(0);
+  }, [service?.image, src]);
 
   const imageAlt = service?.name || alt || 'Service image';
   const isSmallThumb = className.includes('h-9') || className.includes('h-10') || className.includes('h-12') || className.includes('w-9') || className.includes('w-12');
 
-  if (!imageSrc || isError) {
+  const handleError = () => {
+    if (retryStage === 0 && currentSrc) {
+      if (currentSrc.endsWith('.webp')) {
+        setCurrentSrc(currentSrc.replace(/\.webp$/i, '.jpg'));
+        setRetryStage(1);
+        return;
+      } else if (currentSrc.endsWith('.jpg') || currentSrc.endsWith('.jpeg')) {
+        setCurrentSrc(currentSrc.replace(/\.(jpg|jpeg)$/i, '.webp'));
+        setRetryStage(1);
+        return;
+      }
+    }
+    setRetryStage(2);
+  };
+
+  if (!currentSrc || retryStage === 2) {
     return (
       <div
         className={`flex flex-col items-center justify-center bg-[#F7F4ED] text-[#263D2B] p-2 text-center border border-[#DCE1D8] select-none ${className}`}
@@ -65,7 +81,7 @@ export default function SafeServiceImage({
 
   return (
     <img
-      src={imageSrc}
+      src={currentSrc}
       alt={imageAlt}
       width={isSmallThumb ? 48 : width}
       height={isSmallThumb ? 48 : height}
@@ -73,11 +89,7 @@ export default function SafeServiceImage({
       decoding="async"
       className={className}
       style={{ aspectRatio: isSmallThumb ? '1/1' : '16/10', ...style }}
-      onError={(event) => {
-        event.currentTarget.onerror = null;
-        event.currentTarget.style.display = 'none';
-        setIsError(true);
-      }}
+      onError={handleError}
       {...props}
     />
   );

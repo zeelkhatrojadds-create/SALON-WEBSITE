@@ -18,6 +18,7 @@ export default function ReviewInvitePopup() {
   const [reviewText, setReviewText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const timerRef = React.useRef(null);
 
   // Check URL params or reactive database events
   useEffect(() => {
@@ -54,6 +55,7 @@ export default function ReviewInvitePopup() {
     window.addEventListener('glfy_db_change', handleWindowChange);
 
     return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
       unsubscribe();
       window.removeEventListener('glfy_db_change', handleWindowChange);
     };
@@ -115,7 +117,7 @@ export default function ReviewInvitePopup() {
       sessionStorage.setItem(`glfy_dismissed_review_${activeInvite.id}`, 'true');
     }
 
-    setTimeout(() => {
+    timerRef.current = setTimeout(() => {
       setSubmitted(false);
       setIsOpen(false);
     }, 3000);
