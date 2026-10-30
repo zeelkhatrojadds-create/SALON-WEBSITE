@@ -103,6 +103,13 @@ const flagshipAteliers = [
     badge: 'NEW',
     icon: Eye
   },
+  { 
+    name: 'The Makeup Atelier', 
+    desc: 'Editorial makeup, bridal beauty, and signature looks.', 
+    path: '/makeup-atelier',
+    badge: 'NEW',
+    icon: Sparkles
+  },
 ];
 
 // Right Column: Secondary Specialty Studios (2x2 Grid)

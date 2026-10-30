@@ -123,6 +123,13 @@ export default function ServicesPage({ isSection = false }) {
               <span>THE LASH ATELIER</span>
             </Link>
             <Link
+              to="/makeup-atelier"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white hover:bg-[#F7F4ED] border border-[#DCE1D8] hover:border-[#263D2B] text-[#263D2B] text-xs font-bold uppercase tracking-[0.14em] shadow-2xs transition-all duration-200 hover:scale-[1.02]"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-[#263D2B]" />
+              <span>THE MAKEUP ATELIER</span>
+            </Link>
+            <Link
               to="/special-treatments"
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white hover:bg-[#F7F4ED] border border-[#DCE1D8] hover:border-[#263D2B] text-[#263D2B] text-xs font-bold uppercase tracking-[0.14em] shadow-2xs transition-all duration-200 hover:scale-[1.02]"
             >

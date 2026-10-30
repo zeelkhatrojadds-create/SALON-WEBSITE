@@ -23,6 +23,7 @@ const NailArtPage = lazy(() => import('./pages/NailArtPage'));
 const LashAtelierPage = lazy(() => import('./pages/LashAtelierPage'));
 const SkinAtelierPage = lazy(() => import('./pages/SkinAtelierPage'));
 const HairAtelierPage = lazy(() => import('./pages/HairAtelierPage'));
+const MakeupAtelierPage = lazy(() => import('./pages/MakeupAtelierPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const ReviewsPage = lazy(() => import('./pages/ReviewsPage'));
@@ -141,9 +142,11 @@ function AppLayout() {
                 <Route path="/mehndi" element={<Navigate to="/mehndi-design-studio" replace />} />
                 <Route path="/henna" element={<Navigate to="/mehndi-design-studio" replace />} />
 
-                {/* Atelier Direct Navigation Aliases */}
-                <Route path="/makeup-atelier" element={<Navigate to="/services/makeup" replace />} />
-                <Route path="/makeup" element={<Navigate to="/services/makeup" replace />} />
+                {/* The Makeup Atelier Routes */}
+                <Route path="/the-makeup-atelier" element={<MakeupAtelierPage />} />
+                <Route path="/makeup-atelier" element={<MakeupAtelierPage />} />
+                <Route path="/makeup" element={<MakeupAtelierPage />} />
+                <Route path="/makeup-studio" element={<MakeupAtelierPage />} />
                 <Route path="/brow-atelier" element={<Navigate to="/services/threading" replace />} />
                 <Route path="/brows" element={<Navigate to="/services/threading" replace />} />
                 <Route path="/brow" element={<Navigate to="/services/threading" replace />} />
