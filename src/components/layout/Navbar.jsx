@@ -418,11 +418,11 @@ export default function Navbar() {
                       )}
                     </Link>
 
-                    {/* Luxury Mega Dropdown Card (100% Solid Opaque Background, Zero Bleed-Through) */}
+                    {/* Luxury Mega Dropdown Card (100% Solid Opaque Background, Perfectly Balanced 3-Column Layout) */}
                     {isServicesDropdownOpen && (
                       <div
                         ref={dropdownCardRef}
-                        className="absolute top-full left-0 lg:-left-16 xl:-left-24 mt-2 w-[780px] lg:w-[840px] xl:w-[890px] max-w-[calc(100vw-2rem)] bg-white border border-[#DCE1D8] shadow-[0_30px_70px_-15px_rgba(16,17,15,0.22)] rounded-2xl p-6 z-[100] whitespace-normal animate-in fade-in zoom-in-95 duration-150 origin-top"
+                        className="absolute top-full left-0 lg:-left-20 xl:-left-28 mt-2 w-[880px] lg:w-[940px] xl:w-[980px] max-w-[calc(100vw-2rem)] bg-white border border-[#DCE1D8] shadow-[0_30px_70px_-15px_rgba(16,17,15,0.22)] rounded-2xl p-5 z-[100] whitespace-normal animate-in fade-in zoom-in-95 duration-150 origin-top max-h-[calc(100vh-5.5rem)] overflow-y-auto"
                         style={{ backgroundColor: '#FFFFFF' }}
                         onMouseEnter={handleServicesMouseEnter}
                         onMouseLeave={handleServicesMouseLeave}
@@ -431,10 +431,13 @@ export default function Navbar() {
                         <div className="absolute top-0 left-6 right-6 h-[2.5px] bg-[#263D2B] rounded-full" />
 
                         {/* Dropdown Header */}
-                        <div className="flex items-center justify-between pb-3.5 border-b border-[#DCE1D8] mb-5">
-                          <span className="text-[10.5px] uppercase font-bold tracking-[0.22em] text-[#263D2B]">
-                            GLAM GIRL ATELIER DIRECTORY
-                          </span>
+                        <div className="flex items-center justify-between pb-3 border-b border-[#DCE1D8] mb-4">
+                          <div className="flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-[#263D2B]" />
+                            <span className="text-[10.5px] uppercase font-bold tracking-[0.22em] text-[#263D2B]">
+                              GLAM GIRL ATELIER DIRECTORY
+                            </span>
+                          </div>
                           <Link
                             to="/services"
                             onClick={() => setIsServicesDropdownOpen(false)}
@@ -447,11 +450,11 @@ export default function Navbar() {
                           </Link>
                         </div>
 
-                        {/* Two-Column Balanced Layout */}
-                        <div className="grid grid-cols-12 gap-6">
+                        {/* Perfectly Balanced Three-Column Layout */}
+                        <div className="grid grid-cols-12 gap-5">
                           
-                          {/* Left Column — Services & Planning (col-span-5) */}
-                          <div className="col-span-5 pr-5 border-r border-[#DCE1D8] flex flex-col justify-between">
+                          {/* Column 1: Services & Planning (col-span-4) */}
+                          <div className="col-span-4 pr-3 border-r border-[#DCE1D8] flex flex-col justify-between">
                             <div>
                               <div className="flex items-center justify-between mb-2.5 px-1">
                                 <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#6B7068]">
@@ -469,17 +472,17 @@ export default function Navbar() {
                                       key={item.path}
                                       to={item.path}
                                       onClick={() => setIsServicesDropdownOpen(false)}
-                                      className="flex items-start gap-3 p-2.5 rounded-xl border border-transparent hover:border-[#DCE1D8] hover:bg-[#F7F4ED] transition-all duration-200 group/item"
+                                      className="flex items-start gap-2.5 p-2 rounded-xl border border-transparent hover:border-[#DCE1D8] hover:bg-[#F7F4ED] transition-all duration-150 group/item"
                                     >
-                                      <div className="w-9 h-9 rounded-xl bg-[#F7F4ED] border border-[#DCE1D8] text-[#263D2B] flex items-center justify-center shrink-0 mt-0.5 group-hover/item:bg-[#263D2B] group-hover/item:border-[#263D2B] group-hover/item:text-white transition-all duration-200 shadow-2xs">
-                                        <ItemIcon className="w-4 h-4" />
+                                      <div className="w-8 h-8 rounded-lg bg-[#F7F4ED] border border-[#DCE1D8] text-[#263D2B] flex items-center justify-center shrink-0 mt-0.5 group-hover/item:bg-[#263D2B] group-hover/item:border-[#263D2B] group-hover/item:text-white transition-all duration-150 shadow-2xs">
+                                        <ItemIcon className="w-3.5 h-3.5" />
                                       </div>
                                       <div className="flex-1 min-w-0">
-                                        <div className="text-xs font-semibold text-[#10110F] group-hover/item:text-[#263D2B] flex items-center justify-between transition-colors">
-                                          <span>{item.name}</span>
-                                          <ChevronRight className="w-3.5 h-3.5 text-[#A8B5A0] opacity-0 -translate-x-1 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all duration-200 shrink-0 ml-1" />
+                                        <div className="text-[11.5px] font-semibold text-[#10110F] group-hover/item:text-[#263D2B] flex items-center justify-between transition-colors">
+                                          <span className="truncate">{item.name}</span>
+                                          <ChevronRight className="w-3 h-3 text-[#A8B5A0] opacity-0 -translate-x-1 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all duration-150 shrink-0 ml-1" />
                                         </div>
-                                        <p className="text-[11px] text-[#6B7068] leading-snug mt-0.5 group-hover/item:text-[#465640] transition-colors">
+                                        <p className="text-[10.5px] text-[#6B7068] leading-tight mt-0.5 group-hover/item:text-[#465640] transition-colors line-clamp-1">
                                           {item.desc}
                                         </p>
                                       </div>
@@ -488,22 +491,31 @@ export default function Navbar() {
                                 })}
                               </div>
                             </div>
+
+                            {/* Ottawa Suite Sanctuary Feature */}
+                            <div className="mt-2.5 p-2.5 rounded-xl bg-[#F7F4ED] border border-[#DCE1D8] flex items-center gap-2.5">
+                              <div className="w-7 h-7 rounded-lg bg-[#263D2B]/10 text-[#263D2B] flex items-center justify-center shrink-0">
+                                <Sparkles className="w-3.5 h-3.5 text-[#263D2B]" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="text-[11px] font-bold text-[#10110F] leading-tight">Private Suite Sanctuary</div>
+                                <p className="text-[9.5px] text-[#6B7068] leading-tight mt-0.5 truncate">Ottawa • 1-on-1 Certified Care</p>
+                              </div>
+                            </div>
                           </div>
 
-                          {/* Right Column — Atelier Studios (col-span-7) */}
-                          <div className="col-span-7 flex flex-col justify-between space-y-3">
-                            
-                            {/* Flagship Atelier Destinations */}
+                          {/* Column 2: Flagship Ateliers (col-span-4) */}
+                          <div className="col-span-4 px-1 flex flex-col justify-between">
                             <div>
-                              <div className="flex items-center justify-between mb-2 px-1">
+                              <div className="flex items-center justify-between mb-2.5 px-1">
                                 <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#6B7068]">
-                                  ATELIER STUDIOS
+                                  FLAGSHIP ATELIERS
                                 </span>
                                 <span className="text-[9.5px] font-medium text-[#263D2B] uppercase tracking-wider">
-                                  Flagship Experiences
+                                  6 Destinations
                                 </span>
                               </div>
-                              <div className="space-y-2">
+                              <div className="space-y-1.5">
                                 {flagshipAteliers.map((atelier) => {
                                   const AtelierIcon = atelier.icon;
                                   return (
@@ -511,36 +523,38 @@ export default function Navbar() {
                                       key={atelier.path}
                                       to={atelier.path}
                                       onClick={() => setIsServicesDropdownOpen(false)}
-                                      className="flex items-center gap-3 p-2.5 rounded-xl border border-[#263D2B]/15 bg-[#263D2B]/[0.03] hover:bg-[#263D2B]/[0.08] hover:border-[#263D2B]/35 transition-all duration-200 group/flagship shadow-2xs"
+                                      className="flex items-center gap-2.5 p-1.5 px-2 rounded-xl border border-[#263D2B]/12 bg-[#263D2B]/[0.03] hover:bg-[#263D2B]/[0.08] hover:border-[#263D2B]/35 transition-all duration-150 group/flagship shadow-2xs"
                                     >
-                                      <div className="w-9 h-9 rounded-xl bg-[#263D2B] text-white flex items-center justify-center shrink-0 shadow-xs group-hover/flagship:scale-105 group-hover/flagship:bg-[#17261B] transition-all duration-200">
-                                        <AtelierIcon className="w-4 h-4 text-white" />
+                                      <div className="w-7 h-7 rounded-lg bg-[#263D2B] text-white flex items-center justify-center shrink-0 shadow-xs group-hover/flagship:scale-105 group-hover/flagship:bg-[#17261B] transition-all duration-150">
+                                        <AtelierIcon className="w-3.5 h-3.5 text-white" />
                                       </div>
                                       <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-1.5 flex-wrap">
-                                          <span className="text-xs font-bold text-[#10110F] group-hover/flagship:text-[#263D2B] transition-colors">
+                                        <div className="flex items-center gap-1.5">
+                                          <span className="text-[11.5px] font-bold text-[#10110F] group-hover/flagship:text-[#263D2B] transition-colors truncate">
                                             {atelier.name}
                                           </span>
                                           {atelier.badge && (
-                                            <span className="text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-[#263D2B] text-white shadow-2xs">
+                                            <span className="text-[7.5px] font-bold uppercase tracking-wider px-1.5 py-0.2 rounded-full bg-[#263D2B] text-white shrink-0">
                                               {atelier.badge}
                                             </span>
                                           )}
                                         </div>
-                                        <p className="text-[11px] text-[#6B7068] leading-tight mt-0.5 group-hover/flagship:text-[#263D2B]/85 transition-colors line-clamp-1">
+                                        <p className="text-[10px] text-[#6B7068] leading-tight mt-0.5 group-hover/flagship:text-[#263D2B]/85 transition-colors truncate">
                                           {atelier.desc}
                                         </p>
                                       </div>
-                                      <ChevronRight className="w-3.5 h-3.5 text-[#A8B5A0] opacity-60 group-hover/flagship:opacity-100 group-hover/flagship:text-[#263D2B] group-hover/flagship:translate-x-0.5 transition-all duration-200 shrink-0" />
+                                      <ChevronRight className="w-3 h-3 text-[#A8B5A0] opacity-50 group-hover/flagship:opacity-100 group-hover/flagship:text-[#263D2B] group-hover/flagship:translate-x-0.5 transition-all duration-150 shrink-0" />
                                     </Link>
                                   );
                                 })}
                               </div>
                             </div>
+                          </div>
 
-                            {/* Secondary Specialty Studios (2x2 Grid) */}
-                            <div className="pt-2 border-t border-[#DCE1D8]/80">
-                              <div className="flex items-center justify-between mb-2 px-1">
+                          {/* Column 3: Specialty Studios & Custom (col-span-4) */}
+                          <div className="col-span-4 pl-3 border-l border-[#DCE1D8] flex flex-col justify-between">
+                            <div>
+                              <div className="flex items-center justify-between mb-2.5 px-1">
                                 <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#6B7068]">
                                   SPECIALTY STUDIOS
                                 </span>
@@ -548,7 +562,7 @@ export default function Navbar() {
                                   Artistry &amp; Bespoke
                                 </span>
                               </div>
-                              <div className="grid grid-cols-2 gap-2">
+                              <div className="space-y-1.5">
                                 {secondaryStudios.map((studio) => {
                                   const StudioIcon = studio.icon;
                                   return (
@@ -556,16 +570,17 @@ export default function Navbar() {
                                       key={studio.path}
                                       to={studio.path}
                                       onClick={() => setIsServicesDropdownOpen(false)}
-                                      className="flex items-start gap-2.5 p-2 rounded-lg border border-transparent hover:border-[#DCE1D8] hover:bg-[#F7F4ED] transition-all duration-150 group/substudio"
+                                      className="flex items-start gap-2.5 p-2 rounded-xl border border-transparent hover:border-[#DCE1D8] hover:bg-[#F7F4ED] transition-all duration-150 group/substudio"
                                     >
-                                      <div className="w-7 h-7 rounded-lg bg-[#F7F4ED] border border-[#DCE1D8] text-[#263D2B] flex items-center justify-center shrink-0 mt-0.5 group-hover/substudio:bg-[#263D2B] group-hover/substudio:border-[#263D2B] group-hover/substudio:text-white transition-all duration-150 shadow-2xs">
+                                      <div className="w-8 h-8 rounded-lg bg-[#F7F4ED] border border-[#DCE1D8] text-[#263D2B] flex items-center justify-center shrink-0 mt-0.5 group-hover/substudio:bg-[#263D2B] group-hover/substudio:border-[#263D2B] group-hover/substudio:text-white transition-all duration-150 shadow-2xs">
                                         <StudioIcon className="w-3.5 h-3.5" />
                                       </div>
                                       <div className="flex-1 min-w-0">
-                                        <div className="text-[11.5px] font-semibold text-[#10110F] group-hover/substudio:text-[#263D2B] transition-colors truncate">
-                                          {studio.name}
+                                        <div className="text-[11.5px] font-semibold text-[#10110F] group-hover/substudio:text-[#263D2B] flex items-center justify-between transition-colors">
+                                          <span className="truncate">{studio.name}</span>
+                                          <ChevronRight className="w-3 h-3 text-[#A8B5A0] opacity-0 -translate-x-1 group-hover/substudio:opacity-100 group-hover/substudio:translate-x-0 transition-all duration-150 shrink-0 ml-1" />
                                         </div>
-                                        <p className="text-[10px] text-[#6B7068] leading-tight mt-0.5 line-clamp-1">
+                                        <p className="text-[10.5px] text-[#6B7068] leading-tight mt-0.5 group-hover/substudio:text-[#465640] transition-colors line-clamp-1">
                                           {studio.desc}
                                         </p>
                                       </div>
@@ -575,7 +590,25 @@ export default function Navbar() {
                               </div>
                             </div>
 
+                            {/* Bespoke Styling Feature */}
+                            <Link
+                              to="/custom-experience"
+                              onClick={() => setIsServicesDropdownOpen(false)}
+                              className="mt-2.5 p-2.5 rounded-xl bg-[#263D2B]/[0.05] border border-[#263D2B]/20 hover:bg-[#263D2B]/[0.10] hover:border-[#263D2B]/40 transition-all duration-150 flex items-center gap-2.5 group/bespoke shadow-2xs"
+                            >
+                              <div className="w-7 h-7 rounded-lg bg-[#263D2B] text-white flex items-center justify-center shrink-0 group-hover/bespoke:scale-105 transition-transform">
+                                <Compass className="w-3.5 h-3.5" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="text-[11px] font-bold text-[#10110F] group-hover/bespoke:text-[#263D2B] flex items-center justify-between transition-colors">
+                                  <span>Bespoke Styling</span>
+                                  <ArrowRight className="w-3 h-3 text-[#263D2B] group-hover/bespoke:translate-x-0.5 transition-transform" />
+                                </div>
+                                <p className="text-[9.5px] text-[#6B7068] leading-tight mt-0.5 truncate">Tailored bridal &amp; multi-service looks</p>
+                              </div>
+                            </Link>
                           </div>
+
                         </div>
                       </div>
                     )}
@@ -881,6 +914,7 @@ export default function Navbar() {
               { name: 'Hair Colour Atelier', path: '/hair-colour' },
               { name: 'Nail Art Studio', path: '/nail-art' },
               { name: 'Mehndi Design Studio', path: '/mehndi-design-studio' },
+              { name: 'Custom Beauty Studio', path: '/custom-experience' },
             ].map((link) => (
               <button
                 key={link.path}
