@@ -117,6 +117,13 @@ const flagshipAteliers = [
     badge: 'NEW',
     icon: Scissors
   },
+  { 
+    name: 'The Wax Atelier', 
+    desc: 'Gentle botanical waxing, smooth skin, and aftercare.', 
+    path: '/wax-atelier',
+    badge: 'NEW',
+    icon: Droplets
+  },
 ];
 
 // Right Column: Secondary Specialty Studios (2x2 Grid)
@@ -870,6 +877,7 @@ export default function Navbar() {
               { name: 'The Lash Atelier', path: '/lash-atelier', badge: 'NEW' },
               { name: 'The Makeup Atelier', path: '/makeup-atelier', badge: 'NEW' },
               { name: 'The Brow Atelier', path: '/brow-atelier', badge: 'NEW' },
+              { name: 'The Wax Atelier', path: '/wax-atelier', badge: 'NEW' },
               { name: 'Hair Colour Atelier', path: '/hair-colour' },
               { name: 'Nail Art Studio', path: '/nail-art' },
               { name: 'Mehndi Design Studio', path: '/mehndi-design-studio' },
