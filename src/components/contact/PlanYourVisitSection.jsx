@@ -29,7 +29,8 @@ export default function PlanYourVisitSection() {
   const fullAddress = '405 Euphoria Crescent, Ottawa, ON K2J 7M7, Canada';
   const encodedAddress = encodeURIComponent(fullAddress);
   const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
-  const mapEmbedUrl = `https://maps.google.com/maps?q=${encodedAddress}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+  // High-precision street-level embed centered directly on 405 Euphoria Crescent, Ottawa
+  const mapEmbedUrl = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2806.87!2d-75.7628!3d45.2472!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cd201b1c67e7c99%3A0x6b24d77df230f81d!2s405%20Euphoria%20Cres%2C%20Nepean%2C%20ON%20K2J%207M7!5e0!3m2!1sen!2sca';
 
   const helpfulCards = [
     {
@@ -219,7 +220,7 @@ export default function PlanYourVisitSection() {
               {/* Studio Map Header Label */}
               <div className="flex items-center justify-between px-3 py-2.5 mb-2 border-b border-[#E8E2D8]/60">
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#CFA46A] animate-pulse" />
+                  <span className="w-2 h-2 rounded-full bg-[#263D2B] animate-pulse" />
                   <span className="text-[11px] font-bold uppercase tracking-wider text-[#100C0D]">
                     GLAM GIRL BY JANKI · OTTAWA
                   </span>
@@ -245,7 +246,7 @@ export default function PlanYourVisitSection() {
 
                 {/* Subtle Map Overlay Badge */}
                 <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-[#100C0D] border border-[#E8E2D8] shadow-xs pointer-events-none flex items-center gap-1.5">
-                  <MapPin className="w-3 h-3 text-[#CFA46A]" />
+                  <MapPin className="w-3 h-3 text-[#263D2B]" />
                   <span>405 Euphoria Crescent</span>
                 </div>
               </div>
@@ -259,7 +260,7 @@ export default function PlanYourVisitSection() {
                   href={directionsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-[#100C0D] text-white hover:bg-[#CFA46A] hover:text-[#100C0D] transition-all duration-300 text-[11px] font-bold uppercase tracking-wider shrink-0"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-[#263D2B] text-white hover:bg-[#10110F] transition-all duration-300 text-[11px] font-bold uppercase tracking-wider shrink-0 shadow-xs"
                 >
                   <span>GET DIRECTIONS</span>
                   <ExternalLink className="w-3 h-3 text-white/80" />
