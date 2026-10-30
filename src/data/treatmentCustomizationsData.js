@@ -18,22 +18,29 @@ export const CUSTOMIZATION_PROFILES = {
       options: [
         {
           id: 'serum-botanical',
-          name: 'Pure Botanical Herbal Elixir',
-          description: 'Soothing chamomile, rosehip & organic aloe vera concentrate.',
+          name: 'Gentle Calming Botanical Herbal Elixir',
+          description: 'Soothing chamomile, rosehip & organic aloe vera concentrate for sensitive or reactive skin.',
           priceAdjustment: 0,
           durationMinutes: 0,
           isDefault: true
         },
         {
           id: 'serum-hyaluronic',
-          name: 'Triple Hyaluronic Plumping Complex',
+          name: 'Hydration-Focused Triple Hyaluronic Plumping Complex',
           description: 'Deep cellular hydration, barrier restoration & moisture-lock peptide.',
           priceAdjustment: 20,
           durationMinutes: 10
         },
         {
+          id: 'serum-brightening',
+          name: 'Brightening-Focused Vitamin C & Licorice Complex',
+          description: 'Concentrated botanical antioxidants targeting sunspots, tone uniformity and luminous clarity.',
+          priceAdjustment: 25,
+          durationMinutes: 10
+        },
+        {
           id: 'serum-24k-gold',
-          name: '24K Colloidal Gold Cellular Radiance',
+          name: '24K Colloidal Gold Cellular Radiance & Anti-Aging',
           description: 'Illuminating gold peptides with micro-circulation and antioxidant rejuvenation.',
           priceAdjustment: 35,
           durationMinutes: 15

@@ -273,6 +273,12 @@ export default function AdminAppointments({
     }
   };
 
+  const handleClearAllAppointments = () => {
+    if (window.confirm('Are you sure you want to clear all appointments? This will wipe the bookings roster for a completely clean slate.')) {
+      salonDB.clearAllAppointments();
+    }
+  };
+
   return (
     <div className="space-y-5 animate-fade-in text-[#10110F]">
       
@@ -287,7 +293,18 @@ export default function AdminAppointments({
           <p className="text-[#6B7068] text-xs sm:text-sm font-light">Monitor booking admissions, control live treatment timers, and dispatch review triggers.</p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 flex-wrap">
+          {appointments.length > 0 && (
+            <button
+              onClick={handleClearAllAppointments}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-semibold transition-colors cursor-pointer"
+              title="Clear all appointments"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>Clear All</span>
+            </button>
+          )}
+
           <button
             onClick={handleExportCSV}
             className="global-button-secondary inline-flex items-center gap-1.5 !px-3.5 !py-2 text-xs font-semibold cursor-pointer shadow-xs"
@@ -480,10 +497,35 @@ export default function AdminAppointments({
                           </div>
                         )}
                         {booking.customizations && (
-                          <div className="mt-1.5 p-1.5 rounded-lg bg-[#263D2B]/5 border border-[#263D2B]/15 text-[10px] space-y-0.5 max-w-[220px]">
+                          <div className="mt-1.5 p-2 rounded-xl bg-[#263D2B]/5 border border-[#263D2B]/15 text-[10px] space-y-1 max-w-[260px]">
                             <span className="font-bold text-[#263D2B] uppercase tracking-wider block text-[9px]">
-                              ✨ Tailored Customizations:
+                              ✨ {booking.customizations.isCustomStudioRequest ? `Custom Studio Formulation (${booking.customizations.categoryTitle || 'Bespoke'})` : 'Tailored Customizations'}:
                             </span>
+                            
+                            {booking.customizations.isCustomStudioRequest && booking.customizations.details && (
+                              <div className="space-y-0.5">
+                                {Object.entries(booking.customizations.details).map(([k, v]) => (
+                                  <div key={k} className="text-[#10110F] text-[9.5px] leading-tight">
+                                    <span className="text-[#6B7068]">• {k}: </span>
+                                    <span className="font-semibold">{v?.label || v}</span>
+                                  </div>
+                                ))}
+                                {booking.customizations.inspirationPhoto && (
+                                  <div className="pt-1 flex items-center gap-1.5">
+                                    <img
+                                      src={booking.customizations.inspirationPhoto.dataUrl}
+                                      alt="Inspiration"
+                                      className="w-7 h-7 rounded object-cover border border-[#DCE1D8]"
+                                    />
+                                    <span className="text-[9px] text-[#263D2B] font-bold">Photo Attached</span>
+                                  </div>
+                                )}
+                                <div className="text-[9px] font-bold text-[#263D2B] pt-0.5">
+                                  {booking.customizations.pricingDisclaimer || 'Price to be confirmed by salon'}
+                                </div>
+                              </div>
+                            )}
+
                             {booking.customizations.selectedOption && (
                               <div className="text-[#10110F] font-medium truncate" title={booking.customizations.selectedOption.name}>
                                 • {booking.customizations.selectedOption.name}
@@ -494,6 +536,21 @@ export default function AdminAppointments({
                                 + {booking.customizations.selectedAddons.map(a => a.name).join(', ')}
                               </div>
                             )}
+                          </div>
+                        )}
+                        {booking.styleCustomization && (
+                          <div className="mt-1.5 p-2 rounded-xl bg-[#263D2B]/5 border border-[#263D2B]/15 text-[10px] space-y-0.5 max-w-[260px]">
+                            <span className="font-bold text-[#263D2B] uppercase tracking-wider block text-[9px] flex items-center gap-1">
+                              <Sparkles className="w-2.5 h-2.5 text-[#263D2B]" />
+                              <span>Live Style Selections:</span>
+                            </span>
+                            <div className="flex flex-wrap gap-1 pt-0.5">
+                              {Object.entries(booking.styleCustomization).filter(([k, v]) => v && typeof v !== 'object').map(([k, v]) => (
+                                <span key={k} className="inline-block bg-white px-1.5 py-0.5 rounded border border-[#DCE1D8] text-[9px] font-medium text-[#10110F]">
+                                  {k.replace(/([A-Z])/g, ' $1').replace(/Id$/, '')}: {String(v)}
+                                </span>
+                              ))}
+                            </div>
                           </div>
                         )}
                         {booking.notes && (

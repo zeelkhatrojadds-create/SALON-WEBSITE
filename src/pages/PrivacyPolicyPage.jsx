@@ -60,7 +60,7 @@ export default function PrivacyPolicyPage() {
   const studioPhone = settings.phone || SALON_INFO.phone;
   const studioEmail = settings.email || SALON_INFO.email;
   const studioAddress = `${settings.address || SALON_INFO.address}, ${settings.city || SALON_INFO.city}`;
-  const studioHours = settings.hours || 'Mon-Sat: 9:30 AM – 7:30 PM • Sun: 10:00 AM – 5:30 PM';
+  const studioHours = settings.hours || 'Mon-Fri: 9:30 AM – 7:30 PM • Sat: 9:00 AM – 7:00 PM • Sun: Closed';
   
   // Real verified date
   const lastUpdatedDate = 'October 16, 2026';

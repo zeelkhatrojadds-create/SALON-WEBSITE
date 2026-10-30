@@ -20,7 +20,11 @@ import {
   ChevronLeft,
   Home,
   RotateCcw,
-  Gift
+  Gift,
+  Bell,
+  BellRing,
+  Mail,
+  Smartphone
 } from 'lucide-react';
 import floralImg from '../assets/floral-booking.webp';
 import jankiPhoto from '../assets/janki-khatroja.webp';
@@ -81,12 +85,48 @@ const DEFAULT_TIME_SLOTS = [
 export default function BookingPage() {
   const [searchParams] = useSearchParams();
   const preselectedServiceId = searchParams.get('service');
+  const categoryParam = searchParams.get('category') || searchParams.get('atelier');
   const offerParam = searchParams.get('offer');
   const comboParam = searchParams.get('combo') || searchParams.get('package');
   const optionParam = searchParams.get('option');
   const addonsParam = searchParams.get('addons');
   const itineraryParam = searchParams.get('itinerary') || searchParams.get('services');
   const notesParam = searchParams.get('notes') || searchParams.get('note') || '';
+  const customRequestIdParam = searchParams.get('customRequestId');
+  const lashStyleParam = searchParams.get('lashStyle');
+  const lashCurlParam = searchParams.get('lashCurl');
+  const lashLengthParam = searchParams.get('lashLength');
+  const lashFullnessParam = searchParams.get('lashFullness');
+
+  // Helper to normalize Atelier categories
+  const resolveCategoryParam = (param) => {
+    if (!param) return null;
+    const p = String(param).toLowerCase().trim();
+    if (['hair', 'hair-atelier', 'the-hair-atelier', 'hairstyling', 'hair-cut', 'haircuts'].includes(p)) return 'hair-cut';
+    if (['hair-colour', 'hair-color', 'hair-colour-atelier', 'colour'].includes(p)) return 'hair-color';
+    if (['hair-treatments', 'hair-treatment', 'hair-spa'].includes(p)) return 'hair-treatments';
+    if (['skin', 'skincare', 'skin-atelier', 'the-skin-atelier', 'facial', 'facials'].includes(p)) return 'facial';
+    if (['lashes', 'lash', 'eyelashes', 'lash-atelier', 'the-lash-atelier'].includes(p)) return 'lashes';
+    if (['nails', 'nail', 'nail-art', 'nail-art-studio'].includes(p)) return 'nails';
+    if (['mehndi', 'henna', 'mehndi-design-studio'].includes(p)) return 'henna';
+    if (['makeup', 'make-up', 'makeup-atelier'].includes(p)) return 'makeup';
+    if (['threading', 'brow', 'brows', 'brow-atelier'].includes(p)) return 'threading';
+    if (['waxing', 'wax', 'wax-atelier'].includes(p)) return 'waxing';
+    if (['bridal', 'bridal-atelier', 'weddings'].includes(p)) return 'bridal';
+    if (['spa', 'body', 'body-atelier', 'massage'].includes(p)) return 'massage';
+    return p;
+  };
+
+  const [customConsultationRequest, setCustomConsultationRequest] = useState(() => {
+    if (!customRequestIdParam) return null;
+    return salonDB.getCustomRequestById(customRequestIdParam);
+  });
+
+  useEffect(() => {
+    if (customRequestIdParam) {
+      setCustomConsultationRequest(salonDB.getCustomRequestById(customRequestIdParam));
+    }
+  }, [customRequestIdParam]);
 
   const [availableServices, setAvailableServices] = useState(() => salonDB.getServices());
 
@@ -134,8 +174,19 @@ export default function BookingPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [serviceSearchQuery, setServiceSearchQuery] = useState('');
 
-  // Default to preselected service from offer / URL slug / id or first service
+  // Default to preselected service from custom consultation request / offer / URL slug / id or first service
   useEffect(() => {
+    // If linked to custom consultation request, prioritize its service
+    if (customConsultationRequest && customConsultationRequest.serviceId && !preselectedServiceId && availableServices.length > 0) {
+      const match = availableServices.find(
+        (s) => s.id === customConsultationRequest.serviceId || s.slug === customConsultationRequest.serviceId
+      );
+      if (match) {
+        setSelectedServiceId(match.id);
+        return;
+      }
+    }
+
     // If offer is specified and no explicit service in URL, preselect the offer's primary service
     if (offerParam && !preselectedServiceId && availableServices.length > 0) {
       const offerObj = salonDB.getFestivalOfferById(offerParam);
@@ -164,13 +215,37 @@ export default function BookingPage() {
       );
       if (match) {
         setSelectedServiceId(match.id);
+        if (match.category) setSelectedCategory(match.category);
         return;
       }
     }
+
+    // If category/atelier is specified in URL without explicit service ID, preselect that Atelier category
+    const resolvedCat = resolveCategoryParam(categoryParam);
+    if (resolvedCat && availableServices.length > 0) {
+      setSelectedCategory(resolvedCat);
+      let match = null;
+      if (resolvedCat === 'bridal') {
+        match = availableServices.find(
+          (s) => (s.name.toLowerCase().includes('bridal') || s.id.includes('bridal')) && s.active !== false
+        );
+      } else if (resolvedCat === 'hair-cut') {
+        match = availableServices.find(
+          (s) => ['hair-cut', 'hairstyling', 'hair-color', 'hair-treatments'].includes(s.category) && s.active !== false
+        );
+      } else {
+        match = availableServices.find((s) => s.category === resolvedCat && s.active !== false);
+      }
+      if (match) {
+        setSelectedServiceId(match.id);
+        return;
+      }
+    }
+
     if (!selectedServiceId && availableServices.length > 0) {
       setSelectedServiceId(availableServices[0].id);
     }
-  }, [preselectedServiceId, offerParam, availableServices, selectedServiceId]);
+  }, [preselectedServiceId, categoryParam, offerParam, availableServices, selectedServiceId, customConsultationRequest]);
 
   const selectedServiceObj = useMemo(() => {
     return availableServices.find((s) => s.id === selectedServiceId) || availableServices[0] || {};
@@ -189,6 +264,9 @@ export default function BookingPage() {
 
   // Dynamically extract treatment duration in minutes from master data (never hardcoded, applies to all services, itineraries, and combo packages)
   const selectedServiceDuration = useMemo(() => {
+    if (customConsultationRequest?.approvedDuration) {
+      return salonDB.parseServiceDurationMinutes(customConsultationRequest.approvedDuration) || customConsultationRequest.calculatedEstimatedDuration || 60;
+    }
     if (selectedItinerary) {
       return Number(selectedItinerary.totalDurationMinutes) || 60;
     }
@@ -199,12 +277,24 @@ export default function BookingPage() {
       return Number(selectedCustomization.totalDurationMinutes) || 45;
     }
     return salonDB.parseServiceDurationMinutes(selectedServiceObj?.duration || 45);
-  }, [selectedItinerary, selectedCombo, selectedCustomization, selectedServiceObj]);
+  }, [selectedItinerary, selectedCombo, selectedCustomization, selectedServiceObj, customConsultationRequest]);
 
-  // Quick alternative services for left sidebar (excluding current selected)
+  // Quick alternative services for left sidebar (curated top 3, excluding current selected)
   const alternativeServices = availableServices
     .filter((s) => s.id !== selectedServiceId && s.active !== false)
-    .slice(0, 4);
+    .slice(0, 3);
+
+  // Timezone-safe local date parser and formatter (immune to UTC/DST day shifts)
+  const parseLocalDateParts = (dateStr) => {
+    if (!dateStr || typeof dateStr !== 'string') return null;
+    const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (!match) return null;
+    return {
+      year: parseInt(match[1], 10),
+      monthIndex: parseInt(match[2], 10) - 1,
+      day: parseInt(match[3], 10)
+    };
+  };
 
   // Helper: Format local date as YYYY-MM-DD
   const formatLocalDate = (d) => {
@@ -214,26 +304,114 @@ export default function BookingPage() {
     return `${y}-${m}-${day}`;
   };
 
-  // Earliest bookable date: Tomorrow (local time)
-  const getTomorrowLocalDate = () => {
-    const d = new Date();
-    d.setDate(d.getDate() + 1);
-    return formatLocalDate(d);
+  // Timezone-safe date string formatter for human-readable display
+  const formatSelectedDisplayDate = (dateStr, options = { month: 'short', day: 'numeric', year: 'numeric' }) => {
+    const parts = parseLocalDateParts(dateStr);
+    if (!parts) return dateStr || '';
+    // Construct local noon date to eliminate any UTC midnight offset shifts or DST boundary anomalies
+    const safeDate = new Date(parts.year, parts.monthIndex, parts.day, 12, 0, 0);
+    return safeDate.toLocaleDateString('en-US', options);
   };
 
-  const [selectedDate, setSelectedDate] = useState(() => getTomorrowLocalDate());
+  // Configurable Target & Reference Dates (defaults to real current system date: today 28 October 2026)
+  const initialDatesConfig = useMemo(() => {
+    // 1. Check URL parameters for explicit date
+    const paramDate = 
+      searchParams.get('date') || 
+      searchParams.get('targetDate') || 
+      searchParams.get('selectedDate') || 
+      searchParams.get('testDate') || 
+      searchParams.get('previewDate');
+
+    // 2. Check storage for explicit preview/test date (ignoring stale 2026-09-26 / 2026-09-25)
+    let storedTestDate = null;
+    try {
+      if (typeof window !== 'undefined') {
+        const val = sessionStorage.getItem('glfy_test_date') || localStorage.getItem('glfy_test_date');
+        if (val && val !== '2026-09-26' && val !== '2026-09-25') {
+          storedTestDate = val;
+        }
+      }
+    } catch (e) {}
+
+    // 3. Check window global (ignoring stale 2026-09-26 / 2026-09-25)
+    const rawWindowTestDate = (typeof window !== 'undefined' && window.__GLAM_TEST_DATE__) || null;
+    const windowTestDate = rawWindowTestDate && rawWindowTestDate !== '2026-09-26' && rawWindowTestDate !== '2026-09-25' ? rawWindowTestDate : null;
+
+    // Strict live/production check (?production=true or ?live=true uses actual system clock)
+    const isStrictProduction = 
+      searchParams.get('production') === 'true' || 
+      searchParams.get('live') === 'true';
+
+    // System real dates (e.g. today 2026-10-28)
+    const systemNow = new Date();
+    const systemTodayStr = formatLocalDate(systemNow);
+
+    const explicitDate = paramDate || storedTestDate || windowTestDate;
+
+    if (explicitDate && !isStrictProduction) {
+      const paramToday = searchParams.get('today') || searchParams.get('todayDate');
+      let resolvedToday = paramToday || systemTodayStr;
+      return {
+        todayDate: resolvedToday,
+        targetDate: explicitDate,
+        isTestMode: true
+      };
+    }
+
+    // Default: use today's actual live system date (advance to next open day if today is Sunday/closed)
+    let defaultTarget = systemNow;
+    if (defaultTarget.getDay() === 0) {
+      defaultTarget = new Date(systemNow);
+      defaultTarget.setDate(defaultTarget.getDate() + 1); // Monday
+    }
+    const defaultTargetStr = formatLocalDate(defaultTarget);
+
+    return {
+      todayDate: systemTodayStr,
+      targetDate: defaultTargetStr,
+      isTestMode: false
+    };
+  }, [searchParams]);
+
+  // Keep today's date, selected date, and appointment date as three distinct values
+  // 1. Today's Date (Reference current date: e.g. 2026-10-28)
+  const [todayDate] = useState(() => initialDatesConfig.todayDate);
+
+  // 2. Selected Date (Active date selected on the calendar grid - initialized to today's date)
+  const [selectedDate, setSelectedDate] = useState(() => initialDatesConfig.targetDate);
+
+  // 3. Appointment Date (Confirmed appointment reservation date - initialized to today's date)
+  const [appointmentDate, setAppointmentDate] = useState(() => initialDatesConfig.targetDate);
+
+  // Expose dates on window in test mode for testing verification
+  useEffect(() => {
+    if (typeof window !== 'undefined' && initialDatesConfig.isTestMode) {
+      window.__GLAM_BOOKING_DATES__ = {
+        todayDate,
+        selectedDate,
+        appointmentDate,
+        targetDate: initialDatesConfig.targetDate
+      };
+    }
+  }, [todayDate, selectedDate, appointmentDate, initialDatesConfig]);
+
+  // Earliest bookable date: today's date so customers can book starting today (e.g. 28 October 2026)
+  // Past dates like 26 and 27 are disabled
+  const minBookDateStr = useMemo(() => {
+    return initialDatesConfig.todayDate;
+  }, [initialDatesConfig]);
 
   // Dynamically generated 15-minute slot intervals based on salon opening/closing hours for selectedDate
   const activeTimeSlots = useMemo(() => {
-    const slots = salonDB.getTimeSlotsForDate(selectedDate, 15);
-    return slots && slots.length > 0 ? slots : DEFAULT_TIME_SLOTS;
+    return salonDB.getTimeSlotsForDate(selectedDate, 15);
   }, [selectedDate]);
 
   const [selectedTime, setSelectedTime] = useState(() => {
-    const tomorrow = getTomorrowLocalDate();
-    const initialSlots = salonDB.getTimeSlotsForDate(tomorrow, 15);
+    const targetDate = initialDatesConfig.targetDate;
+    const initialSlots = salonDB.getTimeSlotsForDate(targetDate, 15);
     const initialDuration = salonDB.parseServiceDurationMinutes(availableServices[0]?.duration || 45);
-    return initialSlots.find((s) => !salonDB.isSlotBooked(tomorrow, s, initialDuration, STYLISTS[0].id)) || initialSlots[0] || '09:00 AM';
+    return initialSlots.find((s) => !salonDB.isSlotBooked(targetDate, s, initialDuration, STYLISTS[0].id)) || initialSlots[0] || '';
   });
   const [slotErrorMessage, setSlotErrorMessage] = useState('');
 
@@ -251,38 +429,52 @@ export default function BookingPage() {
   // Authoritative Festival Offer or Combo Package validation & pricing calculations
   const appliedOffer = (!offerDismissed && appliedOfferId) ? salonDB.getFestivalOfferById(appliedOfferId) : null;
   const offerValidation = appliedOffer ? salonDB.validateOfferForBooking(appliedOffer.id, selectedDate) : { valid: false };
+  const isOfferActive = Boolean(appliedOffer && offerValidation?.valid);
   const baseServicePrice = Number(selectedServiceObj?.price) || 0;
-  const originalDisplayPrice = selectedItinerary
-    ? Number(selectedItinerary.totalOriginalPrice)
-    : (selectedCombo 
-        ? Number(selectedCombo.totalOriginalPrice) 
-        : (selectedCustomization 
-            ? Number(selectedCustomization.totalPrice) 
-            : (isOfferActive && appliedOffer?.originalPrice ? Number(appliedOffer.originalPrice) : baseServicePrice)));
+  const originalDisplayPrice = customConsultationRequest && customConsultationRequest.catalogPrice
+    ? Number(customConsultationRequest.catalogPrice)
+    : (selectedItinerary
+        ? Number(selectedItinerary.totalOriginalPrice)
+        : (selectedCombo 
+            ? Number(selectedCombo.totalOriginalPrice) 
+            : (selectedCustomization 
+                ? Number(selectedCustomization.totalPrice) 
+                : (isOfferActive && appliedOffer?.originalPrice ? Number(appliedOffer.originalPrice) : baseServicePrice))));
 
-  const finalDiscountedPrice = selectedItinerary
-    ? Number(selectedItinerary.finalPrice)
-    : (selectedCombo 
-        ? Number(selectedCombo.comboPrice) 
-        : (selectedCustomization 
-            ? Number(selectedCustomization.totalPrice) 
-            : (isOfferActive && appliedOffer?.discountedPrice ? Number(appliedOffer.discountedPrice) : baseServicePrice)));
+  const finalDiscountedPrice = customConsultationRequest && customConsultationRequest.approvedPrice !== null && customConsultationRequest.approvedPrice !== undefined
+    ? Number(customConsultationRequest.approvedPrice)
+    : (selectedItinerary
+        ? Number(selectedItinerary.finalPrice)
+        : (selectedCombo 
+            ? Number(selectedCombo.comboPrice) 
+            : (selectedCustomization 
+                ? Number(selectedCustomization.totalPrice) 
+                : (isOfferActive && appliedOffer?.discountedPrice ? Number(appliedOffer.discountedPrice) : baseServicePrice))));
   const savingsAmount = Math.max(0, originalDisplayPrice - finalDiscountedPrice);
 
-  // Calendar month view navigation state
+  // Calendar month view navigation state - initialized to target date's month and year
   const [calendarViewDate, setCalendarViewDate] = useState(() => {
-    const d = new Date();
-    d.setDate(d.getDate() + 1);
-    return new Date(d.getFullYear(), d.getMonth(), 1);
+    const parts = parseLocalDateParts(initialDatesConfig.targetDate);
+    if (parts) {
+      return new Date(parts.year, parts.monthIndex, 1);
+    }
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1);
   });
 
-  const isPrevMonthDisabled = (() => {
-    const now = new Date();
+  const isPrevMonthDisabled = useMemo(() => {
+    const refParts = parseLocalDateParts(todayDate);
+    const minYear = refParts ? refParts.year : new Date().getFullYear();
+    const minMonth = refParts ? refParts.monthIndex : new Date().getMonth();
+
+    const currentYear = calendarViewDate.getFullYear();
+    const currentMonth = calendarViewDate.getMonth();
+
     return (
-      calendarViewDate.getFullYear() < now.getFullYear() ||
-      (calendarViewDate.getFullYear() === now.getFullYear() && calendarViewDate.getMonth() <= now.getMonth())
+      currentYear < minYear ||
+      (currentYear === minYear && currentMonth <= minMonth)
     );
-  })();
+  }, [calendarViewDate, todayDate]);
 
   const handlePrevMonth = () => {
     if (isPrevMonthDisabled) return;
@@ -294,11 +486,17 @@ export default function BookingPage() {
   };
 
   const handleDateChange = (newDate) => {
+    const hours = salonDB.getOperatingHoursForDate(newDate);
+    if (!hours.isOpen) {
+      setSlotErrorMessage(hours.reason || 'The salon is closed on Sundays. Please select Monday through Saturday.');
+      return;
+    }
     setSelectedDate(newDate);
+    setAppointmentDate(newDate);
     setSlotErrorMessage('');
     const slots = salonDB.getTimeSlotsForDate(newDate, 15);
     // Automatically preserve selectedTime if available on newDate for this duration, or pick first available slot
-    if (selectedTime && !salonDB.isSlotBooked(newDate, selectedTime, selectedServiceDuration, selectedStylistObj?.id)) {
+    if (selectedTime && slots.includes(selectedTime) && !salonDB.isSlotBooked(newDate, selectedTime, selectedServiceDuration, selectedStylistObj?.id)) {
       // Keep current slot
     } else {
       const firstAvailable = slots.find((s) => !salonDB.isSlotBooked(newDate, s, selectedServiceDuration, selectedStylistObj?.id));
@@ -310,7 +508,7 @@ export default function BookingPage() {
   useEffect(() => {
     const slots = salonDB.getTimeSlotsForDate(selectedDate, 15);
     setSelectedTime((prevTime) => {
-      if (prevTime && !salonDB.isSlotBooked(selectedDate, prevTime, selectedServiceDuration, selectedStylistObj?.id)) {
+      if (prevTime && slots.includes(prevTime) && !salonDB.isSlotBooked(selectedDate, prevTime, selectedServiceDuration, selectedStylistObj?.id)) {
         return prevTime;
       }
       const firstAvailable = slots.find((s) => !salonDB.isSlotBooked(selectedDate, s, selectedServiceDuration, selectedStylistObj?.id));
@@ -321,8 +519,9 @@ export default function BookingPage() {
   const scrollToBookingTop = () => {
     const el = document.getElementById('booking-main-card');
     if (el) {
-      const navOffset = 95;
-      const elementPosition = el.getBoundingClientRect().top + window.pageYOffset;
+      const navOffset = 104;
+      const scrollYPos = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+      const elementPosition = el.getBoundingClientRect().top + scrollYPos;
       window.scrollTo({
         top: Math.max(0, elementPosition - navOffset),
         behavior: 'smooth'
@@ -333,8 +532,14 @@ export default function BookingPage() {
   };
 
   const handleContinueToStep2 = () => {
-    if (!selectedDate) {
+    const bookingDateToValidate = appointmentDate || selectedDate;
+    if (!bookingDateToValidate) {
       setSlotErrorMessage('Please select a preferred appointment date.');
+      return;
+    }
+    const hours = salonDB.getOperatingHoursForDate(bookingDateToValidate);
+    if (!hours.isOpen) {
+      setSlotErrorMessage(hours.reason || 'The salon is closed on Sundays. Please select Monday through Saturday.');
       return;
     }
     if (!selectedTime) {
@@ -345,11 +550,12 @@ export default function BookingPage() {
       }
       return;
     }
-    const availability = salonDB.checkSlotAvailability(selectedDate, selectedTime, selectedServiceDuration, selectedStylistObj?.id);
+    const availability = salonDB.checkSlotAvailability(bookingDateToValidate, selectedTime, selectedServiceDuration, selectedStylistObj?.id);
     if (!availability.available) {
       setSlotErrorMessage(availability.reason || 'The selected time slot is unavailable for this service duration. Please choose another available time.');
       return;
     }
+    setAppointmentDate(bookingDateToValidate);
     setSlotErrorMessage('');
     setCurrentStep(2);
     scrollToBookingTop();
@@ -359,11 +565,12 @@ export default function BookingPage() {
   const [currentUser] = useState(() => salonDB.getCurrentUser());
   const [formData, setFormData] = useState(() => {
     const u = salonDB.getCurrentUser();
+    const req = customRequestIdParam ? salonDB.getCustomRequestById(customRequestIdParam) : null;
     return {
-      name: u?.name || '',
-      phone: u?.phone || '',
-      email: u?.email || '',
-      notes: notesParam || ''
+      name: (req && req.customerName) || u?.name || '',
+      phone: (req && req.customerPhone) || u?.phone || '',
+      email: (req && req.customerEmail) || u?.email || '',
+      notes: notesParam || (req ? `[Custom Consultation #${req.id}] ${req.customerVision || ''}` : (lashStyleParam ? `[The Lash Atelier] Look: ${lashStyleParam}${lashCurlParam ? ` • Curl: ${lashCurlParam}` : ''}${lashLengthParam ? ` • Length: ${lashLengthParam}` : ''}${lashFullnessParam ? ` • Fullness: ${lashFullnessParam}` : ''}` : ''))
     };
   });
 
@@ -372,6 +579,117 @@ export default function BookingPage() {
   const [confirmedBooking, setConfirmedBooking] = useState(null);
   const [savedAppointments, setSavedAppointments] = useState([]);
   const [showSavedModal, setShowSavedModal] = useState(false);
+
+  // Notification & Reminder Preferences State
+  const [notificationPreferences, setNotificationPreferences] = useState(() => {
+    const u = salonDB.getCurrentUser();
+    const saved = salonDB.getNotificationPreferences(u?.id || u?.email);
+    return {
+      confirmation: saved?.confirmation !== false,
+      reminder24h: saved?.reminder24h !== false,
+      reminder3h: saved?.reminder3h !== false,
+      updates: saved?.updates !== false,
+      aftercare: saved?.aftercare !== false
+    };
+  });
+
+  const [notificationChannels, setNotificationChannels] = useState(() => {
+    const u = salonDB.getCurrentUser();
+    const saved = salonDB.getNotificationPreferences(u?.id || u?.email);
+    return {
+      inApp: true,
+      browserPush: Boolean(saved?.channels?.browserPush),
+      email: false, // Currently unavailable: requires backend SMTP / transactional email server
+      sms: false    // Currently unavailable: requires SMS gateway / WhatsApp Cloud API
+    };
+  });
+
+  const [browserPushPermission, setBrowserPushPermission] = useState(() => {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      return Notification.permission;
+    }
+    return 'unsupported';
+  });
+
+  const [pushStatusMessage, setPushStatusMessage] = useState('');
+
+  const handleTogglePreference = (key) => {
+    setNotificationPreferences(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
+  };
+
+  const handleToggleBrowserPush = async () => {
+    if (typeof window === 'undefined' || !('Notification' in window)) {
+      setPushStatusMessage('Browser push notifications are not supported in this browser.');
+      return;
+    }
+
+    if (Notification.permission === 'denied') {
+      setPushStatusMessage('Browser push is blocked in your site settings. Please permit notifications in your browser address bar.');
+      return;
+    }
+
+    if (Notification.permission === 'granted') {
+      const nextState = !notificationChannels.browserPush;
+      setNotificationChannels(prev => ({ ...prev, browserPush: nextState }));
+      setPushStatusMessage(nextState ? '✓ Browser push alerts enabled for this device.' : 'Browser push alerts paused.');
+      return;
+    }
+
+    try {
+      const perm = await Notification.requestPermission();
+      setBrowserPushPermission(perm);
+      if (perm === 'granted') {
+        setNotificationChannels(prev => ({ ...prev, browserPush: true }));
+        setPushStatusMessage('✓ Browser push alerts enabled for this device.');
+        try {
+          new Notification('GLAM GIRL BY JANKI', {
+            body: 'Browser push notifications successfully enabled for your appointment reminders.'
+          });
+        } catch (e) {}
+      } else {
+        setNotificationChannels(prev => ({ ...prev, browserPush: false }));
+        setPushStatusMessage('Browser notification permission was not granted.');
+      }
+    } catch (err) {
+      setPushStatusMessage('Could not request browser notification permission.');
+    }
+  };
+
+  const reminderSchedulePreview = useMemo(() => {
+    if (!selectedDate || !selectedTime) return null;
+    const normDate = salonDB.normalizeDate(selectedDate);
+    const minutes = salonDB.timeStringToMinutes(selectedTime);
+    const parts = normDate.split('-');
+    if (parts.length !== 3) return null;
+    const y = parseInt(parts[0], 10);
+    const m = parseInt(parts[1], 10);
+    const d = parseInt(parts[2], 10);
+    if (!y || !m || !d) return null;
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    const apptDate = new Date(y, m - 1, d, hours, mins, 0);
+
+    const time24h = new Date(apptDate.getTime() - 24 * 60 * 60 * 1000);
+    const time3h = new Date(apptDate.getTime() - 3 * 60 * 60 * 1000);
+
+    const formatDatePreview = (dateObj) => {
+      return dateObj.toLocaleDateString('en-CA', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit'
+      });
+    };
+
+    return {
+      reminder24hFormatted: formatDatePreview(time24h),
+      reminder3hFormatted: formatDatePreview(time3h)
+    };
+  }, [selectedDate, selectedTime]);
 
   // Load saved appointments from localStorage & subscribe to live database changes
   useEffect(() => {
@@ -426,13 +744,21 @@ export default function BookingPage() {
     setIsSubmitting(true);
     setSlotErrorMessage('');
 
-    const availability = salonDB.checkSlotAvailability(selectedDate, selectedTime, selectedServiceDuration, selectedStylistObj?.id);
+    const targetBookingDate = appointmentDate || selectedDate;
+
+    const availability = salonDB.checkSlotAvailability(targetBookingDate, selectedTime, selectedServiceDuration, selectedStylistObj?.id);
     if (!availability.available) {
       setIsSubmitting(false);
       setSlotErrorMessage(availability.reason || 'Sorry, this time slot was just booked or overlaps an existing appointment. Please select another available time.');
       setSelectedTime('');
       setCurrentStep(1);
       scrollToBookingTop();
+      return;
+    }
+
+    if (customConsultationRequest && customConsultationRequest.status === 'Converted to Booking') {
+      setIsSubmitting(false);
+      setSlotErrorMessage(`Custom Consultation Request #${customConsultationRequest.id} has already been converted into a confirmed appointment. Duplicate bookings are prevented.`);
       return;
     }
 
@@ -443,7 +769,11 @@ export default function BookingPage() {
     let finalAuthorizedPrice = selectedServiceObj ? Number(selectedServiceObj.price) : 85;
     let authoritativeOriginalPrice = finalAuthorizedPrice;
     let authoritativeSavings = 0;
-    if (selectedItinerary) {
+    if (customConsultationRequest && customConsultationRequest.approvedPrice !== null && customConsultationRequest.approvedPrice !== undefined) {
+      finalAuthorizedPrice = Number(customConsultationRequest.approvedPrice);
+      authoritativeOriginalPrice = Number(customConsultationRequest.catalogPrice) || finalAuthorizedPrice;
+      authoritativeSavings = 0;
+    } else if (selectedItinerary) {
       finalAuthorizedPrice = Number(selectedItinerary.finalPrice) || 85;
       authoritativeOriginalPrice = Number(selectedItinerary.totalOriginalPrice) || finalAuthorizedPrice;
       authoritativeSavings = Number(selectedItinerary.discountAmount) || 0;
@@ -456,7 +786,7 @@ export default function BookingPage() {
       authoritativeOriginalPrice = finalAuthorizedPrice;
       authoritativeSavings = 0;
     } else if (!offerDismissed && appliedOfferId) {
-      const dbCheck = salonDB.validateOfferForBooking(appliedOfferId, selectedDate);
+      const dbCheck = salonDB.validateOfferForBooking(appliedOfferId, targetBookingDate);
       if (dbCheck.valid && dbCheck.offer) {
         bookingOffer = dbCheck.offer;
         finalAuthorizedPrice = Number(dbCheck.offer.discountedPrice) || finalAuthorizedPrice;
@@ -468,6 +798,9 @@ export default function BookingPage() {
     const bookingPayload = {
       id: refCode,
       referenceCode: refCode,
+      customRequestId: customConsultationRequest ? customConsultationRequest.id : null,
+      customConsultationVision: customConsultationRequest ? customConsultationRequest.customerVision : null,
+      styleCustomization: customConsultationRequest ? (customConsultationRequest.styleConfig || customConsultationRequest.styleCustomization) : null,
       serviceId: selectedItinerary ? selectedItinerary.serviceIds.join(',') : (selectedCombo ? selectedCombo.id : (selectedServiceObj ? selectedServiceObj.id : 'womens-haircut')),
       service: selectedItinerary ? `Salon Day Itinerary (${selectedItinerary.itemCount} Treatments)` : (selectedCombo ? selectedCombo.name : (selectedServiceObj ? selectedServiceObj.name : 'Salon Treatment')),
       serviceDuration: selectedItinerary ? selectedItinerary.durationDisplay : (selectedCombo ? (selectedCombo.durationDisplay || `${selectedServiceDuration} min`) : (selectedServiceObj?.duration || `${selectedServiceDuration} min`)),
@@ -511,7 +844,7 @@ export default function BookingPage() {
       stylistId: selectedStylistObj.id,
       stylist: selectedStylistObj.name,
       stylistRole: selectedStylistObj.role,
-      date: selectedDate,
+      date: targetBookingDate,
       time: selectedTime,
       customerId: currentUser ? currentUser.id : null,
       customerPreferredName: currentUser ? currentUser.preferredName : null,
@@ -523,6 +856,19 @@ export default function BookingPage() {
       customerEmail: formData.email.trim(),
       customerName: formData.name.trim(),
       notes: formData.notes.trim(),
+      notificationPreferences: {
+        confirmation: notificationPreferences.confirmation,
+        reminder24h: notificationPreferences.reminder24h,
+        reminder3h: notificationPreferences.reminder3h,
+        updates: notificationPreferences.updates,
+        aftercare: notificationPreferences.aftercare
+      },
+      notificationChannels: {
+        inApp: true,
+        browserPush: Boolean(notificationChannels.browserPush),
+        email: false,
+        sms: false
+      },
       createdAt: new Date().toISOString(),
       status: 'Pending',
       appointmentStatus: 'Pending'
@@ -530,8 +876,27 @@ export default function BookingPage() {
 
     try {
       salonDB.addAppointment(bookingPayload);
+      salonDB.saveNotificationPreferences(currentUser?.id || formData.email, {
+        ...notificationPreferences,
+        channels: notificationChannels
+      });
+
+      if (customConsultationRequest) {
+        salonDB.updateCustomRequestStatus(
+          customConsultationRequest.id,
+          'Converted to Booking',
+          `Linked to confirmed appointment #${refCode} on ${targetBookingDate} at ${selectedTime}.`,
+          customConsultationRequest.approvedPrice,
+          customConsultationRequest.approvedDuration
+        );
+      }
     } catch (err) {
-      console.warn('DB appointment save error (using fallback):', err);
+      console.error('DB appointment save error:', err);
+      setIsSubmitting(false);
+      setSlotErrorMessage(err.message || 'Unable to complete appointment reservation. Please select another slot.');
+      setCurrentStep(1);
+      scrollToBookingTop();
+      return;
     }
 
     setConfirmedBooking(bookingPayload);
@@ -554,7 +919,12 @@ export default function BookingPage() {
   // Filtered services for modal dialog
   const modalFilteredServices = availableServices.filter((s) => {
     if (s.active === false) return false;
-    const matchesCategory = selectedCategory === 'all' || s.category === selectedCategory;
+    const matchesCategory =
+      selectedCategory === 'all'
+        ? true
+        : selectedCategory === 'bridal'
+          ? s.name.toLowerCase().includes('bridal') || s.id.includes('bridal') || s.category === 'makeup' || s.category === 'hairstyling'
+          : s.category === selectedCategory;
     const q = serviceSearchQuery.trim().toLowerCase();
     const matchesSearch =
       !q ||
@@ -565,12 +935,12 @@ export default function BookingPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#F7F4ED] text-[#10110F] font-sans selection:bg-[#263D2B] selection:text-white">
+    <div className="w-full min-h-screen min-h-[100dvh] overflow-x-hidden bg-[#F7F4ED] text-[#10110F] font-sans selection:bg-[#263D2B] selection:text-white">
       
       {/* ========================================================================= */}
       {/* 1. HERO BANNER */}
       {/* ========================================================================= */}
-      <div className="bg-[#F7F4ED] text-[#10110F] relative overflow-hidden border-b border-[#DCE1D8] pt-[78px] sm:pt-[84px] lg:pt-[92px]">
+      <div className="bg-[#F7F4ED] text-[#10110F] relative overflow-hidden border-b border-[#DCE1D8] pt-[86px] sm:pt-[92px] lg:pt-[100px]">
         {/* Background Decorative Blur */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#263D2B]/5 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
 
@@ -619,6 +989,48 @@ export default function BookingPage() {
       {/* ========================================================================= */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
         
+        {/* CUSTOM CONSULTATION REQUEST QUOTE BANNER */}
+        {customConsultationRequest && (
+          <div className="bg-white rounded-3xl p-5 border border-[#263D2B]/30 shadow-xs mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-white to-[#F7F4ED]">
+            <div className="flex items-start gap-3.5">
+              <div className="w-10 h-10 rounded-2xl bg-[#263D2B] text-[#F7F4ED] flex items-center justify-center shrink-0 mt-0.5">
+                <Sparkles className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#263D2B] bg-[#263D2B]/10 px-2.5 py-0.5 rounded-full">
+                    Custom Consultation Quote Applied
+                  </span>
+                  <span className="font-mono text-xs font-bold text-[#10110F]">
+                    #{customConsultationRequest.id}
+                  </span>
+                </div>
+                <h3 className="font-serif text-base font-bold text-[#10110F] mt-1">
+                  {customConsultationRequest.serviceName}
+                </h3>
+                <p className="text-xs text-[#465640] mt-0.5">
+                  Approved Price: <strong className="text-[#263D2B]">${customConsultationRequest.approvedPrice || customConsultationRequest.catalogPrice} CAD</strong> • Approved Duration: <strong className="text-[#10110F]">{customConsultationRequest.approvedDuration || `${selectedServiceDuration} min`}</strong>
+                </p>
+                {customConsultationRequest.status === 'Converted to Booking' && (
+                  <div className="text-xs font-bold text-amber-800 mt-1.5 flex items-center gap-1.5">
+                    <AlertCircle className="w-3.5 h-3.5 text-amber-700" />
+                    <span>Notice: This consultation request has already been booked into an appointment. Duplicate booking is prevented.</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <Link
+                to="/contact#custom-consultation"
+                className="px-3.5 py-2 rounded-xl border border-[#DCE1D8] hover:bg-[#F7F4ED] text-xs font-semibold text-[#10110F] transition-colors"
+              >
+                View Consultation Dossier
+              </Link>
+            </div>
+          </div>
+        )}
+
         {/* COMPACT SELECTED SERVICE BANNER (VISIBLE ON MOBILE & TABLET < xl) */}
         <div className="xl:hidden bg-white rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 border border-[#DCE1D8] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 sm:mb-6">
           <div className="flex items-center gap-3 min-w-0">
@@ -659,6 +1071,17 @@ export default function BookingPage() {
                   )}
                 </div>
               )}
+              {lashStyleParam && (
+                <div className="mt-2 pt-2 border-t border-[#DCE1D8] text-[11px] text-[#263D2B] space-y-0.5">
+                  <span className="font-bold uppercase tracking-wider block text-[9.5px] text-[#263D2B] flex items-center gap-1">
+                    <Sparkles className="w-3 h-3 text-[#263D2B]" />
+                    The Lash Atelier Customization:
+                  </span>
+                  <div className="text-[#10110F] text-[10.5px]">
+                    {lashStyleParam} {lashCurlParam ? `• ${lashCurlParam}` : ''} {lashLengthParam ? `• ${lashLengthParam}` : ''}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -682,24 +1105,24 @@ export default function BookingPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 xl:grid-cols-12 gap-5 sm:gap-6 items-start">
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8 items-start w-full">
           
           {/* COLUMN 1: SELECTED SERVICE & ALTERNATIVE MENU (DESKTOP ONLY >= xl) */}
-          <div className="hidden xl:block xl:col-span-3 bg-white rounded-3xl p-4 sm:p-5 lg:p-6 border border-[#DCE1D8] shadow-md space-y-5 sm:space-y-6">
-            <div className="space-y-4">
-              <div className="relative aspect-[16/10] sm:aspect-[4/3] rounded-2xl overflow-hidden bg-[#F7F4ED] shadow-inner">
+          <div className="hidden xl:block xl:col-span-3 min-w-0 bg-white rounded-3xl p-4 sm:p-5 border border-[#DCE1D8] shadow-sm space-y-4 xl:sticky xl:top-24 xl:self-start">
+            <div className="space-y-3.5">
+              <div className="relative h-32 sm:h-36 rounded-2xl overflow-hidden bg-[#F7F4ED] shadow-inner">
                 <img 
                   src={selectedItinerary ? (selectedItinerary.services[0]?.image || floralImg) : (selectedCombo ? selectedCombo.image : (selectedServiceObj.image || floralImg))}
                   alt={selectedItinerary ? 'Salon Day Itinerary' : (selectedCombo ? selectedCombo.name : selectedServiceObj.name)}
                   className="w-full h-full object-cover" 
                 />
-                <span className="absolute top-3 left-3 bg-[#263D2B] text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-xs">
+                <span className="absolute top-2.5 left-2.5 bg-[#263D2B] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-xs">
                   {selectedItinerary ? 'Salon Day Itinerary' : (selectedCombo ? 'Combo Package' : 'Selected Service')}
                 </span>
               </div>
 
               <div>
-                <h3 className="font-serif font-normal text-[#10110F] text-xl sm:text-2xl leading-tight">
+                <h3 className="font-serif font-normal text-[#10110F] text-lg sm:text-xl leading-tight">
                   {selectedItinerary ? `Salon Day (${selectedItinerary.itemCount} Treatments)` : (selectedCombo ? selectedCombo.name : (selectedServiceObj.name || 'Treatment'))}
                 </h3>
                 {selectedItinerary ? (
@@ -711,7 +1134,7 @@ export default function BookingPage() {
                     {selectedCombo.tagline}
                   </p>
                 ) : null}
-                <p className="text-xs text-[#6B7068] mt-1.5 line-clamp-3 font-sans">
+                <p className="text-xs text-[#6B7068] mt-1 line-clamp-2 font-sans">
                   {selectedItinerary 
                     ? `Enjoy a seamless multi-treatment salon experience. Total estimated duration: ${selectedItinerary.durationDisplay}.` 
                     : (selectedCombo ? selectedCombo.description : (selectedServiceObj.description || 'Gentle and precise treatment for smooth, flawless beauty.'))}
@@ -722,10 +1145,10 @@ export default function BookingPage() {
                     <span className="text-[10px] font-bold uppercase tracking-wider text-[#6B7068] block">
                       Included In Your Salon Day:
                     </span>
-                    <div className="space-y-1.5 max-h-[220px] overflow-y-auto pr-1">
+                    <div className="space-y-1.5 custom-scrollbar max-h-36 overflow-y-auto pr-1">
                       {selectedItinerary.services?.map((s, idx) => (
-                        <div key={s.id} className="p-2 rounded-lg bg-[#F7F4ED] border border-[#DCE1D8] text-xs flex items-center justify-between">
-                          <span className="font-medium text-[#10110F] truncate pr-2">
+                        <div key={s.id} className="p-2 rounded-lg bg-[#F7F4ED] border border-[#DCE1D8] text-xs flex items-center justify-between gap-2">
+                          <span className="font-medium text-[#10110F] truncate">
                             {idx + 1}. {s.name}
                           </span>
                           <span className="text-[11px] text-[#6B7068] shrink-0 font-mono">${s.price} • {s.duration}</span>
@@ -737,7 +1160,7 @@ export default function BookingPage() {
                         {selectedItinerary.discountAmount > 0 && (
                           <span className="line-through text-xs text-[#6B7068] font-mono">${selectedItinerary.totalOriginalPrice} </span>
                         )}
-                        <span className="font-serif font-bold text-lg text-[#263D2B] block">${selectedItinerary.finalPrice} CAD</span>
+                        <span className="font-serif font-bold text-base text-[#263D2B] block">${selectedItinerary.finalPrice} CAD</span>
                       </div>
                       {selectedItinerary.discountAmount > 0 && (
                         <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
@@ -751,10 +1174,10 @@ export default function BookingPage() {
                     <span className="text-[10px] font-bold uppercase tracking-wider text-[#6B7068] block">
                       Included In This Combo:
                     </span>
-                    <div className="space-y-1.5">
+                    <div className="space-y-1.5 max-h-32 overflow-y-auto pr-1">
                       {selectedCombo.services?.map((s) => (
-                        <div key={s.id} className="p-2 rounded-lg bg-[#F7F4ED] border border-[#DCE1D8] text-xs flex items-center justify-between">
-                          <span className="font-medium text-[#10110F] truncate pr-2">{s.name}</span>
+                        <div key={s.id} className="p-2 rounded-lg bg-[#F7F4ED] border border-[#DCE1D8] text-xs flex items-center justify-between gap-2">
+                          <span className="font-medium text-[#10110F] truncate">{s.name}</span>
                           <span className="text-[11px] text-[#6B7068] shrink-0 font-mono">{s.duration}</span>
                         </div>
                       ))}
@@ -762,7 +1185,7 @@ export default function BookingPage() {
                     <div className="pt-2 flex items-center justify-between border-t border-[#DCE1D8]">
                       <div>
                         <span className="line-through text-xs text-[#6B7068] font-mono">${selectedCombo.totalOriginalPrice}</span>
-                        <span className="font-serif font-bold text-lg text-[#263D2B] block">${selectedCombo.comboPrice} CAD</span>
+                        <span className="font-serif font-bold text-base text-[#263D2B] block">${selectedCombo.comboPrice} CAD</span>
                       </div>
                       <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
                         Save ${selectedCombo.savingsAmount} CAD
@@ -770,12 +1193,12 @@ export default function BookingPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="mt-3 flex flex-wrap items-center gap-2">
-                    <span className="inline-flex items-center gap-1 text-xs font-bold text-[#10110F] bg-[#F7F4ED] px-3 py-1 rounded-lg border border-[#DCE1D8]">
+                  <div className="mt-2.5 flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center gap-1 text-xs font-bold text-[#10110F] bg-[#F7F4ED] px-2.5 py-1 rounded-lg border border-[#DCE1D8]">
                       <Check className="w-3.5 h-3.5 text-[#263D2B]" />
                       ${selectedServiceObj.price || 10} {selectedServiceObj.categoryName ? `(${selectedServiceObj.categoryName})` : ''}
                     </span>
-                    <span className="inline-flex items-center gap-1 text-xs font-bold text-[#6B7068] bg-[#F7F4ED] px-3 py-1 rounded-lg border border-[#DCE1D8]">
+                    <span className="inline-flex items-center gap-1 text-xs font-bold text-[#6B7068] bg-[#F7F4ED] px-2.5 py-1 rounded-lg border border-[#DCE1D8]">
                       <Clock className="w-3.5 h-3.5 text-[#263D2B]" />
                       {selectedServiceObj.duration || '45 min'}
                     </span>
@@ -783,7 +1206,7 @@ export default function BookingPage() {
                 )}
 
                 {selectedCustomization && (
-                  <div className="mt-3 space-y-2 bg-[#F7F4ED] p-3 rounded-2xl border border-[#DCE1D8]">
+                  <div className="mt-2.5 space-y-1.5 bg-[#F7F4ED] p-2.5 rounded-xl border border-[#DCE1D8]">
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-bold uppercase tracking-wider text-[#263D2B]">
                         Tailored Customizations
@@ -810,18 +1233,58 @@ export default function BookingPage() {
                     ))}
                   </div>
                 )}
+
+                {customConsultationRequest && (
+                  <div className="mt-2.5 space-y-1.5 bg-[#263D2B]/5 p-2.5 rounded-xl border border-[#263D2B]/20">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#263D2B] flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-[#263D2B]" />
+                        <span>Custom Studio #{customConsultationRequest.id}</span>
+                      </span>
+                      <span className="text-[10px] text-[#465640] font-semibold">
+                        Attached
+                      </span>
+                    </div>
+                    {customConsultationRequest.customerVision && (
+                      <p className="text-xs text-[#10110F] italic line-clamp-2">
+                        “{customConsultationRequest.customerVision}”
+                      </p>
+                    )}
+                    {customConsultationRequest.styleConfig && (
+                      <div className="text-[11px] text-[#263D2B] font-medium pt-1 border-t border-[#263D2B]/10">
+                        <span>✓ Live Style selections saved</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+                {lashStyleParam && (
+                  <div className="mt-2.5 space-y-1.5 bg-[#263D2B]/5 p-2.5 rounded-xl border border-[#263D2B]/20">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#263D2B] flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-[#263D2B]" />
+                        <span>The Lash Atelier Customization</span>
+                      </span>
+                    </div>
+                    <div className="text-xs text-[#10110F]">
+                      <strong>Look:</strong> {lashStyleParam} {lashCurlParam ? `• ${lashCurlParam}` : ''} {lashLengthParam ? `• ${lashLengthParam}` : ''}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
             {/* Quick Alternative Services List */}
-            <div className="pt-4 border-t border-[#DCE1D8] space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-[#10110F] uppercase tracking-wider block font-sans">
-                  {selectedCombo ? 'Other Options' : 'Quick Select Services'}
+            <div className="pt-3 border-t border-[#DCE1D8] space-y-2.5">
+              <div className="flex items-center justify-between gap-1.5 pb-0.5">
+                <span className="text-[11px] font-bold text-[#10110F] uppercase tracking-wider font-sans whitespace-nowrap">
+                  {selectedCombo ? 'Other Options' : 'Popular Services'}
                 </span>
-                <Link to="/treatments#treatment-combos" className="text-[10.5px] font-bold text-[#263D2B] hover:underline flex items-center gap-1">
-                  <Sparkles className="w-3 h-3" />
-                  <span>Browse Packages</span>
+                <Link 
+                  to="/treatments#treatment-combos" 
+                  className="text-[10.5px] font-semibold text-[#263D2B] hover:text-[#10110F] hover:underline inline-flex items-center gap-1 whitespace-nowrap shrink-0 transition-colors"
+                >
+                  <Sparkles className="w-3 h-3 text-[#263D2B]" />
+                  <span>Combos</span>
                 </Link>
               </div>
 
@@ -829,7 +1292,7 @@ export default function BookingPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedCombo(null)}
-                  className="w-full py-2 px-3 rounded-xl border border-[#DCE1D8] bg-[#F7F4ED] hover:bg-white text-xs font-bold text-[#10110F] transition-all text-center cursor-pointer"
+                  className="w-full py-1.5 px-3 rounded-xl border border-[#DCE1D8] bg-[#F7F4ED] hover:bg-white text-xs font-bold text-[#10110F] transition-all text-center cursor-pointer"
                 >
                   Switch to Single Service
                 </button>
@@ -844,17 +1307,20 @@ export default function BookingPage() {
                       setSelectedCombo(null);
                       setSelectedServiceId(alt.id);
                     }}
-                    className="w-full p-2.5 rounded-2xl bg-[#F7F4ED] hover:bg-white border border-[#DCE1D8] hover:border-[#263D2B] transition-all flex items-center justify-between text-left cursor-pointer group"
+                    className="w-full p-2.5 rounded-2xl bg-[#F7F4ED] hover:bg-white border border-[#DCE1D8] hover:border-[#263D2B] transition-all flex items-center justify-between gap-2.5 text-left cursor-pointer group shadow-2xs hover:shadow-xs"
                   >
-                    <div className="flex items-center gap-2.5">
-                      <SafeServiceImage service={alt} className="w-8 h-8 rounded-lg object-cover" />
-                      <div>
-                        <span className="font-semibold text-xs text-[#10110F] group-hover:text-[#263D2B] block truncate max-w-[120px]">
+                    <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                      <SafeServiceImage service={alt} className="w-9 h-9 rounded-xl object-cover shrink-0 shadow-2xs" />
+                      <div className="min-w-0 flex-1">
+                        <span className="font-semibold text-xs text-[#10110F] group-hover:text-[#263D2B] block line-clamp-2 leading-snug">
                           {alt.name}
                         </span>
-                        <span className="text-[10px] text-[#6B7068] block">{alt.duration}</span>
+                        <span className="text-[10px] text-[#6B7068] block mt-0.5 font-medium">{alt.duration}</span>
                       </div>
                     </div>
+                    <span className="text-xs font-bold text-[#263D2B] font-mono shrink-0 pl-1.5">
+                      ${alt.price}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -862,7 +1328,7 @@ export default function BookingPage() {
               <button
                 type="button"
                 onClick={() => setShowAllServicesModal(true)}
-                className="w-full py-3 px-4 rounded-2xl border border-[#DCE1D8] hover:border-[#263D2B] bg-[#F7F4ED] hover:bg-white text-[#10110F] font-bold text-xs text-center transition-all cursor-pointer flex items-center justify-center gap-1.5 mt-2"
+                className="w-full py-2.5 px-3 rounded-xl border border-[#DCE1D8] hover:border-[#263D2B] bg-[#F7F4ED] hover:bg-white text-[#10110F] font-bold text-xs text-center transition-all cursor-pointer flex items-center justify-center gap-1.5 mt-2 shadow-2xs hover:shadow-xs"
               >
                 <span>View All Services</span>
                 <ArrowRight className="w-3.5 h-3.5 text-[#263D2B]" />
@@ -871,7 +1337,7 @@ export default function BookingPage() {
           </div>
 
           {/* COLUMN 2: STEPPER & INTERACTIVE BOOKING ENGINE (CENTER CARD) */}
-          <div id="booking-main-card" className="col-span-12 md:col-span-7 xl:col-span-6 bg-white rounded-3xl p-4 sm:p-6 lg:p-7 border border-[#DCE1D8] shadow-md space-y-5 sm:space-y-6">
+          <div id="booking-main-card" className="col-span-1 xl:col-span-6 min-w-0 bg-white rounded-3xl p-4 sm:p-6 lg:p-8 border border-[#DCE1D8] shadow-md space-y-5 sm:space-y-6">
             
             {/* 3-STEP LINE STEPPER BAR */}
             <div className="flex items-center justify-between px-1 sm:px-4 lg:px-6 relative">
@@ -995,7 +1461,9 @@ export default function BookingPage() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h4 className="font-serif font-normal text-lg text-[#10110F]">Select Date</h4>
-                    <span className="text-[11px] text-[#6B7068] font-sans">Minimum date: Tomorrow</span>
+                    <span className="text-[11px] text-[#6B7068] font-sans">
+                      Target Date: <strong className="text-[#263D2B] font-semibold">{formatSelectedDisplayDate(selectedDate)}</strong>
+                    </span>
                   </div>
 
                   <div className="p-4 sm:p-5 rounded-2xl bg-[#F7F4ED] border border-[#DCE1D8] space-y-4">
@@ -1027,11 +1495,21 @@ export default function BookingPage() {
 
                     {/* Weekday Headers */}
                     <div className="grid grid-cols-7 gap-1 text-center border-b border-[#DCE1D8] pb-2">
-                      {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => (
-                        <span key={d} className="text-[11px] font-bold text-[#6B7068]">
-                          {d}
-                        </span>
-                      ))}
+                      {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => {
+                        const isSun = d === 'Sun';
+                        return (
+                          <div key={d} className="flex flex-col items-center">
+                            <span className={`text-[11px] font-bold ${isSun ? 'text-red-600' : 'text-[#6B7068]'}`}>
+                              {d}
+                            </span>
+                            {isSun && (
+                              <span className="text-[8px] font-extrabold uppercase tracking-tight text-red-500/90 leading-none mt-0.5">
+                                Closed
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
 
                     {/* Symmetrical Calendar Grid */}
@@ -1042,14 +1520,13 @@ export default function BookingPage() {
                         const firstDayIndex = new Date(year, month, 1).getDay();
                         const totalDaysCurrentMonth = new Date(year, month + 1, 0).getDate();
                         const totalDaysPrevMonth = new Date(year, month, 0).getDate();
-                        const minBookDateStr = getTomorrowLocalDate();
                         const cells = [];
 
                         // Previous month padding days
                         for (let i = firstDayIndex - 1; i >= 0; i--) {
                           const prevDay = totalDaysPrevMonth - i;
                           cells.push(
-                            <div key={`prev-${prevDay}`} className="h-8 w-8 min-[380px]:h-9 min-[380px]:w-9 sm:h-10 sm:w-10 rounded-full flex items-center justify-center text-xs text-[#6B7068]/40 cursor-not-allowed mx-auto font-medium">
+                            <div key={`prev-${prevDay}`} className="h-9 w-9 min-[380px]:h-10 min-[380px]:w-10 sm:h-11 sm:w-11 rounded-full flex items-center justify-center text-xs text-[#6B7068]/40 cursor-not-allowed mx-auto font-medium">
                               {prevDay}
                             </div>
                           );
@@ -1060,7 +1537,12 @@ export default function BookingPage() {
                           const monthStr = String(month + 1).padStart(2, '0');
                           const dayStr = String(day).padStart(2, '0');
                           const dateStr = `${year}-${monthStr}-${dayStr}`;
-                          const isDisabled = dateStr < minBookDateStr;
+                          const isPastDate = dateStr < minBookDateStr;
+                          const cellDayOfWeek = new Date(year, month, day, 12, 0, 0).getDay();
+                          const isSunday = cellDayOfWeek === 0;
+                          const opHours = salonDB.getOperatingHoursForDate(dateStr);
+                          const isClosedDay = !opHours.isOpen;
+                          const isDisabled = isPastDate || isClosedDay;
                           const isSelected = dateStr === selectedDate;
 
                           cells.push(
@@ -1068,16 +1550,27 @@ export default function BookingPage() {
                               key={dateStr}
                               type="button"
                               disabled={isDisabled}
-                              onClick={() => handleDateChange(dateStr)}
-                              className={`h-8 w-8 min-[380px]:h-9 min-[380px]:w-9 sm:h-10 sm:w-10 rounded-full text-xs sm:text-sm font-semibold transition-all flex items-center justify-center mx-auto cursor-pointer ${
+                              onClick={() => !isDisabled && handleDateChange(dateStr)}
+                              aria-label={`${formatSelectedDisplayDate(dateStr)} - ${isSunday ? 'Closed on Sundays' : isClosedDay ? 'Closed' : isPastDate ? 'Past Date' : 'Available'}`}
+                              title={isSunday ? 'The salon is closed on Sundays' : isClosedDay ? (opHours.reason || 'Closed') : undefined}
+                              className={`h-9 w-9 min-[380px]:h-10 min-[380px]:w-10 sm:h-11 sm:w-11 rounded-full text-xs sm:text-sm font-semibold transition-all flex flex-col items-center justify-center mx-auto cursor-pointer relative ${
                                 isSelected
                                   ? 'bg-[#263D2B] text-white shadow-md shadow-[#263D2B]/30 font-bold scale-105'
-                                  : isDisabled
+                                  : isSunday
+                                  ? 'bg-red-50/50 text-red-400 border border-red-200/60 cursor-not-allowed'
+                                  : isClosedDay
+                                  ? 'bg-amber-50/50 text-amber-500/80 border border-amber-200/50 cursor-not-allowed'
+                                  : isPastDate
                                   ? 'text-[#6B7068]/30 cursor-not-allowed line-through'
                                   : 'text-[#10110F] hover:bg-white hover:text-[#263D2B]'
                               }`}
                             >
-                              {day}
+                              <span className={isSunday ? 'line-through text-[11px]' : ''}>{day}</span>
+                              {isSunday && (
+                                <span className="text-[6.5px] sm:text-[7px] font-extrabold uppercase tracking-tighter text-red-500 leading-none -mt-0.5">
+                                  Closed
+                                </span>
+                              )}
                             </button>
                           );
                         }
@@ -1087,7 +1580,7 @@ export default function BookingPage() {
                         const remainingCells = (7 - (totalCellsSoFar % 7)) % 7;
                         for (let nextDay = 1; nextDay <= remainingCells; nextDay++) {
                           cells.push(
-                            <div key={`next-${nextDay}`} className="h-8 w-8 min-[380px]:h-9 min-[380px]:w-9 sm:h-10 sm:w-10 rounded-full flex items-center justify-center text-xs text-[#6B7068]/40 cursor-not-allowed mx-auto font-medium">
+                            <div key={`next-${nextDay}`} className="h-9 w-9 min-[380px]:h-10 min-[380px]:w-10 sm:h-11 sm:w-11 rounded-full flex items-center justify-center text-xs text-[#6B7068]/40 cursor-not-allowed mx-auto font-medium">
                               {nextDay}
                             </div>
                           );
@@ -1095,6 +1588,22 @@ export default function BookingPage() {
 
                         return cells;
                       })()}
+                    </div>
+
+                    {/* Calendar Status Legend */}
+                    <div className="flex items-center justify-between text-[11px] pt-2 px-1 text-[#6B7068] border-t border-[#DCE1D8]/70">
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-[#263D2B]"></span>
+                        <span>Selected</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-[#10110F]"></span>
+                        <span>Mon – Sat Open</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-red-600 font-semibold">
+                        <span className="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+                        <span>Sunday Closed</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1132,48 +1641,74 @@ export default function BookingPage() {
                     </div>
                   )}
 
-                  {/* 4-Column Time Slots Grid (Generated dynamically at 15-min intervals) */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-h-[380px] overflow-y-auto pr-1">
-                    {activeTimeSlots.map((slot) => {
-                      const booked = isSlotBooked(selectedDate, slot);
-                      const isSelected = selectedTime === slot;
+                  {/* Available Time Slots Grid or Empty Closed/Past Banner */}
+                  {activeTimeSlots.length === 0 ? (
+                    <div className="p-6 sm:p-8 rounded-2xl bg-[#F7F4ED] border border-[#DCE1D8] text-center space-y-2.5">
+                      <div className="w-11 h-11 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center mx-auto">
+                        <Clock className="w-5 h-5" />
+                      </div>
+                      <h5 className="font-serif font-bold text-[#10110F] text-base">
+                        {(() => {
+                          const opH = salonDB.getOperatingHoursForDate(selectedDate);
+                          if (!opH.isOpen) {
+                            return opH.reason || 'Salon is Closed on This Date';
+                          }
+                          return 'All Appointment Slots for Today Have Concluded';
+                        })()}
+                      </h5>
+                      <p className="text-xs text-[#6B7068] max-w-md mx-auto">
+                        {(() => {
+                          const opH = salonDB.getOperatingHoursForDate(selectedDate);
+                          if (!opH.isOpen) {
+                            return 'GLAM GIRL BY JANKI is closed on Sundays and scheduled holidays. Please choose any date from Monday through Saturday to schedule your appointment.';
+                          }
+                          return 'Same-day booking slots have concluded for today. Please select tomorrow or an upcoming business day on the calendar above.';
+                        })()}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-2.5">
+                      {activeTimeSlots.map((slot) => {
+                        const booked = isSlotBooked(selectedDate, slot);
+                        const isSelected = selectedTime === slot;
 
-                      if (booked) {
+                        if (booked) {
+                          return (
+                            <button
+                              key={slot}
+                              type="button"
+                              disabled={true}
+                              aria-label={`${slot} - Unavailable`}
+                              className="py-3 px-3 rounded-xl text-xs font-medium bg-[#F7F4ED] text-[#6B7068]/40 border border-[#DCE1D8] cursor-not-allowed line-through text-center"
+                            >
+                              {slot}
+                            </button>
+                          );
+                        }
+
                         return (
                           <button
                             key={slot}
                             type="button"
-                            disabled={true}
-                            aria-label={`${slot} - Unavailable`}
-                            className="py-3 px-3 rounded-xl text-xs font-medium bg-[#F7F4ED] text-[#6B7068]/40 border border-[#DCE1D8] cursor-not-allowed line-through text-center"
+                            onClick={() => {
+                              setSelectedTime(slot);
+                              setSlotErrorMessage('');
+                            }}
+                            aria-label={`${slot} - ${isSelected ? 'Selected' : 'Available'}`}
+                            aria-pressed={isSelected}
+                            className={`py-3 px-3 rounded-xl text-xs font-semibold transition-all cursor-pointer text-center border relative ${
+                              isSelected
+                                ? 'bg-[#263D2B] text-white border-[#263D2B] shadow-md shadow-[#263D2B]/30 font-bold scale-[1.02] ring-2 ring-[#263D2B] ring-offset-1'
+                                : 'bg-white text-[#10110F] border-[#DCE1D8] hover:border-[#263D2B] hover:bg-[#F7F4ED]'
+                            }`}
                           >
+                            {isSelected && <span className="inline-block mr-1">✓</span>}
                             {slot}
                           </button>
                         );
-                      }
-
-                      return (
-                        <button
-                          key={slot}
-                          type="button"
-                          onClick={() => {
-                            setSelectedTime(slot);
-                            setSlotErrorMessage('');
-                          }}
-                          aria-label={`${slot} - ${isSelected ? 'Selected' : 'Available'}`}
-                          aria-pressed={isSelected}
-                          className={`py-3 px-3 rounded-xl text-xs font-semibold transition-all cursor-pointer text-center border relative ${
-                            isSelected
-                              ? 'bg-[#263D2B] text-white border-[#263D2B] shadow-md shadow-[#263D2B]/30 font-bold scale-[1.02] ring-2 ring-[#263D2B] ring-offset-1'
-                              : 'bg-white text-[#10110F] border-[#DCE1D8] hover:border-[#263D2B] hover:bg-[#F7F4ED]'
-                          }`}
-                        >
-                          {isSelected && <span className="inline-block mr-1">✓</span>}
-                          {slot}
-                        </button>
-                      );
-                    })}
-                  </div>
+                      })}
+                    </div>
+                  )}
 
                   {/* Time Legend Bar */}
                   <div className="flex items-center justify-center gap-6 text-[11px] text-[#6B7068] pt-1 font-sans">
@@ -1189,6 +1724,56 @@ export default function BookingPage() {
                       <span className="w-3 h-3 rounded-md bg-[#F7F4ED] border border-[#DCE1D8] text-[8px] flex items-center justify-center text-[#6B7068]/50">✕</span>
                       <span>Unavailable</span>
                     </div>
+                  </div>
+
+                  {/* Appointment Notifications & Reminders Preview Card */}
+                  <div className="p-4 rounded-2xl bg-[#F7F4ED]/80 border border-[#DCE1D8] space-y-2 mt-2">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-lg bg-[#263D2B] text-white flex items-center justify-center shadow-xs">
+                          <Bell className="w-3.5 h-3.5 text-white" />
+                        </div>
+                        <span className="font-serif font-bold text-xs sm:text-sm text-[#10110F]">
+                          Appointment Notifications & Reminders
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#263D2B] bg-[#263D2B]/10 px-2.5 py-0.5 rounded-full border border-[#263D2B]/20">
+                        Ottawa (EST) Timezone
+                      </span>
+                    </div>
+
+                    {selectedDate && selectedTime && reminderSchedulePreview ? (
+                      <div className="space-y-2 text-xs">
+                        <p className="text-[#465640]">
+                          For your selected visit on <strong className="text-[#10110F]">{formatSelectedDisplayDate(selectedDate)} at {selectedTime}</strong>, our persistent scheduler automatically computes your reminder timeline upon salon confirmation:
+                        </p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          <div className="p-2.5 rounded-xl bg-white border border-[#DCE1D8] space-y-0.5">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-[#465640] block">
+                              24-Hour Reminder:
+                            </span>
+                            <span className="font-semibold text-xs text-[#10110F]">
+                              {reminderSchedulePreview.reminder24hFormatted}
+                            </span>
+                          </div>
+                          <div className="p-2.5 rounded-xl bg-white border border-[#DCE1D8] space-y-0.5">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-[#465640] block">
+                              3-Hour Reminder:
+                            </span>
+                            <span className="font-semibold text-xs text-[#10110F]">
+                              {reminderSchedulePreview.reminder3hFormatted}
+                            </span>
+                          </div>
+                        </div>
+                        <p className="text-[11px] text-[#6B7068]">
+                          ✓ You will be able to customize your reminder options and channels (In-app, Browser Push) in the next step before confirming.
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="text-xs text-[#6B7068]">
+                        Select an appointment date and time slot above to preview your personalized 24-hour and 3-hour reminder schedule.
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -1369,6 +1954,358 @@ export default function BookingPage() {
                   </div>
                 </div>
 
+                {/* ========================================================================= */}
+                {/* APPOINTMENT NOTIFICATIONS & REMINDERS SECTION                             */}
+                {/* ========================================================================= */}
+                <div id="appointment-notifications-section" className="pt-4 border-t border-[#DCE1D8] space-y-4">
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between flex-wrap gap-2">
+                          <div className="flex items-center gap-2">
+                            <div className="w-7 h-7 rounded-lg bg-[#263D2B] text-white flex items-center justify-center shadow-xs">
+                              <Bell className="w-4 h-4 text-white" />
+                            </div>
+                            <h4 className="font-serif font-bold text-base text-[#10110F]">
+                              Appointment Notifications & Reminders
+                            </h4>
+                          </div>
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-[#263D2B] bg-[#263D2B]/10 px-2.5 py-0.5 rounded-full border border-[#263D2B]/20">
+                            Persistent Alerts
+                          </span>
+                        </div>
+                        <p className="text-xs text-[#6B7068]">
+                          Personalize your appointment alerts. Select the reminder triggers and delivery channels you prefer.
+                        </p>
+                      </div>
+
+                      {/* Reminder Options */}
+                      <div className="space-y-2">
+                        {/* 1. Appointment Confirmation */}
+                        <div
+                          role="switch"
+                          aria-checked={notificationPreferences.confirmation}
+                          tabIndex={0}
+                          onClick={() => handleTogglePreference('confirmation')}
+                          onKeyDown={(e) => {
+                            if (e.key === ' ' || e.key === 'Enter') {
+                              e.preventDefault();
+                              handleTogglePreference('confirmation');
+                            }
+                          }}
+                          className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-start justify-between gap-3 ${
+                            notificationPreferences.confirmation
+                              ? 'bg-[#263D2B]/5 border-[#263D2B] shadow-xs'
+                              : 'bg-white border-[#DCE1D8] hover:border-[#465640]'
+                          }`}
+                        >
+                          <div className="space-y-0.5">
+                            <div className="flex items-center gap-2">
+                              <span className="font-serif font-bold text-xs sm:text-sm text-[#10110F]">
+                                Appointment Confirmation
+                              </span>
+                              {notificationPreferences.confirmation && (
+                                <span className="text-[10px] font-bold text-[#263D2B] bg-[#263D2B]/10 px-2 py-0.5 rounded-full">
+                                  ✓ Enabled
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs text-[#6B7068] leading-relaxed">
+                              Notify me when my booking is confirmed by the salon.
+                            </p>
+                          </div>
+                          <div
+                            className={`w-11 h-6 rounded-full transition-colors p-0.5 shrink-0 flex items-center ${
+                              notificationPreferences.confirmation ? 'bg-[#263D2B] justify-end' : 'bg-[#DCE1D8] justify-start'
+                            }`}
+                          >
+                            <span className="w-5 h-5 rounded-full bg-white shadow-xs block" />
+                          </div>
+                        </div>
+
+                        {/* 2. 24-Hour Reminder */}
+                        <div
+                          role="switch"
+                          aria-checked={notificationPreferences.reminder24h}
+                          tabIndex={0}
+                          onClick={() => handleTogglePreference('reminder24h')}
+                          onKeyDown={(e) => {
+                            if (e.key === ' ' || e.key === 'Enter') {
+                              e.preventDefault();
+                              handleTogglePreference('reminder24h');
+                            }
+                          }}
+                          className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-start justify-between gap-3 ${
+                            notificationPreferences.reminder24h
+                              ? 'bg-[#263D2B]/5 border-[#263D2B] shadow-xs'
+                              : 'bg-white border-[#DCE1D8] hover:border-[#465640]'
+                          }`}
+                        >
+                          <div className="space-y-0.5">
+                            <div className="flex items-center gap-2">
+                              <span className="font-serif font-bold text-xs sm:text-sm text-[#10110F]">
+                                24-Hour Reminder
+                              </span>
+                              {notificationPreferences.reminder24h && (
+                                <span className="text-[10px] font-bold text-[#263D2B] bg-[#263D2B]/10 px-2 py-0.5 rounded-full">
+                                  ✓ Enabled
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs text-[#6B7068] leading-relaxed">
+                              Remind me one day before my appointment with studio address & prep directions.
+                            </p>
+                            {reminderSchedulePreview && (
+                              <div className="text-[11px] font-semibold text-[#263D2B] pt-0.5">
+                                Scheduled: {reminderSchedulePreview.reminder24hFormatted} (EST)
+                              </div>
+                            )}
+                          </div>
+                          <div
+                            className={`w-11 h-6 rounded-full transition-colors p-0.5 shrink-0 flex items-center ${
+                              notificationPreferences.reminder24h ? 'bg-[#263D2B] justify-end' : 'bg-[#DCE1D8] justify-start'
+                            }`}
+                          >
+                            <span className="w-5 h-5 rounded-full bg-white shadow-xs block" />
+                          </div>
+                        </div>
+
+                        {/* 3. 3-Hour Reminder */}
+                        <div
+                          role="switch"
+                          aria-checked={notificationPreferences.reminder3h}
+                          tabIndex={0}
+                          onClick={() => handleTogglePreference('reminder3h')}
+                          onKeyDown={(e) => {
+                            if (e.key === ' ' || e.key === 'Enter') {
+                              e.preventDefault();
+                              handleTogglePreference('reminder3h');
+                            }
+                          }}
+                          className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-start justify-between gap-3 ${
+                            notificationPreferences.reminder3h
+                              ? 'bg-[#263D2B]/5 border-[#263D2B] shadow-xs'
+                              : 'bg-white border-[#DCE1D8] hover:border-[#465640]'
+                          }`}
+                        >
+                          <div className="space-y-0.5">
+                            <div className="flex items-center gap-2">
+                              <span className="font-serif font-bold text-xs sm:text-sm text-[#10110F]">
+                                3-Hour Reminder
+                              </span>
+                              {notificationPreferences.reminder3h && (
+                                <span className="text-[10px] font-bold text-[#263D2B] bg-[#263D2B]/10 px-2 py-0.5 rounded-full">
+                                  ✓ Enabled
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs text-[#6B7068] leading-relaxed">
+                              Remind me three hours before my appointment so I can travel with peace of mind.
+                            </p>
+                            {reminderSchedulePreview && (
+                              <div className="text-[11px] font-semibold text-[#263D2B] pt-0.5">
+                                Scheduled: {reminderSchedulePreview.reminder3hFormatted} (EST)
+                              </div>
+                            )}
+                          </div>
+                          <div
+                            className={`w-11 h-6 rounded-full transition-colors p-0.5 shrink-0 flex items-center ${
+                              notificationPreferences.reminder3h ? 'bg-[#263D2B] justify-end' : 'bg-[#DCE1D8] justify-start'
+                            }`}
+                          >
+                            <span className="w-5 h-5 rounded-full bg-white shadow-xs block" />
+                          </div>
+                        </div>
+
+                        {/* 4. Appointment Updates */}
+                        <div
+                          role="switch"
+                          aria-checked={notificationPreferences.updates}
+                          tabIndex={0}
+                          onClick={() => handleTogglePreference('updates')}
+                          onKeyDown={(e) => {
+                            if (e.key === ' ' || e.key === 'Enter') {
+                              e.preventDefault();
+                              handleTogglePreference('updates');
+                            }
+                          }}
+                          className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-start justify-between gap-3 ${
+                            notificationPreferences.updates
+                              ? 'bg-[#263D2B]/5 border-[#263D2B] shadow-xs'
+                              : 'bg-white border-[#DCE1D8] hover:border-[#465640]'
+                          }`}
+                        >
+                          <div className="space-y-0.5">
+                            <div className="flex items-center gap-2">
+                              <span className="font-serif font-bold text-xs sm:text-sm text-[#10110F]">
+                                Appointment Updates
+                              </span>
+                              {notificationPreferences.updates && (
+                                <span className="text-[10px] font-bold text-[#263D2B] bg-[#263D2B]/10 px-2 py-0.5 rounded-full">
+                                  ✓ Enabled
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs text-[#6B7068] leading-relaxed">
+                              Notify me if my appointment is rescheduled or cancelled.
+                            </p>
+                          </div>
+                          <div
+                            className={`w-11 h-6 rounded-full transition-colors p-0.5 shrink-0 flex items-center ${
+                              notificationPreferences.updates ? 'bg-[#263D2B] justify-end' : 'bg-[#DCE1D8] justify-start'
+                            }`}
+                          >
+                            <span className="w-5 h-5 rounded-full bg-white shadow-xs block" />
+                          </div>
+                        </div>
+
+                        {/* 5. Aftercare & Review Reminder */}
+                        <div
+                          role="switch"
+                          aria-checked={notificationPreferences.aftercare}
+                          tabIndex={0}
+                          onClick={() => handleTogglePreference('aftercare')}
+                          onKeyDown={(e) => {
+                            if (e.key === ' ' || e.key === 'Enter') {
+                              e.preventDefault();
+                              handleTogglePreference('aftercare');
+                            }
+                          }}
+                          className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-start justify-between gap-3 ${
+                            notificationPreferences.aftercare
+                              ? 'bg-[#263D2B]/5 border-[#263D2B] shadow-xs'
+                              : 'bg-white border-[#DCE1D8] hover:border-[#465640]'
+                          }`}
+                        >
+                          <div className="space-y-0.5">
+                            <div className="flex items-center gap-2">
+                              <span className="font-serif font-bold text-xs sm:text-sm text-[#10110F]">
+                                Aftercare & Review Reminder
+                              </span>
+                              {notificationPreferences.aftercare && (
+                                <span className="text-[10px] font-bold text-[#263D2B] bg-[#263D2B]/10 px-2 py-0.5 rounded-full">
+                                  ✓ Enabled
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs text-[#6B7068] leading-relaxed">
+                              Notify me after my completed appointment when appropriate with ritual care instructions & review rewards.
+                            </p>
+                          </div>
+                          <div
+                            className={`w-11 h-6 rounded-full transition-colors p-0.5 shrink-0 flex items-center ${
+                              notificationPreferences.aftercare ? 'bg-[#263D2B] justify-end' : 'bg-[#DCE1D8] justify-start'
+                            }`}
+                          >
+                            <span className="w-5 h-5 rounded-full bg-white shadow-xs block" />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Notification Channels */}
+                      <div className="pt-3 border-t border-[#DCE1D8] space-y-3">
+                        <div className="space-y-0.5">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-bold uppercase tracking-wider text-[#10110F]">
+                              Available Notification Channels
+                            </span>
+                            <span className="text-[10px] text-[#465640] font-semibold">
+                              Verified Channels Only
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-[#6B7068]">
+                            We respect your inbox. Only channels actively supported by our platform are dispatched.
+                          </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                          {/* Channel 1: In-App Notification (Supported & Always Available) */}
+                          <div className="p-3.5 rounded-2xl bg-white border border-[#263D2B] shadow-xs space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-1.5 text-xs font-bold text-[#10110F]">
+                                <Bell className="w-3.5 h-3.5 text-[#263D2B]" />
+                                <span>In-App Notification</span>
+                              </div>
+                              <span className="text-[10px] font-bold text-[#263D2B] bg-[#263D2B]/10 px-2 py-0.5 rounded-full border border-[#263D2B]/20">
+                                Active & Ready
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-[#6B7068]">
+                              Delivered directly to your patron account dashboard and navigation bell tray.
+                            </p>
+                          </div>
+
+                          {/* Channel 2: Browser Push Notifications (Web Notification API) */}
+                          <div className={`p-3.5 rounded-2xl border transition-all space-y-2 ${
+                            notificationChannels.browserPush
+                              ? 'bg-[#263D2B]/5 border-[#263D2B] shadow-xs'
+                              : 'bg-white border-[#DCE1D8]'
+                          }`}>
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-1.5 text-xs font-bold text-[#10110F]">
+                                <Smartphone className="w-3.5 h-3.5 text-[#263D2B]" />
+                                <span>Browser Push Alerts</span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={handleToggleBrowserPush}
+                                className={`text-[10px] font-bold px-2 py-0.5 rounded-full transition-colors cursor-pointer ${
+                                  notificationChannels.browserPush
+                                    ? 'bg-[#263D2B] text-white'
+                                    : 'bg-[#F7F4ED] text-[#465640] hover:bg-[#263D2B] hover:text-white border border-[#DCE1D8]'
+                                }`}
+                              >
+                                {notificationChannels.browserPush ? '✓ Enabled' : browserPushPermission === 'denied' ? 'Permission Blocked' : 'Enable Push'}
+                              </button>
+                            </div>
+                            <p className="text-[11px] text-[#6B7068]">
+                              Desktop & mobile browser alerts, even when this tab is not actively in view.
+                            </p>
+                            {pushStatusMessage && (
+                              <div className="text-[10.5px] font-medium text-[#263D2B] pt-0.5">
+                                {pushStatusMessage}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Channel 3: Email (Currently Unavailable) */}
+                          <div className="p-3.5 rounded-2xl bg-[#F7F4ED]/50 border border-dashed border-[#DCE1D8] space-y-1.5 opacity-85">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-1.5 text-xs font-semibold text-[#6B7068]">
+                                <Mail className="w-3.5 h-3.5 text-[#6B7068]" />
+                                <span>Email Notification</span>
+                              </div>
+                              <span className="text-[10px] font-bold text-amber-900 bg-amber-100/70 px-2 py-0.5 rounded-full border border-amber-200">
+                                Currently Unavailable
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-[#6B7068]">
+                              Automated email delivery requires backend SMTP / transactional email server integration (e.g. Postmark, SendGrid).
+                            </p>
+                            {formData.email && (
+                              <span className="text-[10px] font-mono text-[#6B7068] block">
+                                Destination: {formData.email}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Channel 4: WhatsApp / SMS Concierge (Currently Unavailable for Automated Bot) */}
+                          <div className="p-3.5 rounded-2xl bg-[#F7F4ED]/50 border border-dashed border-[#DCE1D8] space-y-1.5 opacity-85">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-1.5 text-xs font-semibold text-[#6B7068]">
+                                <MessageCircle className="w-3.5 h-3.5 text-[#6B7068]" />
+                                <span>WhatsApp / SMS Bot</span>
+                              </div>
+                              <span className="text-[10px] font-bold text-amber-900 bg-amber-100/70 px-2 py-0.5 rounded-full border border-amber-200">
+                                Currently Unavailable
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-[#6B7068]">
+                              Automated text dispatch requires an SMS gateway (Twilio) or WhatsApp Cloud API. Direct 1-on-1 WhatsApp messaging with owner Janki remains available on confirmation.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
                 <div className="pt-4 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 border-t border-[#DCE1D8]">
                   <button
                     type="button"
@@ -1408,12 +2345,12 @@ export default function BookingPage() {
                 </div>
 
                 <div className="space-y-1">
-                  <span className="inline-block px-3.5 py-1 rounded-full bg-[#263D2B]/10 text-[#263D2B] text-[10px] font-bold uppercase tracking-wider">
+                  <span className="inline-block px-3.5 py-1 rounded-full bg-[#263D2B]/10 text-[#263D2B] text-[10px] font-bold uppercase tracking-wider border border-[#263D2B]/20">
                     ✓ Booking Submitted Successfully
                   </span>
-                  <h3 className="font-serif text-2xl font-normal text-[#10110F]">Appointment Requested!</h3>
+                  <h3 className="font-serif text-2xl font-normal text-[#10110F]">Your Appointment Has Been Booked!</h3>
                   <p className="text-xs text-[#6B7068] max-w-sm mx-auto">
-                    Thank you, <strong>{confirmedBooking.customerName}</strong>! Your appointment has been reserved.
+                    Thank you, <strong>{confirmedBooking.customerName}</strong>! Your appointment has been reserved in our salon queue.
                   </p>
                 </div>
 
@@ -1423,7 +2360,13 @@ export default function BookingPage() {
                     <span className="font-mono font-bold text-[#10110F]">{confirmedBooking.referenceCode}</span>
                   </div>
                   <div className="flex justify-between border-b border-[#DCE1D8] pb-2">
-                    <span className="text-[#6B7068] font-semibold">Service:</span>
+                    <span className="text-[#6B7068] font-semibold">Current Booking Status:</span>
+                    <span className="font-bold text-[#263D2B] bg-[#263D2B]/10 px-2.5 py-0.5 rounded-full border border-[#263D2B]/20 text-[11px]">
+                      {confirmedBooking.status || 'Pending Salon Confirmation'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between border-b border-[#DCE1D8] pb-2">
+                    <span className="text-[#6B7068] font-semibold">Service Name:</span>
                     <span className="font-bold text-[#10110F]">{confirmedBooking.service}</span>
                   </div>
                   {confirmedBooking.isSalonDay && confirmedBooking.itineraryServices && confirmedBooking.itineraryServices.length > 0 && (
@@ -1512,12 +2455,105 @@ export default function BookingPage() {
                   <div className="flex justify-between border-b border-[#DCE1D8] pb-2">
                     <span className="text-[#6B7068] font-semibold">Date & Time:</span>
                     <span className="font-bold text-[#10110F]">
-                      {confirmedBooking.date} • {confirmedBooking.startTime || confirmedBooking.time}{confirmedBooking.endTime ? ` – ${confirmedBooking.endTime}` : ''} ({confirmedBooking.serviceDuration || `${confirmedBooking.durationMinutes} min`})
+                      {formatSelectedDisplayDate(confirmedBooking.date)} • {confirmedBooking.startTime || confirmedBooking.time}{confirmedBooking.endTime ? ` – ${confirmedBooking.endTime}` : ''} ({confirmedBooking.serviceDuration || `${confirmedBooking.durationMinutes} min`})
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[#6B7068] font-semibold">Master Artist:</span>
                     <span className="font-bold text-[#10110F]">{confirmedBooking.stylist}</span>
+                  </div>
+                </div>
+
+                {/* Selected Notification Preferences & Channels Receipt Card */}
+                <div className="p-4 rounded-2xl bg-white border border-[#DCE1D8] text-left space-y-3 text-xs shadow-xs">
+                  <div className="flex items-center justify-between pb-2 border-b border-[#DCE1D8]">
+                    <div className="flex items-center gap-1.5 font-bold text-[#10110F] text-xs">
+                      <Bell className="w-3.5 h-3.5 text-[#263D2B]" />
+                      <span>Configured Notifications & Reminders</span>
+                    </div>
+                    <span className="text-[10px] font-bold text-[#263D2B] bg-[#263D2B]/10 px-2 py-0.5 rounded-full">
+                      Persistent Schedule
+                    </span>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#465640] block">
+                      Active Triggers & Reminders:
+                    </span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                      <div className="p-2 rounded-xl bg-[#F7F4ED] border border-[#DCE1D8] flex items-center justify-between">
+                        <span className="text-[#6B7068]">Appointment Confirmation:</span>
+                        <span className="font-semibold text-[#10110F]">
+                          {confirmedBooking.notificationPreferences?.confirmation !== false ? '✓ Enabled' : 'Disabled'}
+                        </span>
+                      </div>
+                      <div className="p-2 rounded-xl bg-[#F7F4ED] border border-[#DCE1D8] flex items-center justify-between">
+                        <span className="text-[#6B7068]">24-Hour Reminder:</span>
+                        <span className="font-semibold text-[#10110F]">
+                          {confirmedBooking.notificationPreferences?.reminder24h !== false ? '✓ Scheduled' : 'Disabled'}
+                        </span>
+                      </div>
+                      <div className="p-2 rounded-xl bg-[#F7F4ED] border border-[#DCE1D8] flex items-center justify-between">
+                        <span className="text-[#6B7068]">3-Hour Reminder:</span>
+                        <span className="font-semibold text-[#10110F]">
+                          {confirmedBooking.notificationPreferences?.reminder3h !== false ? '✓ Scheduled' : 'Disabled'}
+                        </span>
+                      </div>
+                      <div className="p-2 rounded-xl bg-[#F7F4ED] border border-[#DCE1D8] flex items-center justify-between">
+                        <span className="text-[#6B7068]">Schedule Adjustments:</span>
+                        <span className="font-semibold text-[#10110F]">
+                          {confirmedBooking.notificationPreferences?.updates !== false ? '✓ Active' : 'Disabled'}
+                        </span>
+                      </div>
+                      <div className="p-2 rounded-xl bg-[#F7F4ED] border border-[#DCE1D8] flex items-center justify-between sm:col-span-2">
+                        <span className="text-[#6B7068]">Aftercare & Review:</span>
+                        <span className="font-semibold text-[#10110F]">
+                          {confirmedBooking.notificationPreferences?.aftercare !== false ? '✓ Active Post-Treatment' : 'Disabled'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1 pt-1 border-t border-[#DCE1D8]">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#465640] block">
+                      Delivery Channels:
+                    </span>
+                    <div className="space-y-1 text-[11px]">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[#10110F] font-medium">• In-App Notifications:</span>
+                        <span className="font-semibold text-[#263D2B]">Active (Delivered to Patron Dashboard & Bell)</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[#10110F] font-medium">• Browser Push Notifications:</span>
+                        <span className="font-semibold text-[#263D2B]">
+                          {confirmedBooking.notificationChannels?.browserPush ? '✓ Enabled on this Browser' : 'Inactive'}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between text-[#6B7068]">
+                        <span>• Email & Automated SMS:</span>
+                        <span className="italic">Currently unavailable (Requires server-side SMTP & SMS provider)</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-[#263D2B]/5 border border-[#263D2B]/20 text-[11px] text-[#465640] space-y-1">
+                    <div className="font-bold text-[#263D2B] flex items-center gap-1">
+                      <Clock className="w-3.5 h-3.5 text-[#263D2B]" />
+                      <span>When will your reminders be sent?</span>
+                    </div>
+                    <p className="leading-relaxed">
+                      Reminders are automatically dispatched in Eastern Standard Time (Ottawa). Once confirmed by the salon, your <strong>24-hour reminder</strong> will be delivered one day prior to {confirmedBooking.date}, and your <strong>3-hour reminder</strong> will arrive on the day of your appointment. Post-treatment aftercare recommendations will be delivered upon ritual completion.
+                    </p>
+                  </div>
+
+                  <div className="pt-1 flex items-center justify-end">
+                    <Link
+                      to="/customer-dashboard?tab=notifications"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#263D2B] hover:bg-[#1E3022] text-white text-xs font-semibold shadow-xs transition-colors"
+                    >
+                      <BellRing className="w-3.5 h-3.5" />
+                      <span>Manage Notification Preferences</span>
+                    </Link>
                   </div>
                 </div>
 
@@ -1559,8 +2595,8 @@ export default function BookingPage() {
             )}
           </div>
 
-          {/* COLUMN 3: LIVE APPOINTMENT SUMMARY (RIGHT CARD) */}
-          <div className="col-span-12 md:col-span-5 xl:col-span-3 space-y-5 sm:space-y-6 md:sticky md:top-24">
+          {/* COLUMN 3: LIVE APPOINTMENT SUMMARY (RIGHT CARD ON DESKTOP, BELOW MAIN CARD ON TABLET/MOBILE) */}
+          <div className="col-span-1 xl:col-span-3 min-w-0 space-y-5 sm:space-y-6 xl:sticky xl:top-28 xl:self-start xl:max-h-[calc(100vh-8rem)] xl:overflow-y-auto custom-scrollbar">
             <div className="bg-white rounded-3xl p-4 sm:p-5 lg:p-6 border border-[#DCE1D8] shadow-md space-y-4 sm:space-y-5">
               <h3 className="font-serif font-normal text-lg text-[#10110F]">Appointment Summary</h3>
 
@@ -1606,7 +2642,7 @@ export default function BookingPage() {
                   <div>
                     <span className="text-[10px] text-[#6B7068] uppercase font-bold block">Date</span>
                     <span className="font-semibold text-xs">
-                      {new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      {formatSelectedDisplayDate(appointmentDate || selectedDate)}
                     </span>
                   </div>
                 </div>
@@ -1759,6 +2795,17 @@ export default function BookingPage() {
               </div>
 
               <div className="pills-scroll pb-1 gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setSelectedCategory('all')}
+                  className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                    selectedCategory === 'all'
+                      ? 'bg-[#263D2B] text-white'
+                      : 'bg-white border border-[#DCE1D8] text-[#10110F] hover:bg-[#F7F4ED]'
+                  }`}
+                >
+                  All Services
+                </button>
                 {CATEGORIES.map((cat) => (
                   <button
                     key={cat.id}

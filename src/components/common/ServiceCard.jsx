@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import SafeServiceImage from './SafeServiceImage';
 import ScrollReveal from '../ScrollReveal/ScrollReveal';
 
-export default function ServiceCard({ service, onQuickBook, onViewDetails }) {
+export default function ServiceCard({ service, onQuickBook, onViewDetails, showBooking = true }) {
   const navigate = useNavigate();
 
   if (!service) return null;
@@ -79,8 +79,8 @@ export default function ServiceCard({ service, onQuickBook, onViewDetails }) {
           </div>
 
           {/* Card Footer Buttons Row */}
-          <div className="flex items-center justify-between gap-2 pt-4 border-t border-[#DCE1D8] mt-auto">
-            {/* Left: MORE DETAILS -> */}
+          <div className={`flex items-center ${showBooking ? 'justify-between' : 'justify-end'} gap-2 pt-4 border-t border-[#DCE1D8] mt-auto`}>
+            {/* Left/Main: MORE DETAILS -> */}
             <Link
               to={detailUrl}
               onClick={(e) => {
@@ -89,21 +89,23 @@ export default function ServiceCard({ service, onQuickBook, onViewDetails }) {
                   onViewDetails(service);
                 }
               }}
-              className="global-button-secondary btn-luxury-arrow !px-3.5 !py-1.5 !text-[10.5px]"
+              className={`global-button-secondary btn-luxury-arrow !px-3.5 !py-1.5 !text-[10.5px] ${!showBooking ? 'w-full justify-between' : ''}`}
             >
-              <span>DETAILS</span>
+              <span>VIEW TREATMENT DETAILS</span>
               <span className="arrow-symbol text-xs">→</span>
             </Link>
 
-            {/* Right: BOOK APPOINTMENT */}
-            <button
-              type="button"
-              onClick={handleBook}
-              className="global-button !px-4 !py-2 !text-[11px]"
-            >
-              <span>BOOK NOW</span>
-              <span className="text-xs ml-1">→</span>
-            </button>
+            {/* Right: BOOK APPOINTMENT (Conditional) */}
+            {showBooking && (
+              <button
+                type="button"
+                onClick={handleBook}
+                className="global-button !px-4 !py-2 !text-[11px]"
+              >
+                <span>BOOK NOW</span>
+                <span className="text-xs ml-1">→</span>
+              </button>
+            )}
           </div>
         </div>
       </div>

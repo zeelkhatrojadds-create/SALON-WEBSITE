@@ -9,6 +9,7 @@ import DeferredSection from '../components/common/DeferredSection';
 const FestivalOfferPopup = lazy(() => import('../components/home/FestivalOfferPopup'));
 const FestivalOffersSection = lazy(() => import('../components/home/FestivalOffersSection'));
 const SeasonalBeautyMenuSection = lazy(() => import('../components/home/SeasonalBeautyMenuSection'));
+const ClientCustomizationStudio = lazy(() => import('../components/customization/ClientCustomizationStudio'));
 const ServicesPage = lazy(() => import('./ServicesPage'));
 const GalleryPage = lazy(() => import('./GalleryPage'));
 const AboutPage = lazy(() => import('./AboutPage'));
@@ -86,6 +87,13 @@ export default function HomePage({ defaultSection = null }) {
       <DeferredSection id="services" minHeight="min-h-[600px]" className="border-t border-[#DCE1D8]">
         <Suspense fallback={<SectionSkeleton height="min-h-[600px]" />}>
           <ServicesPage isSection={true} />
+        </Suspense>
+      </DeferredSection>
+
+      {/* 2.5 CLIENT CUSTOMIZATION STUDIO SECTION: "Create Your Own Beauty Experience" */}
+      <DeferredSection id="custom-experience" minHeight="min-h-[600px]" className="border-t border-[#DCE1D8]">
+        <Suspense fallback={<SectionSkeleton height="min-h-[600px]" />}>
+          <ClientCustomizationStudio isEmbedded={true} />
         </Suspense>
       </DeferredSection>
 

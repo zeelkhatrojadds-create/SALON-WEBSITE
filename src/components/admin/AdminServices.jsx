@@ -245,6 +245,26 @@ export default function AdminServices({ customServices = [], onUpdateServices })
           </button>
 
           <a
+            href="/skin-atelier"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="global-button-secondary inline-flex items-center gap-1.5 !px-4 !py-2.5 text-xs font-semibold cursor-pointer text-[#263D2B]"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>The Skin Atelier (11 Services)</span>
+          </a>
+
+          <a
+            href="/lash-atelier"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="global-button-secondary inline-flex items-center gap-1.5 !px-4 !py-2.5 text-xs font-semibold cursor-pointer text-[#263D2B]"
+          >
+            <Eye className="w-3.5 h-3.5" />
+            <span>The Lash Atelier (12 Services)</span>
+          </a>
+
+          <a
             href="/mehndi-design-studio#mehndi-process-price-time"
             target="_blank"
             rel="noopener noreferrer"

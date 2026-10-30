@@ -192,6 +192,19 @@ export default function AdminCustomers() {
     }
   };
 
+  const handleClearAllCustomers = () => {
+    if (window.confirm('Are you sure you want to clear all customer accounts and bookings? This will wipe all customer profiles and appointments for a clean slate, preserving only administrator accounts.')) {
+      const res = salonDB.wipeAllCustomersAndAppointments();
+      if (res.success) {
+        showToast('All customer records and appointments have been cleared.');
+        loadCustomers();
+        setSelectedCustomer(null);
+      } else {
+        showToast('Failed to clear customer records.', 'error');
+      }
+    }
+  };
+
   return (
     <div className="space-y-6">
       
@@ -221,10 +234,19 @@ export default function AdminCustomers() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           <div className="bg-white px-3.5 py-2 rounded-xl border border-[#DCE1D8] text-xs font-semibold text-[#10110F]">
             Total Patrons: <span className="font-mono text-[#263D2B] font-bold">{customers.length}</span>
           </div>
+
+          <button
+            onClick={handleClearAllCustomers}
+            className="px-3.5 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+            title="Wipe all customer records and test data"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+            <span>Clear All Customers</span>
+          </button>
         </div>
       </div>
 

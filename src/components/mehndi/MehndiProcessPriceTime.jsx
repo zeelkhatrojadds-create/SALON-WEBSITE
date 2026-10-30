@@ -1,9 +1,10 @@
 // GLAM GIRL BY JANKI — Mehndi Application Process — Price & Time
 // Interactive 16-Service Menu with Live Multi-Select Price & Time Calculator,
 // 6-Step Application Process Timeline, Admin Price/Duration Manager, and Direct Booking Integration.
+// Strictly adheres to Salon Palette: #10110F (Deep Black), #263D2B (Forest Green), #465640 (Olive Green), #A8B5A0 (Sage), #F7F4ED (Warm Cream).
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   Sparkles,
   Calendar,
@@ -27,9 +28,9 @@ import {
   HelpCircle,
   ArrowRight,
   User,
-  Phone,
-  Mail,
-  Info
+  Info,
+  LayoutGrid,
+  Table as TableIcon
 } from 'lucide-react';
 import ScrollReveal from '../ScrollReveal/ScrollReveal';
 import salonDB from '../../db/salonDatabase';
@@ -41,8 +42,6 @@ import {
 } from '../../data/mehndiProcessData';
 
 export default function MehndiProcessPriceTime() {
-  const navigate = useNavigate();
-
   // ---------------------------------------------------------------------------
   // STATE: SERVICES & ADMIN CONTROLS
   // ---------------------------------------------------------------------------
@@ -50,24 +49,12 @@ export default function MehndiProcessPriceTime() {
   const [activeCategoryFilter, setActiveCategoryFilter] = useState('all');
   const [selectedServiceIds, setSelectedServiceIds] = useState(['front-hand-mehndi']);
   const [activeStepTab, setActiveStepTab] = useState(0);
+  const [viewMode, setViewMode] = useState('cards'); // 'cards' | 'table'
 
   // Admin Modal & Editing
   const [showAdminModal, setShowAdminModal] = useState(false);
   const [adminServiceEdit, setAdminServiceEdit] = useState(null);
   const [adminNotification, setAdminNotification] = useState('');
-
-  // Booking Modal State
-  const [showBookingModal, setShowBookingModal] = useState(false);
-  const [isSubmittingBooking, setIsSubmittingBooking] = useState(false);
-  const [bookingSuccess, setBookingSuccess] = useState(false);
-  const [bookingForm, setBookingForm] = useState({
-    date: '',
-    time: '11:00 AM',
-    fullName: '',
-    email: '',
-    phone: '',
-    notes: ''
-  });
 
   // Subscribe to live database updates
   useEffect(() => {
@@ -112,7 +99,6 @@ export default function MehndiProcessPriceTime() {
   const handleToggleService = (serviceId) => {
     setSelectedServiceIds((prev) => {
       if (prev.includes(serviceId)) {
-        // keep at least 1 or allow 0
         return prev.filter((id) => id !== serviceId);
       } else {
         return [...prev, serviceId];
@@ -175,74 +161,6 @@ export default function MehndiProcessPriceTime() {
     }
   };
 
-  // ---------------------------------------------------------------------------
-  // BOOKING HANDLER
-  // ---------------------------------------------------------------------------
-  const handleDirectBookingNav = () => {
-    const primaryId = selectedServices[0]?.serviceIdRef || 'bridal-mehndi';
-    const names = selectedServices.map((s) => s.name).join(', ');
-    const params = new URLSearchParams({
-      service: primaryId,
-      customService: `Mehndi Application: ${names}`,
-      price: priceTotals.display,
-      duration: timeTotals.display
-    });
-    navigate(`/book-appointment?${params.toString()}`);
-  };
-
-  const handleQuickBookingSubmit = (e) => {
-    e.preventDefault();
-    if (!bookingForm.fullName || !bookingForm.phone || !bookingForm.date) {
-      alert('Please provide your name, phone number, and preferred date.');
-      return;
-    }
-
-    setIsSubmittingBooking(true);
-
-    const names = selectedServices.map((s) => s.name).join(' + ') || 'Custom Mehndi Process';
-    const payload = {
-      id: 'bk_mproc_' + Date.now().toString(36),
-      serviceId: selectedServices[0]?.serviceIdRef || 'bridal-mehndi',
-      serviceName: `Mehndi Design: ${names}`,
-      category: 'henna',
-      price: priceTotals.min,
-      priceDisplay: priceTotals.display,
-      duration: timeTotals.display,
-      date: bookingForm.date,
-      time: bookingForm.time,
-      customerName: bookingForm.fullName.trim(),
-      customerEmail: bookingForm.email.trim(),
-      customerPhone: bookingForm.phone.trim(),
-      notes: `Custom Mehndi Package: ${names}. Est Time: ${timeTotals.display}. Client Notes: ${bookingForm.notes.trim()}`,
-      createdAt: new Date().toISOString(),
-      status: 'Pending',
-      appointmentStatus: 'Pending',
-      paymentMethod: 'Cash on Delivery',
-      source: 'Mehndi Process — Price & Time Section'
-    };
-
-    try {
-      salonDB.addAppointment(payload);
-    } catch (err) {
-      console.warn('Booking save error:', err);
-    }
-
-    // Celebration confetti
-    import('canvas-confetti')
-      .then(({ default: confetti }) => {
-        confetti({
-          particleCount: 65,
-          spread: 60,
-          origin: { y: 0.6 },
-          colors: ['#263D2B', '#465640', '#A8B5A0', '#F7F4ED']
-        });
-      })
-      .catch(() => {});
-
-    setBookingSuccess(true);
-    setIsSubmittingBooking(false);
-  };
-
   return (
     <section 
       id="mehndi-process-price-time" 
@@ -289,8 +207,8 @@ export default function MehndiProcessPriceTime() {
 
         {/* Disclaimer & Admin Controls Link */}
         <div className="pt-2 flex flex-wrap items-center justify-center gap-3 text-xs">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#F7F4ED] border border-[#DCE1D8] text-[#465640] text-[11px] font-medium">
-            <Info className="w-3.5 h-3.5 text-[#263D2B]" />
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#F7F4ED] border border-[#DCE1D8] text-[#465640] text-[11px] font-medium shadow-2xs">
+            <Info className="w-3.5 h-3.5 text-[#263D2B] flex-shrink-0" />
             <span>All prices are suggested estimates and must be approved by the salon admin before publication.</span>
           </div>
 
@@ -300,7 +218,7 @@ export default function MehndiProcessPriceTime() {
               setAdminServiceEdit(services[0]);
               setShowAdminModal(true);
             }}
-            className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#263D2B] hover:text-[#10110F] underline underline-offset-4 cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#DCE1D8] bg-white hover:border-[#263D2B] text-[11px] font-bold uppercase tracking-wider text-[#263D2B] hover:text-[#10110F] shadow-2xs cursor-pointer transition-colors"
           >
             <SlidersHorizontal className="w-3.5 h-3.5" />
             <span>Admin Price &amp; Time Controls</span>
@@ -327,57 +245,91 @@ export default function MehndiProcessPriceTime() {
               <span className="px-2.5 py-1 rounded-md bg-[#F7F4ED] font-mono font-semibold text-[#263D2B] border border-[#DCE1D8]">
                 6 Focused Stages
               </span>
-              <span>• Click any step to inspect</span>
+              <span>• Click any stage to inspect details</span>
             </div>
           </div>
 
-          {/* Step Pill Navigation */}
-          <div className="pt-6 pb-4 flex flex-wrap gap-2">
-            {MEHNDI_APPLICATION_PROCESS_STEPS.map((s, idx) => {
-              const isCurrent = activeStepTab === idx;
-              return (
-                <button
-                  key={s.step}
-                  type="button"
-                  onClick={() => setActiveStepTab(idx)}
-                  className={`px-3.5 py-2 rounded-2xl text-xs font-semibold tracking-wide transition-all cursor-pointer flex items-center gap-2 border ${
-                    isCurrent
-                      ? 'bg-[#263D2B] text-white border-[#263D2B] shadow-xs'
-                      : 'bg-[#F7F4ED] text-[#465640] border-[#DCE1D8] hover:border-[#263D2B]'
-                  }`}
-                >
-                  <span className="font-mono text-[10px] font-bold opacity-80">STEP {s.number}</span>
-                  <span className="font-serif">{s.title}</span>
-                </button>
-              );
-            })}
+          {/* Connected Step Sequential Pipeline (Visual Timeline) */}
+          <div className="pt-8 pb-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 relative">
+              {MEHNDI_APPLICATION_PROCESS_STEPS.map((s, idx) => {
+                const isCurrent = activeStepTab === idx;
+                return (
+                  <button
+                    key={s.step}
+                    type="button"
+                    onClick={() => setActiveStepTab(idx)}
+                    className={`p-4 rounded-2xl text-left transition-all cursor-pointer relative flex flex-col justify-between border ${
+                      isCurrent
+                        ? 'bg-[#263D2B] text-white border-[#263D2B] shadow-md ring-2 ring-[#263D2B]/20 scale-[1.02]'
+                        : 'bg-[#FBF9F4] text-[#10110F] border-[#DCE1D8] hover:border-[#465640] hover:bg-white'
+                    }`}
+                  >
+                    <div>
+                      {/* Step Number Node */}
+                      <div className="flex items-center justify-between mb-2">
+                        <span
+                          className={`w-7 h-7 rounded-full flex items-center justify-center font-mono text-xs font-bold transition-colors ${
+                            isCurrent
+                              ? 'bg-white text-[#263D2B]'
+                              : 'bg-[#263D2B]/10 text-[#263D2B]'
+                          }`}
+                        >
+                          {s.number}
+                        </span>
+                        <span
+                          className={`text-[9.5px] uppercase font-bold tracking-wider ${
+                            isCurrent ? 'text-[#A8B5A0]' : 'text-[#6B7068]'
+                          }`}
+                        >
+                          Stage {s.step}
+                        </span>
+                      </div>
+
+                      <h4
+                        className={`font-serif text-sm font-medium leading-snug mb-1 ${
+                          isCurrent ? 'text-white' : 'text-[#10110F]'
+                        }`}
+                      >
+                        {s.title}
+                      </h4>
+                    </div>
+
+                    <div className="pt-2 mt-2 border-t border-current/15 flex items-center gap-1 text-[10.5px]">
+                      <Clock className="w-3 h-3 flex-shrink-0" />
+                      <span className="truncate font-mono">{s.estimatedTime}</span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Active Step Deep-Dive Showcase */}
           {(() => {
             const step = MEHNDI_APPLICATION_PROCESS_STEPS[activeStepTab];
             return (
-              <div className="mt-6 p-6 sm:p-8 rounded-2xl bg-[#FBF9F4] border border-[#DCE1D8] grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+              <div className="mt-6 p-6 sm:p-8 rounded-2xl bg-[#F7F4ED] border border-[#DCE1D8] grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
                 <div className="md:col-span-8 space-y-3">
                   <div className="flex flex-wrap items-center gap-3">
-                    <span className="px-3 py-1 rounded-full bg-[#263D2B]/10 text-[#263D2B] text-[10.5px] font-mono font-bold tracking-wider">
+                    <span className="px-3 py-1 rounded-full bg-[#263D2B] text-white text-[10.5px] font-mono font-bold tracking-wider">
                       STEP {step.number} OF 06
                     </span>
-                    <span className="px-3 py-1 rounded-full bg-white text-[#465640] text-xs font-semibold border border-[#DCE1D8] flex items-center gap-1.5">
+                    <span className="px-3 py-1 rounded-full bg-white text-[#465640] text-xs font-semibold border border-[#DCE1D8] flex items-center gap-1.5 shadow-2xs">
                       <Clock className="w-3.5 h-3.5 text-[#263D2B]" />
-                      <span>{step.estimatedTime}</span>
+                      <span>Estimated Time: {step.estimatedTime}</span>
                     </span>
                   </div>
 
-                  <h4 className="font-serif text-2xl text-[#10110F] font-normal">
+                  <h4 className="font-serif text-2xl sm:text-3xl text-[#10110F] font-normal">
                     {step.title}
                   </h4>
 
-                  <p className="text-sm text-[#10110F] leading-relaxed font-normal">
+                  <p className="text-sm sm:text-base text-[#10110F] leading-relaxed font-normal">
                     {step.description}
                   </p>
 
-                  <p className="text-xs text-[#6B7068] leading-relaxed font-light pt-1 border-t border-[#DCE1D8]/60">
+                  <p className="text-xs text-[#6B7068] leading-relaxed font-light pt-2 border-t border-[#DCE1D8]">
                     <strong className="font-semibold text-[#465640]">Artisanal Discipline: </strong>
                     {step.details}
                   </p>
@@ -387,7 +339,7 @@ export default function MehndiProcessPriceTime() {
                   <span className="text-[10px] uppercase font-bold tracking-wider text-[#465640]">
                     STAGE DURATION
                   </span>
-                  <div className="font-mono text-xl font-bold text-[#263D2B]">
+                  <div className="font-mono text-xl sm:text-2xl font-bold text-[#263D2B]">
                     {step.estimatedTime}
                   </div>
                   <div className="flex gap-2">
@@ -395,17 +347,17 @@ export default function MehndiProcessPriceTime() {
                       type="button"
                       disabled={activeStepTab === 0}
                       onClick={() => setActiveStepTab((prev) => Math.max(0, prev - 1))}
-                      className="px-3 py-1.5 rounded-xl border border-[#DCE1D8] text-xs font-semibold text-[#465640] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white"
+                      className="px-3.5 py-1.5 rounded-xl border border-[#DCE1D8] text-xs font-semibold text-[#465640] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white cursor-pointer"
                     >
-                      ← Prev
+                      ← Prev Stage
                     </button>
                     <button
                       type="button"
                       disabled={activeStepTab === MEHNDI_APPLICATION_PROCESS_STEPS.length - 1}
                       onClick={() => setActiveStepTab((prev) => Math.min(MEHNDI_APPLICATION_PROCESS_STEPS.length - 1, prev + 1))}
-                      className="px-3 py-1.5 rounded-xl bg-[#263D2B] text-white text-xs font-semibold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#1f3123]"
+                      className="px-3.5 py-1.5 rounded-xl bg-[#263D2B] text-white text-xs font-semibold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#1f3123] cursor-pointer"
                     >
-                      Next Step →
+                      Next Stage →
                     </button>
                   </div>
                 </div>
@@ -424,8 +376,8 @@ export default function MehndiProcessPriceTime() {
         {/* Left Column: 16 Services Grid & Filtering */}
         <div className="lg:col-span-8 space-y-6">
           
-          {/* Controls Bar: Category Filter & Presets */}
-          <div className="bg-white rounded-2xl border border-[#DCE1D8] p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4">
+          {/* Controls Bar: Category Filter, View Mode, & Presets */}
+          <div className="bg-white rounded-2xl border border-[#DCE1D8] p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4 shadow-2xs">
             
             {/* Category Filter Tabs */}
             <div className="flex flex-wrap items-center gap-1.5">
@@ -451,117 +403,239 @@ export default function MehndiProcessPriceTime() {
               ))}
             </div>
 
-            {/* Quick Presets */}
-            <div className="flex items-center gap-1.5 text-xs">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#6B7068] mr-1 hidden sm:inline">
-                Quick Combos:
-              </span>
-              <button
-                type="button"
-                onClick={() => handleSelectPreset('front-back')}
-                className="px-2.5 py-1 rounded-lg bg-white border border-[#DCE1D8] text-[11px] font-semibold text-[#465640] hover:border-[#263D2B] cursor-pointer"
-              >
-                Front + Back
-              </button>
-              <button
-                type="button"
-                onClick={() => handleSelectPreset('festival-duo')}
-                className="px-2.5 py-1 rounded-lg bg-white border border-[#DCE1D8] text-[11px] font-semibold text-[#465640] hover:border-[#263D2B] cursor-pointer"
-              >
-                Arabic + Feet
-              </button>
-              <button
-                type="button"
-                onClick={() => handleSelectPreset('bridal-full')}
-                className="px-2.5 py-1 rounded-lg bg-white border border-[#DCE1D8] text-[11px] font-semibold text-[#465640] hover:border-[#263D2B] cursor-pointer"
-              >
-                Royal Bridal
-              </button>
+            {/* View Mode Toggle & Quick Presets */}
+            <div className="flex flex-wrap items-center gap-2 text-xs">
+              
+              {/* Cards vs Table View Toggle */}
+              <div className="inline-flex rounded-xl bg-[#F7F4ED] border border-[#DCE1D8] p-0.5">
+                <button
+                  type="button"
+                  onClick={() => setViewMode('cards')}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 cursor-pointer transition-all ${
+                    viewMode === 'cards'
+                      ? 'bg-[#263D2B] text-white shadow-xs'
+                      : 'text-[#465640] hover:text-[#10110F]'
+                  }`}
+                  title="Card Gallery View"
+                >
+                  <LayoutGrid className="w-3.5 h-3.5" />
+                  <span>Cards</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode('table')}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 cursor-pointer transition-all ${
+                    viewMode === 'table'
+                      ? 'bg-[#263D2B] text-white shadow-xs'
+                      : 'text-[#465640] hover:text-[#10110F]'
+                  }`}
+                  title="Structured Price & Duration Table"
+                >
+                  <TableIcon className="w-3.5 h-3.5" />
+                  <span>Table</span>
+                </button>
+              </div>
+
+              {/* Quick Combos */}
+              <div className="hidden sm:flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => handleSelectPreset('front-back')}
+                  className="px-2.5 py-1 rounded-lg bg-white border border-[#DCE1D8] text-[11px] font-semibold text-[#465640] hover:border-[#263D2B] cursor-pointer"
+                >
+                  Front + Back
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSelectPreset('festival-duo')}
+                  className="px-2.5 py-1 rounded-lg bg-white border border-[#DCE1D8] text-[11px] font-semibold text-[#465640] hover:border-[#263D2B] cursor-pointer"
+                >
+                  Arabic + Feet
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSelectPreset('bridal-full')}
+                  className="px-2.5 py-1 rounded-lg bg-white border border-[#DCE1D8] text-[11px] font-semibold text-[#465640] hover:border-[#263D2B] cursor-pointer"
+                >
+                  Royal Bridal
+                </button>
+              </div>
+
             </div>
 
           </div>
 
-          {/* 16 Services Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {filteredServices.map((service) => {
-              const isSelected = selectedServiceIds.includes(service.id);
-              return (
-                <div
-                  key={service.id}
-                  onClick={() => handleToggleService(service.id)}
-                  className={`rounded-2xl border p-4 sm:p-5 transition-all cursor-pointer bg-white group relative flex flex-col justify-between ${
-                    isSelected
-                      ? 'border-[#263D2B] ring-2 ring-[#263D2B]/20 shadow-md bg-[#FBF9F4]'
-                      : 'border-[#DCE1D8] hover:border-[#465640] hover:shadow-xs'
-                  } ${!service.available ? 'opacity-50 pointer-events-none' : ''}`}
-                >
-                  <div>
-                    {/* Header: Badge & Checkbox */}
-                    <div className="flex items-start justify-between gap-3 mb-3">
-                      <div className="flex items-center gap-2">
-                        <div
-                          className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${
-                            isSelected
-                              ? 'bg-[#263D2B] border-[#263D2B] text-white'
-                              : 'border-[#DCE1D8] bg-white group-hover:border-[#263D2B]'
-                          }`}
-                        >
-                          {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+          {/* VIEW MODE 1: 16 Services Interactive Visual Cards */}
+          {viewMode === 'cards' && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {filteredServices.map((service) => {
+                const isSelected = selectedServiceIds.includes(service.id);
+                return (
+                  <div
+                    key={service.id}
+                    onClick={() => handleToggleService(service.id)}
+                    className={`rounded-2xl border p-4 sm:p-5 transition-all cursor-pointer bg-white group relative flex flex-col justify-between ${
+                      isSelected
+                        ? 'border-[#263D2B] ring-2 ring-[#263D2B]/20 shadow-md bg-[#FBF9F4]'
+                        : 'border-[#DCE1D8] hover:border-[#465640] hover:shadow-xs'
+                    } ${!service.available ? 'opacity-50 pointer-events-none' : ''}`}
+                  >
+                    <div>
+                      {/* Header: Badge & Checkbox */}
+                      <div className="flex items-start justify-between gap-3 mb-3">
+                        <div className="flex items-center gap-2">
+                          <div
+                            className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${
+                              isSelected
+                                ? 'bg-[#263D2B] border-[#263D2B] text-white'
+                                : 'border-[#DCE1D8] bg-white group-hover:border-[#263D2B]'
+                            }`}
+                          >
+                            {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                          </div>
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-[#465640]">
+                            {service.categoryLabel}
+                          </span>
                         </div>
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#465640]">
-                          {service.categoryLabel}
+
+                        <div className="flex items-center gap-1.5">
+                          {service.hasCatalogBinding && (
+                            <span className="text-[9.5px] font-mono text-[#263D2B] bg-[#263D2B]/10 px-2 py-0.5 rounded-md border border-[#263D2B]/20" title={`Existing Catalog Approved: $${service.catalogApprovedPrice} CAD`}>
+                              Catalog Approved
+                            </span>
+                          )}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleOpenAdminEdit(service);
+                            }}
+                            className="opacity-0 group-hover:opacity-100 transition-opacity p-1 text-[#6B7068] hover:text-[#263D2B]"
+                            title="Admin: Edit price and duration"
+                          >
+                            <Edit2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Image Thumbnail & Service Name */}
+                      <div className="flex gap-3.5 items-start">
+                        <img
+                          src={service.image}
+                          alt={service.name}
+                          className="w-16 h-16 rounded-xl object-cover border border-[#DCE1D8] flex-shrink-0"
+                          loading="lazy"
+                        />
+                        <div className="space-y-1">
+                          <h4 className="font-serif text-base text-[#10110F] font-normal leading-tight group-hover:text-[#263D2B] transition-colors">
+                            {service.name}
+                          </h4>
+                          <p className="text-[11px] text-[#6B7068] font-light leading-snug line-clamp-2">
+                            {service.description}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Footer: Price & Time Tags */}
+                    <div className="pt-3 mt-3 border-t border-[#DCE1D8]/70 flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-1.5 font-semibold text-[#10110F]">
+                        <Clock className="w-3.5 h-3.5 text-[#263D2B]" />
+                        <span>{service.applicationTime}</span>
+                      </div>
+
+                      <div className="text-right">
+                        <span className="font-mono text-sm font-bold text-[#263D2B] bg-[#F7F4ED] px-2.5 py-0.5 rounded-lg border border-[#DCE1D8]">
+                          {service.suggestedPriceDisplay} CAD
                         </span>
                       </div>
-
-                      {/* Admin Edit Link */}
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleOpenAdminEdit(service);
-                        }}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity p-1 text-[#6B7068] hover:text-[#263D2B]"
-                        title="Edit price and duration"
-                      >
-                        <Edit2 className="w-3.5 h-3.5" />
-                      </button>
                     </div>
 
-                    {/* Image Thumbnail & Service Name */}
-                    <div className="flex gap-3.5 items-start">
-                      <img
-                        src={service.image}
-                        alt={service.name}
-                        className="w-16 h-16 rounded-xl object-cover border border-[#DCE1D8] flex-shrink-0"
-                      />
-                      <div className="space-y-1">
-                        <h4 className="font-serif text-base text-[#10110F] font-normal leading-tight group-hover:text-[#263D2B] transition-colors">
-                          {service.name}
-                        </h4>
-                        <p className="text-[11px] text-[#6B7068] font-light leading-snug line-clamp-2">
-                          {service.description}
-                        </p>
-                      </div>
-                    </div>
                   </div>
+                );
+              })}
+            </div>
+          )}
 
-                  {/* Footer: Price & Time Tags */}
-                  <div className="pt-3 mt-3 border-t border-[#DCE1D8]/70 flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-1.5 font-semibold text-[#10110F]">
-                      <Clock className="w-3.5 h-3.5 text-[#263D2B]" />
-                      <span>{service.applicationTime}</span>
-                    </div>
+          {/* VIEW MODE 2: Structured 16-Service Price & Time Table */}
+          {viewMode === 'table' && (
+            <div className="bg-white rounded-2xl border border-[#DCE1D8] overflow-hidden shadow-xs">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="bg-[#F7F4ED] border-b border-[#DCE1D8] text-[#465640] uppercase tracking-wider text-[10px] font-bold">
+                      <th className="py-3 px-4 w-12 text-center">Select</th>
+                      <th className="py-3 px-4">Service</th>
+                      <th className="py-3 px-4">Application Time</th>
+                      <th className="py-3 px-4 text-right">Suggested Price (CAD)</th>
+                      <th className="py-3 px-4 text-center">Admin Controls</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#DCE1D8]/60">
+                    {filteredServices.map((service) => {
+                      const isSelected = selectedServiceIds.includes(service.id);
+                      return (
+                        <tr
+                          key={service.id}
+                          onClick={() => handleToggleService(service.id)}
+                          className={`hover:bg-[#FBF9F4] cursor-pointer transition-colors ${
+                            isSelected ? 'bg-[#263D2B]/5 font-medium' : ''
+                          }`}
+                        >
+                          <td className="py-3 px-4 text-center">
+                            <div
+                              className={`w-4 h-4 mx-auto rounded border flex items-center justify-center transition-all ${
+                                isSelected
+                                  ? 'bg-[#263D2B] border-[#263D2B] text-white'
+                                  : 'border-[#DCE1D8] bg-white'
+                              }`}
+                            >
+                              {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
+                            </div>
+                          </td>
+                          <td className="py-3 px-4">
+                            <div className="font-serif text-sm text-[#10110F]">{service.name}</div>
+                            <span className="text-[10px] uppercase font-bold text-[#6B7068] tracking-wider">
+                              {service.categoryLabel}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 text-[#10110F] font-mono whitespace-nowrap">
+                            <div className="flex items-center gap-1.5">
+                              <Clock className="w-3.5 h-3.5 text-[#263D2B]" />
+                              <span>{service.applicationTime}</span>
+                            </div>
+                          </td>
+                          <td className="py-3 px-4 text-right font-mono font-bold text-[#263D2B] whitespace-nowrap">
+                            {service.suggestedPriceDisplay}
+                          </td>
+                          <td className="py-3 px-4 text-center">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleOpenAdminEdit(service);
+                              }}
+                              className="p-1.5 rounded-lg border border-[#DCE1D8] hover:border-[#263D2B] text-[#465640] hover:text-[#10110F] inline-flex items-center gap-1 text-[10px] font-semibold"
+                            >
+                              <Edit2 className="w-3 h-3" />
+                              <span>Edit</span>
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
 
-                    <div className="text-right">
-                      <span className="font-mono text-sm font-bold text-[#263D2B] bg-[#F7F4ED] px-2.5 py-0.5 rounded-lg border border-[#DCE1D8]">
-                        {service.suggestedPriceDisplay} CAD
-                      </span>
-                    </div>
-                  </div>
-
-                </div>
-              );
-            })}
+          {/* Table Footer Disclaimer Note */}
+          <div className="p-4 rounded-2xl bg-[#F7F4ED] border border-[#DCE1D8] text-xs text-[#6B7068] flex items-center gap-2">
+            <Info className="w-4 h-4 text-[#263D2B] flex-shrink-0" />
+            <p className="font-light italic">
+              *All prices are suggested estimates and must be approved by the salon admin before publication.
+            </p>
           </div>
 
         </div>
@@ -577,7 +651,7 @@ export default function MehndiProcessPriceTime() {
                   LIVE ESTIMATOR
                 </span>
                 <h3 className="font-serif text-xl text-[#10110F] font-normal">
-                  Selected Designs
+                  Selected Mehndi Plan
                 </h3>
               </div>
               <span className="px-2.5 py-1 rounded-full bg-[#263D2B] text-white text-[11px] font-mono font-bold">
@@ -665,33 +739,18 @@ export default function MehndiProcessPriceTime() {
 
             {/* Action Buttons */}
             <div className="space-y-2.5 pt-2">
-              <button
-                type="button"
-                disabled={selectedServices.length === 0}
-                onClick={() => setShowBookingModal(true)}
-                className="w-full global-button !py-3.5 text-white text-xs font-bold uppercase tracking-wider shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                <Calendar className="w-4 h-4" />
-                <span>Book This Design</span>
-              </button>
-
-              <button
-                type="button"
-                disabled={selectedServices.length === 0}
-                onClick={handleDirectBookingNav}
-                className="w-full global-button-secondary !py-3 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                <span>Book on Main Calendar</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+              <div className="p-3 rounded-xl bg-[#F7F4ED] border border-[#DCE1D8] text-[11px] text-[#465640] text-center font-medium">
+                Pricing and estimated times are for bespoke reference &amp; planning.
+              </div>
 
               {selectedServices.length > 0 && (
                 <button
                   type="button"
                   onClick={handleClearSelections}
-                  className="w-full text-center text-[11px] text-[#6B7068] hover:text-[#10110F] py-1 cursor-pointer"
+                  className="w-full global-button-secondary !py-2.5 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  Clear All Selections
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Clear Selected Plan</span>
                 </button>
               )}
             </div>
@@ -874,13 +933,13 @@ export default function MehndiProcessPriceTime() {
                   <button
                     type="button"
                     onClick={() => setShowAdminModal(false)}
-                    className="px-4 py-2 rounded-xl border border-[#DCE1D8] text-xs font-semibold text-[#465640] hover:bg-neutral-50"
+                    className="px-4 py-2 rounded-xl border border-[#DCE1D8] text-xs font-semibold text-[#465640] hover:bg-neutral-50 cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 rounded-xl bg-[#263D2B] text-white text-xs font-bold hover:bg-[#1f3123]"
+                    className="px-5 py-2 rounded-xl bg-[#263D2B] text-white text-xs font-bold hover:bg-[#1f3123] cursor-pointer"
                   >
                     Save Changes
                   </button>
@@ -888,187 +947,6 @@ export default function MehndiProcessPriceTime() {
               </div>
 
             </form>
-
-          </div>
-        </div>
-      )}
-
-      {/* ===================================================================== */}
-      {/* 5. DIRECT ON-PAGE QUICK BOOKING MODAL                                 */}
-      {/* ===================================================================== */}
-      {showBookingModal && (
-        <div 
-          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto"
-          role="dialog"
-          aria-modal="true"
-        >
-          <div className="bg-white rounded-3xl border border-[#DCE1D8] p-6 sm:p-8 max-w-lg w-full shadow-2xl relative animate-scale-up">
-            
-            <button
-              type="button"
-              onClick={() => {
-                setShowBookingModal(false);
-                setBookingSuccess(false);
-              }}
-              className="absolute top-5 right-5 p-2 rounded-full hover:bg-neutral-100 text-[#465640] cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            {bookingSuccess ? (
-              <div className="text-center py-6 space-y-4">
-                <div className="w-14 h-14 rounded-full bg-[#263D2B]/10 text-[#263D2B] mx-auto flex items-center justify-center">
-                  <CheckCircle2 className="w-8 h-8" />
-                </div>
-                <h3 className="font-serif text-2xl text-[#10110F]">
-                  Mehndi Appointment Requested!
-                </h3>
-                <p className="text-xs text-[#6B7068] max-w-md mx-auto">
-                  Thank you, <strong>{bookingForm.fullName}</strong>. Janki will review your requested designs ({selectedServices.map(s => s.name).join(', ')}) and confirm your appointment for <strong>{bookingForm.date} at {bookingForm.time}</strong>.
-                </p>
-                <div className="p-4 rounded-xl bg-[#F7F4ED] text-xs text-[#465640] border border-[#DCE1D8]">
-                  Payment is due in person via <strong>Cash on Delivery</strong> at the conclusion of your session in Ottawa.
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowBookingModal(false);
-                    setBookingSuccess(false);
-                  }}
-                  className="global-button !px-8 !py-3 text-white text-xs font-bold uppercase tracking-wider mx-auto"
-                >
-                  Done
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleQuickBookingSubmit} className="space-y-4">
-                
-                <div className="flex items-center gap-2 mb-1">
-                  <Calendar className="w-5 h-5 text-[#263D2B]" />
-                  <h3 className="font-serif text-xl text-[#10110F] font-normal">
-                    Reserve Your Mehndi Session
-                  </h3>
-                </div>
-
-                {/* Selected Summary Pill */}
-                <div className="p-3 rounded-2xl bg-[#FBF9F4] border border-[#DCE1D8] text-xs space-y-1">
-                  <div className="flex items-center justify-between font-semibold text-[#10110F]">
-                    <span>{selectedServices.length} Selected Designs:</span>
-                    <span className="font-mono text-[#263D2B]">{priceTotals.display}</span>
-                  </div>
-                  <p className="text-[11px] text-[#6B7068] truncate">
-                    {selectedServices.map(s => s.name).join(' • ')}
-                  </p>
-                  <p className="text-[10px] text-[#465640] font-mono">
-                    Estimated Time: {timeTotals.display}
-                  </p>
-                </div>
-
-                {/* Customer Details */}
-                <div>
-                  <label className="text-xs font-bold text-[#10110F] block mb-1">
-                    Your Full Name:
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={bookingForm.fullName}
-                    onChange={(e) => setBookingForm({ ...bookingForm, fullName: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#DCE1D8] text-xs text-[#10110F]"
-                    placeholder="e.g. Priya Sharma"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-bold text-[#10110F] block mb-1">
-                      Phone Number:
-                    </label>
-                    <input
-                      type="tel"
-                      required
-                      value={bookingForm.phone}
-                      onChange={(e) => setBookingForm({ ...bookingForm, phone: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#DCE1D8] text-xs text-[#10110F]"
-                      placeholder="(613) 555-0199"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-bold text-[#10110F] block mb-1">
-                      Email Address:
-                    </label>
-                    <input
-                      type="email"
-                      value={bookingForm.email}
-                      onChange={(e) => setBookingForm({ ...bookingForm, email: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#DCE1D8] text-xs text-[#10110F]"
-                      placeholder="client@example.com"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-bold text-[#10110F] block mb-1">
-                      Preferred Date:
-                    </label>
-                    <input
-                      type="date"
-                      required
-                      min={new Date().toISOString().split('T')[0]}
-                      value={bookingForm.date}
-                      onChange={(e) => setBookingForm({ ...bookingForm, date: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#DCE1D8] text-xs text-[#10110F]"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-bold text-[#10110F] block mb-1">
-                      Preferred Time:
-                    </label>
-                    <select
-                      value={bookingForm.time}
-                      onChange={(e) => setBookingForm({ ...bookingForm, time: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#DCE1D8] text-xs text-[#10110F] bg-white"
-                    >
-                      {['10:00 AM', '11:00 AM', '1:00 PM', '2:30 PM', '4:00 PM', '5:30 PM', '7:00 PM'].map((t) => (
-                        <option key={t} value={t}>{t}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-xs font-bold text-[#10110F] block mb-1">
-                    Occasion / Notes:
-                  </label>
-                  <textarea
-                    rows={2}
-                    value={bookingForm.notes}
-                    onChange={(e) => setBookingForm({ ...bookingForm, notes: e.target.value })}
-                    className="w-full px-3.5 py-2 rounded-xl border border-[#DCE1D8] text-xs text-[#10110F]"
-                    placeholder="Occasion (Wedding, Karwa Chauth, Sangeet), custom motif requests, or skin sensitivities..."
-                  />
-                </div>
-
-                <div className="pt-2 flex items-center justify-end gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setShowBookingModal(false)}
-                    className="px-5 py-2.5 rounded-xl border border-[#DCE1D8] text-xs font-semibold text-[#465640]"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isSubmittingBooking}
-                    className="global-button !px-7 !py-2.5 text-white text-xs font-bold uppercase tracking-wider"
-                  >
-                    {isSubmittingBooking ? 'Submitting...' : 'Confirm Reservation'}
-                  </button>
-                </div>
-
-              </form>
-            )}
 
           </div>
         </div>

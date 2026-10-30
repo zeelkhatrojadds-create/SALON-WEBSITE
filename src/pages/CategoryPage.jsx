@@ -50,14 +50,6 @@ export default function CategoryPage() {
     }
   }, [matchingService, navigate]);
 
-  if (matchingService) {
-    return (
-      <div className="min-h-screen bg-[#F7F4ED] flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-2 border-[#263D2B] border-t-transparent animate-spin" />
-      </div>
-    );
-  }
-
   // Normalization map for category aliases
   const normalizeCategory = (slug) => {
     const s = String(slug || '').toLowerCase().trim();
@@ -139,6 +131,14 @@ export default function CategoryPage() {
       document.title = `${categoryName} Services — GLAM GIRL BY JANKI`;
     }
   }, [categoryName]);
+
+  if (matchingService) {
+    return (
+      <div className="min-h-screen bg-[#F7F4ED] flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-2 border-[#263D2B] border-t-transparent animate-spin" />
+      </div>
+    );
+  }
 
   // 404 Empty Category handler
   if (!mainCatDef && rawTreatments.length === 0) {
@@ -231,6 +231,23 @@ export default function CategoryPage() {
                   <Sparkles className="w-4 h-4 text-[#263D2B]" /> Transparent Canadian Pricing
                 </span>
               </div>
+
+              {/* Primary Informational Action Bar */}
+              <div className="pt-4 flex flex-wrap items-center gap-3">
+                <a
+                  href="#category-services-grid"
+                  className="global-button !py-3.5 !px-8 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md cursor-pointer hover:scale-[1.02] transition-transform"
+                >
+                  <span>Explore {rawTreatments.length} Services Below ↓</span>
+                </a>
+
+                <Link
+                  to="/services"
+                  className="global-button-secondary !py-3.5 !px-6 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer hover:border-[#263D2B] transition-colors"
+                >
+                  <span>View All Salon Categories</span>
+                </Link>
+              </div>
             </div>
 
             {/* Right Column: Hero Category Image */}
@@ -254,11 +271,59 @@ export default function CategoryPage() {
             )}
 
           </div>
+
+          {(categorySlug === 'skin-atelier' || categorySlug === 'skin-care' || categorySlug === 'facial' || categorySlug === 'skincare') && (
+            <div className="mt-8 p-5 sm:p-6 rounded-3xl bg-white border border-[#263D2B]/30 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-[#263D2B] flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  THE SKIN ATELIER INTERACTIVE SUITE
+                </span>
+                <h3 className="font-serif text-lg sm:text-xl text-[#10110F]">
+                  Explore The Skin Atelier &amp; Personalized Consultation Studio
+                </h3>
+                <p className="text-xs text-[#6B7068] max-w-xl">
+                  Discover our complete portfolio of clinical botanical facials, submit your personalized skincare goals and sensitivities, and customize your treatment focus.
+                </p>
+              </div>
+              <Link
+                to="/skin-atelier"
+                className="global-button !py-3 !px-6 text-xs font-bold uppercase tracking-wider text-white whitespace-nowrap shadow-sm flex items-center justify-center gap-1.5"
+              >
+                <span>Enter The Skin Atelier</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          )}
+
+          {(categorySlug === 'eyelashes' || categorySlug === 'lashes') && (
+            <div className="mt-8 p-5 sm:p-6 rounded-3xl bg-white border border-[#263D2B]/30 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-[#263D2B] flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  THE LASH ATELIER INTERACTIVE SUITE
+                </span>
+                <h3 className="font-serif text-lg sm:text-xl text-[#10110F]">
+                  Explore our Interactive Lash Style Selector &amp; Consultation Studio
+                </h3>
+                <p className="text-xs text-[#6B7068] max-w-xl">
+                  Choose your desired curl, length, and fullness with live visual references, explore our 12 approved services, and submit your custom consultation notes.
+                </p>
+              </div>
+              <Link
+                to="/lash-atelier"
+                className="global-button !py-3 !px-6 text-xs font-bold uppercase tracking-wider text-white whitespace-nowrap shadow-sm flex items-center justify-center gap-1.5"
+              >
+                <span>Enter The Lash Atelier</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          )}
         </ScrollReveal>
       </div>
 
       {/* 2. MAIN TREATMENTS GRID SECTION */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+      <div id="category-services-grid" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
         
         {/* Toolbar: Counter & Search & Sort */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8 pb-5 border-b border-[#DCE1D8]">
@@ -267,7 +332,7 @@ export default function CategoryPage() {
               All {categoryName} Services
             </h2>
             <p className="text-xs sm:text-sm text-[#6B7068] mt-1 font-light">
-              Showing {categoryTreatments.length} of {rawTreatments.length} approved treatments. Select any service to book your appointment.
+              Showing {categoryTreatments.length} of {rawTreatments.length} approved treatments. Explore treatment details, pricing, and care below.
             </p>
           </div>
 
@@ -328,10 +393,38 @@ export default function CategoryPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {categoryTreatments.map((treatment) => (
-              <ServiceCard key={treatment.id} service={treatment} />
+              <ServiceCard key={treatment.id} service={treatment} showBooking={false} />
             ))}
           </div>
         )}
+
+        {/* Bottom Informational Banner */}
+        <section className="mt-16 p-8 sm:p-12 rounded-3xl bg-[#263D2B] text-white text-center space-y-4 shadow-xl relative overflow-hidden">
+          <span className="text-[10.5px] font-mono uppercase tracking-widest text-[#A8B5A0]">
+            GLAM GIRL ATELIER EXPERIENCES
+          </span>
+          <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-normal leading-tight">
+            Curated {categoryName} Care &amp; Artistry
+          </h3>
+          <p className="text-xs sm:text-sm text-white/80 max-w-lg mx-auto font-light leading-relaxed">
+            Every session is a private 1-on-1 experience in our dedicated Waterloo beauty studio with certified aesthetic director Janki Khatroja.
+          </p>
+          <div className="pt-2 flex flex-wrap justify-center items-center gap-3">
+            <Link
+              to="/services"
+              className="global-button !bg-white !text-[#10110F] hover:!bg-[#F7F4ED] !py-3.5 !px-8 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+            >
+              <span>Explore All Salon Services</span>
+              <ArrowRight className="w-4 h-4 text-[#263D2B]" />
+            </Link>
+            <Link
+              to="/contact"
+              className="px-6 py-3.5 rounded-full border border-white/30 text-white hover:bg-white/10 text-xs font-semibold flex items-center justify-center gap-2 transition-colors cursor-pointer"
+            >
+              <span>Ask A Question / Inquire</span>
+            </Link>
+          </div>
+        </section>
 
         {/* 3. EXPLORE OTHER SALON CATEGORIES FOOTER */}
         <div className="mt-20 pt-12 border-t border-[#DCE1D8]">

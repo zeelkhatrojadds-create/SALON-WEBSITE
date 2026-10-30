@@ -127,23 +127,6 @@ export default function NailCustomizerWorkbench({
     }
   };
 
-  // Handle Book Nail Appointment
-  const handleBookDesign = () => {
-    let serviceId = 'gel-manicure';
-    if (selectedFinish.id === 'chrome' || selectedArt.id !== 'none') {
-      serviceId = 'gel-manicure';
-    } else {
-      serviceId = 'classic-manicure';
-    }
-
-    try {
-      const designSpec = `${selectedShape.name} shape, ${activeColorName} color, ${selectedFinish.name} finish, ${selectedArt.name}`;
-      sessionStorage.setItem('glfy_nail_design_request', designSpec);
-    } catch (e) {}
-
-    navigate(`/book-appointment?service=${serviceId}`);
-  };
-
   return (
     <section 
       id="nail-customizer-workbench" 
@@ -578,28 +561,19 @@ export default function NailCustomizerWorkbench({
               type="button"
               onClick={handleSaveDesign}
               disabled={saveStatus === 'saving'}
-              className="flex-1 py-3 px-4 rounded-full border border-[#263D2B] bg-white hover:bg-[#F7F4ED] text-[#263D2B] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs"
+              className="w-full global-button !py-3.5 !px-6 text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-xs cursor-pointer"
             >
               {saveStatus === 'saved' ? (
                 <>
-                  <CheckCircle2 className="w-4 h-4 text-[#263D2B]" />
+                  <CheckCircle2 className="w-4 h-4 text-white" />
                   <span>DESIGN SAVED!</span>
                 </>
               ) : (
                 <>
-                  <Bookmark className="w-4 h-4 text-[#263D2B]" />
-                  <span>SAVE MY DESIGN</span>
+                  <Bookmark className="w-4 h-4 text-white" />
+                  <span>SAVE MY DESIGN TO MOODBOARD</span>
                 </>
               )}
-            </button>
-
-            <button
-              type="button"
-              onClick={handleBookDesign}
-              className="flex-1 global-button !py-3 !px-4 text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-xs cursor-pointer"
-            >
-              <Calendar className="w-4 h-4" />
-              <span>BOOK THIS NAIL DESIGN</span>
             </button>
           </div>
 

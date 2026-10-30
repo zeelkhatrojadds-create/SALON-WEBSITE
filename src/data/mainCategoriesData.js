@@ -48,14 +48,14 @@ export const MAIN_SERVICE_CATEGORIES = [
     filter: (s) => s.category === 'hair-treatments'
   },
   {
-    id: 'skin-care',
-    slug: 'skin-care',
-    aliases: ['skincare', 'facial', 'facials'],
-    name: 'Skin Care and Facials',
-    subtitle: 'Holistic Botanicals & Glow Therapies',
+    id: 'skin-atelier',
+    slug: 'skin-atelier',
+    aliases: ['skin-care', 'the-skin-atelier', 'skincare', 'facial', 'facials'],
+    name: 'The Skin Atelier',
+    subtitle: 'Bespoke Facials & Clinical Botanical Skincare',
     description: 'Customized luxury facials, deep pore purification, brightening botanicals, and rejuvenating herbal skin therapies.',
     image: '/images/facial/special-glam-girl-facial.jpg',
-    badge: 'BOTANICAL GLOW',
+    badge: 'THE SKIN ATELIER',
     filter: (s) => s.category === 'facial'
   },
   {
@@ -86,7 +86,7 @@ export const MAIN_SERVICE_CATEGORIES = [
     name: 'Eyelashes',
     subtitle: 'Lash Lifts, Tints & Volume Extensions',
     description: 'Semi-permanent lash lifting, deep keratin tinting, and customized classic to dramatic mega-volume extensions.',
-    image: '/images/threading/sitara-full-face-threading.jpg',
+    image: '/images/lashes/lash-atelier-hero.jpg',
     badge: 'LASH ATELIER',
     filter: (s) => s.category === 'lashes' || s.name.toLowerCase().includes('lash')
   },

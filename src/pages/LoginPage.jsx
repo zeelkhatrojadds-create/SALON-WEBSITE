@@ -38,7 +38,9 @@ export default function LoginPage() {
       if (res && res.success) {
         setSuccess('Welcome back! Loading your patron suite...');
         setTimeout(() => {
-          if (res.user && (res.user.role === 'admin' || res.user.role === 'staff')) {
+          if (redirectUrl && redirectUrl !== '/customer-dashboard') {
+            navigate(redirectUrl);
+          } else if (res.user && (res.user.role === 'admin' || res.user.role === 'staff')) {
             navigate('/admin');
           } else {
             navigate(redirectUrl);
@@ -53,8 +55,8 @@ export default function LoginPage() {
   };
 
   const handleDemoFill = () => {
-    setEmail('priya@example.ca');
-    setPassword('patron123');
+    setEmail('zeelkhatroja312@gmail.com');
+    setPassword('admin123');
     setError('');
   };
 
@@ -155,9 +157,9 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Quick Demo Access */}
+            {/* Quick Admin Access */}
             <div className="p-3 rounded-xl bg-[#F7F4ED] border border-[#DCE1D8] text-[11px] text-[#6B7068] flex items-center justify-between">
-              <span>Demo Patron: <strong>priya@example.ca</strong></span>
+              <span>Admin Access: <strong>zeelkhatroja312@gmail.com</strong></span>
               <button
                 type="button"
                 onClick={handleDemoFill}

@@ -81,20 +81,6 @@ export default function CreateYourMehndiPackage() {
   const [isSavingPackage, setIsSavingPackage] = useState(false);
   const [toastNotification, setToastNotification] = useState(null);
 
-  // Booking Modal State
-  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
-  const todayStr = useMemo(() => new Date().toISOString().split('T')[0], []);
-  const [bookingFormData, setBookingFormData] = useState({
-    date: '',
-    time: '11:00 AM',
-    fullName: '',
-    email: '',
-    phone: '',
-    notes: ''
-  });
-  const [isSubmittingBooking, setIsSubmittingBooking] = useState(false);
-  const [confirmedBookingResult, setConfirmedBookingResult] = useState(null);
-
   // Toast notification helper
   const showToast = (message) => {
     setToastNotification(message);
@@ -242,74 +228,6 @@ export default function CreateYourMehndiPackage() {
     e.stopPropagation();
     setSavedPackages((prev) => prev.filter((p) => p.id !== pkgId));
     showToast('Package removed from collection');
-  };
-
-  // Validate and open booking modal
-  const handleOpenBookingModal = () => {
-    if (summary.itemCount === 0) {
-      alert('Please select at least one hand or feet design before booking.');
-      setCurrentStep(2);
-      return;
-    }
-    setIsBookingModalOpen(true);
-  };
-
-  // Submit appointment to salonDB
-  const handleConfirmAppointment = (e) => {
-    e.preventDefault();
-
-    if (!bookingFormData.date || !bookingFormData.fullName || !bookingFormData.phone) {
-      alert('Please provide your name, phone number, and preferred date.');
-      return;
-    }
-
-    setIsSubmittingBooking(true);
-
-    const handNames = summary.selectedHands.map((h) => h.name).join(', ') || 'None';
-    const feetNames = summary.selectedFeet.map((f) => f.name).join(', ') || 'None';
-    const styleLabel = STYLE_OPTIONS.find((s) => s.id === style)?.label || style;
-    const complexityLabel = COMPLEXITY_LEVELS.find((c) => c.id === complexity)?.label || complexity;
-
-    const appointmentPayload = {
-      id: 'pkg_bk_' + Date.now().toString(36),
-      serviceId: summary.primaryServiceId,
-      serviceName: `Custom Mehndi Package: ${selectedOccasion.name}`,
-      category: 'henna',
-      price: summary.finalPrice,
-      priceDisplay: summary.finalPriceDisplay,
-      duration: summary.durationDisplay,
-      date: bookingFormData.date,
-      time: bookingFormData.time,
-      customerName: bookingFormData.fullName.trim(),
-      customerEmail: bookingFormData.email.trim(),
-      customerPhone: bookingFormData.phone.trim(),
-      notes: `Custom Mehndi Package (${selectedOccasion.name}). Hands: ${handNames}. Feet: ${feetNames}. Style: ${styleLabel} (${complexityLabel}). Matching: ${matchingHandAndFeet ? 'Yes' : 'No'}. Client Notes: ${bookingFormData.notes.trim()}`,
-      status: 'Pending',
-      appointmentStatus: 'Pending',
-      source: 'Create Your Mehndi Package Builder',
-      createdAt: new Date().toISOString()
-    };
-
-    try {
-      salonDB.addAppointment(appointmentPayload);
-    } catch (err) {
-      console.warn('DB appointment save error:', err);
-    }
-
-    // Trigger celebration confetti
-    import('canvas-confetti')
-      .then(({ default: confetti }) => {
-        confetti({
-          particleCount: 85,
-          spread: 70,
-          origin: { y: 0.6 },
-          colors: ['#263D2B', '#465640', '#A8B5A0', '#F7F4ED']
-        });
-      })
-      .catch(() => {});
-
-    setConfirmedBookingResult(appointmentPayload);
-    setIsSubmittingBooking(false);
   };
 
   return (
@@ -1055,17 +973,8 @@ export default function CreateYourMehndiPackage() {
               </div>
             </div>
 
-            {/* ACTIONS: BOOK & SAVE */}
+            {/* ACTIONS: SAVE PACKAGE */}
             <div className="pt-2 space-y-2">
-              <button
-                type="button"
-                onClick={handleOpenBookingModal}
-                className="w-full global-button !py-4 text-white text-xs font-bold uppercase tracking-wider shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <Calendar className="w-4 h-4" />
-                <span>Book My Mehndi Package</span>
-              </button>
-
               {/* Save Package Form / Button */}
               {isSavingPackage ? (
                 <div className="p-3 rounded-2xl bg-[#F7F4ED] border border-[#DCE1D8] space-y-2 animate-fade-in">
@@ -1083,14 +992,14 @@ export default function CreateYourMehndiPackage() {
                     <button
                       type="button"
                       onClick={handleSavePackage}
-                      className="w-full py-1.5 rounded-lg bg-[#263D2B] text-white text-[11px] font-bold uppercase cursor-pointer"
+                      className="w-full py-2 rounded-lg bg-[#263D2B] text-white text-[11px] font-bold uppercase cursor-pointer"
                     >
                       Save
                     </button>
                     <button
                       type="button"
                       onClick={() => setIsSavingPackage(false)}
-                      className="px-3 py-1.5 rounded-lg bg-white border border-[#DCE1D8] text-[11px] text-[#6B7068] cursor-pointer"
+                      className="px-3 py-2 rounded-lg bg-white border border-[#DCE1D8] text-[11px] text-[#6B7068] cursor-pointer"
                     >
                       Cancel
                     </button>
@@ -1100,9 +1009,9 @@ export default function CreateYourMehndiPackage() {
                 <button
                   type="button"
                   onClick={() => setIsSavingPackage(true)}
-                  className="w-full py-2.5 rounded-2xl border border-[#DCE1D8] bg-white hover:border-[#263D2B] text-xs font-bold text-[#263D2B] uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                  className="w-full global-button !py-3.5 text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md"
                 >
-                  <Bookmark className="w-3.5 h-3.5" />
+                  <Bookmark className="w-3.5 h-3.5 text-white" />
                   <span>Save Package to My Collection</span>
                 </button>
               )}
@@ -1156,226 +1065,6 @@ export default function CreateYourMehndiPackage() {
         </div>
 
       </div>
-
-      {/* ===================================================================== */}
-      {/* BOOKING CONFIRMATION & SCHEDULING MODAL                               */}
-      {/* ===================================================================== */}
-      {isBookingModalOpen && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
-          onClick={() => !confirmedBookingResult && setIsBookingModalOpen(false)}
-        >
-          <div
-            className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 border border-[#DCE1D8] shadow-2xl relative my-8 animate-fade-in"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Close Button */}
-            {!confirmedBookingResult && (
-              <button
-                type="button"
-                onClick={() => setIsBookingModalOpen(false)}
-                className="absolute top-5 right-5 w-8 h-8 rounded-full bg-[#F7F4ED] border border-[#DCE1D8] flex items-center justify-center text-[#6B7068] hover:text-[#10110F] cursor-pointer"
-                aria-label="Close booking modal"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            )}
-
-            {confirmedBookingResult ? (
-              /* Success / Confirmed Screen */
-              <div className="text-center space-y-5 py-4">
-                <div className="w-16 h-16 rounded-full bg-[#263D2B] text-white flex items-center justify-center mx-auto shadow-md">
-                  <CheckCircle2 className="w-8 h-8" />
-                </div>
-
-                <div className="space-y-1.5">
-                  <h3 className="font-serif text-2xl sm:text-3xl text-[#10110F] font-normal">
-                    Mehndi Package Reserved!
-                  </h3>
-                  <p className="text-xs sm:text-sm text-[#6B7068]">
-                    Thank you, <strong className="text-[#10110F]">{confirmedBookingResult.customerName}</strong>. Your custom appointment has been placed with Janki.
-                  </p>
-                </div>
-
-                <div className="p-4 rounded-2xl bg-[#F7F4ED] border border-[#DCE1D8] text-xs text-left space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-[#6B7068]">Reference:</span>
-                    <span className="font-mono font-bold text-[#10110F]">{confirmedBookingResult.id}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#6B7068]">Occasion:</span>
-                    <span className="font-semibold text-[#10110F]">{selectedOccasion.name}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#6B7068]">Date &amp; Time:</span>
-                    <span className="font-bold text-[#263D2B]">{confirmedBookingResult.date} at {confirmedBookingResult.time}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#6B7068]">Estimated Total:</span>
-                    <span className="font-bold text-[#10110F]">{confirmedBookingResult.priceDisplay}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#6B7068]">Duration:</span>
-                    <span className="text-[#10110F]">{confirmedBookingResult.duration}</span>
-                  </div>
-                </div>
-
-                {/* WhatsApp Direct Confirmation Button */}
-                <div className="pt-2 flex flex-col sm:flex-row gap-3 justify-center">
-                  <a
-                    href={`https://wa.me/16162550549?text=${encodeURIComponent(
-                      `Hello Janki, I have booked a Custom Mehndi Package (${selectedOccasion.name}) on ${confirmedBookingResult.date} at ${confirmedBookingResult.time}. Reference: ${confirmedBookingResult.id}. Total: ${confirmedBookingResult.priceDisplay}.`
-                    )}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="global-button !px-6 !py-3 text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2"
-                  >
-                    <MessageCircle className="w-4 h-4" />
-                    <span>Confirm via Salon WhatsApp</span>
-                  </a>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsBookingModalOpen(false);
-                      setConfirmedBookingResult(null);
-                    }}
-                    className="global-button-secondary !px-6 !py-3 text-xs font-bold uppercase tracking-wider"
-                  >
-                    Done
-                  </button>
-                </div>
-              </div>
-            ) : (
-              /* Booking Details Form */
-              <form onSubmit={handleConfirmAppointment} className="space-y-5 text-left">
-                <div className="space-y-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#263D2B] block">
-                    CONFIRM YOUR CUSTOM PACKAGE
-                  </span>
-                  <h3 className="font-serif text-2xl text-[#10110F] font-normal">
-                    Reserve Appointment Date &amp; Time
-                  </h3>
-                  <p className="text-xs text-[#6B7068]">
-                    Package: <strong>{selectedOccasion.name}</strong> • Estimated {summary.durationDisplay} • {summary.finalPriceDisplay}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label htmlFor="pkg-date" className="text-xs font-bold uppercase tracking-wider text-[#10110F] block">
-                      Appointment Date *
-                    </label>
-                    <input
-                      id="pkg-date"
-                      type="date"
-                      required
-                      min={todayStr}
-                      value={bookingFormData.date}
-                      onChange={(e) => setBookingFormData({ ...bookingFormData, date: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#DCE1D8] focus:border-[#263D2B] text-xs text-[#10110F] focus:outline-none"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label htmlFor="pkg-time" className="text-xs font-bold uppercase tracking-wider text-[#10110F] block">
-                      Preferred Time Slot *
-                    </label>
-                    <select
-                      id="pkg-time"
-                      value={bookingFormData.time}
-                      onChange={(e) => setBookingFormData({ ...bookingFormData, time: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#DCE1D8] focus:border-[#263D2B] text-xs text-[#10110F] focus:outline-none cursor-pointer"
-                    >
-                      <option value="10:00 AM">10:00 AM — Morning Suite</option>
-                      <option value="11:30 AM">11:30 AM — Mid-Morning</option>
-                      <option value="1:00 PM">1:00 PM — Afternoon</option>
-                      <option value="2:30 PM">2:30 PM — Afternoon</option>
-                      <option value="4:00 PM">4:00 PM — Late Afternoon</option>
-                      <option value="5:30 PM">5:30 PM — Evening Session</option>
-                    </select>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label htmlFor="pkg-name" className="text-xs font-bold uppercase tracking-wider text-[#10110F] block">
-                      Full Name *
-                    </label>
-                    <input
-                      id="pkg-name"
-                      type="text"
-                      required
-                      placeholder="Your full name"
-                      value={bookingFormData.fullName}
-                      onChange={(e) => setBookingFormData({ ...bookingFormData, fullName: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#DCE1D8] focus:border-[#263D2B] text-xs text-[#10110F] focus:outline-none"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label htmlFor="pkg-phone" className="text-xs font-bold uppercase tracking-wider text-[#10110F] block">
-                      Phone Number *
-                    </label>
-                    <input
-                      id="pkg-phone"
-                      type="tel"
-                      required
-                      placeholder="e.g. +1 (613) 555-0199"
-                      value={bookingFormData.phone}
-                      onChange={(e) => setBookingFormData({ ...bookingFormData, phone: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#DCE1D8] focus:border-[#263D2B] text-xs text-[#10110F] focus:outline-none"
-                    />
-                  </div>
-
-                  <div className="sm:col-span-2 space-y-1">
-                    <label htmlFor="pkg-email" className="text-xs font-bold uppercase tracking-wider text-[#10110F] block">
-                      Email Address *
-                    </label>
-                    <input
-                      id="pkg-email"
-                      type="email"
-                      required
-                      placeholder="your.email@example.com"
-                      value={bookingFormData.email}
-                      onChange={(e) => setBookingFormData({ ...bookingFormData, email: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#DCE1D8] focus:border-[#263D2B] text-xs text-[#10110F] focus:outline-none"
-                    />
-                  </div>
-
-                  <div className="sm:col-span-2 space-y-1">
-                    <label htmlFor="pkg-notes" className="text-xs font-bold uppercase tracking-wider text-[#10110F] block">
-                      Additional Notes or Special Requests (Optional)
-                    </label>
-                    <textarea
-                      id="pkg-notes"
-                      rows={2}
-                      placeholder="e.g. Sangeet celebration timing, outfit color theme, or questions..."
-                      value={bookingFormData.notes}
-                      onChange={(e) => setBookingFormData({ ...bookingFormData, notes: e.target.value })}
-                      className="w-full px-3.5 py-2 rounded-xl bg-white border border-[#DCE1D8] focus:border-[#263D2B] text-xs text-[#10110F] focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                <div className="pt-2">
-                  <button
-                    type="submit"
-                    disabled={isSubmittingBooking}
-                    className="w-full global-button !py-3.5 text-white text-xs font-bold uppercase tracking-wider shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                  >
-                    <Calendar className="w-4 h-4" />
-                    <span>
-                      {isSubmittingBooking ? 'Reserving...' : `Confirm Booking (${summary.finalPriceDisplay})`}
-                    </span>
-                  </button>
-                </div>
-              </form>
-            )}
-
-          </div>
-        </div>
-      )}
 
     </section>
   );

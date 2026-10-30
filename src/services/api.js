@@ -32,11 +32,15 @@ export const api = {
   updateCustomerReview: async (revId, custId, data) => salonDB.updateCustomerReview(revId, custId, data),
   deleteCustomerReview: async (revId, custId) => salonDB.deleteCustomerReview(revId, custId),
 
-  // Notifications
+  // Notifications & Reminders
   getNotifications: async () => salonDB.getNotifications(),
   getCustomerNotifications: async (idOrEmail) => salonDB.getCustomerNotifications(idOrEmail),
   markNotificationRead: async (id) => salonDB.markNotificationRead(id),
   markAllNotificationsRead: async (idOrEmail) => salonDB.markAllNotificationsRead(idOrEmail),
+  getNotificationPreferences: (idOrEmail) => salonDB.getNotificationPreferences(idOrEmail),
+  saveNotificationPreferences: (idOrEmail, prefs) => salonDB.saveNotificationPreferences(idOrEmail, prefs),
+  getScheduledReminders: (apptId) => salonDB.getScheduledReminders(apptId),
+  scheduleAppointmentReminders: (appt) => salonDB.scheduleAppointmentReminders(appt),
 
   // Admin Customer Management
   getCustomers: async () => salonDB.getCustomers(),
@@ -44,6 +48,9 @@ export const api = {
   adminUpdateCustomerStatus: async (userId, status) => salonDB.adminUpdateCustomerStatus(userId, status),
   adminProcessDataRequest: async (userId, reqId, status, notes) => salonDB.adminProcessDataRequest(userId, reqId, status, notes),
   adminUpdateCustomerProfile: async (userId, data) => salonDB.adminUpdateCustomerProfile(userId, data),
+  wipeAllCustomersAndAppointments: () => salonDB.wipeAllCustomersAndAppointments(),
+  clearAllCustomers: () => salonDB.clearAllCustomers(),
+  clearAllAppointments: () => salonDB.clearAllAppointments(),
 
   // 2. Services (72 Master Services)
   getServices: async () => salonDB.getServices(),

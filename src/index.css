@@ -976,3 +976,29 @@ body.popup-scroll-locked {
   animation: fadeInLayer 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* =========================================================================
+   LUXURY CUSTOM SCROLLBAR FOR SIDEBAR PANELS
+   Soft sage/olive thumb on warm cream track
+   ========================================================================= */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #F7F4ED;
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #A8B5A0;
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #465640;
+}
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #A8B5A0 #F7F4ED;
+  -webkit-overflow-scrolling: touch;
+}
+
+

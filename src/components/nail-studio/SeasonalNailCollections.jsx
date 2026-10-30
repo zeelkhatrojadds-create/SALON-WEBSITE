@@ -72,16 +72,6 @@ export default function SeasonalNailCollections({ onApplyPreset }) {
     }
   };
 
-  // Handle Book Seasonal Appointment
-  const handleBookSeasonalDesign = (design) => {
-    try {
-      const designSpec = `Seasonal Look: ${design.name} (${design.seasonName}) - ${design.category}`;
-      sessionStorage.setItem('glfy_nail_design_request', designSpec);
-    } catch (e) {}
-    setActiveModalDesign(null);
-    navigate('/book-appointment?service=nail-art-addon');
-  };
-
   const getSeasonIcon = (seasonId) => {
     switch (seasonId) {
       case 'spring': return <Flower2 className="w-3.5 h-3.5 text-[#E8A7A1]" />;
@@ -409,23 +399,14 @@ export default function SeasonalNailCollections({ onApplyPreset }) {
 
                   {/* Actions Footer */}
                   <div className="space-y-2 pt-2 border-t border-[#DCE1D8]">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <div>
                       <button
                         type="button"
                         onClick={() => handleTryDesign(activeModalDesign.preset)}
                         className="w-full py-3 px-4 rounded-full bg-[#263D2B] hover:bg-[#18271B] text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-xs"
                       >
                         <Wand2 className="w-3.5 h-3.5" />
-                        <span>Try In Studio</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => handleBookSeasonalDesign(activeModalDesign)}
-                        className="w-full py-3 px-4 rounded-full bg-white hover:bg-[#F7F4ED] text-[#10110F] border border-[#263D2B] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-xs"
-                      >
-                        <Calendar className="w-3.5 h-3.5 text-[#263D2B]" />
-                        <span>Book Appointment</span>
+                        <span>Try In Studio Customizer</span>
                       </button>
                     </div>
 

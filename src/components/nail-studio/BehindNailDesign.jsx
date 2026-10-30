@@ -918,14 +918,6 @@ export default function BehindNailDesign({ onApplyPreset }) {
               <span>CUSTOMIZE THIS DESIGN</span>
               <ArrowUpRight className="w-4 h-4 text-[#A8B5A0]" />
             </button>
-
-            <Link
-              to="/book-appointment?service=nail-art-addon"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-[#10110F] text-xs font-bold uppercase tracking-wider hover:bg-[#F7F4ED] transition-colors shadow-sm cursor-pointer"
-            >
-              <Calendar className="w-4 h-4 text-[#263D2B]" />
-              <span>BOOK THIS LOOK</span>
-            </Link>
           </div>
 
         </div>

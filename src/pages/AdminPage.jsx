@@ -13,7 +13,6 @@ import {
   Key,
   Mail,
   ShieldCheck,
-  CheckCircle,
   AlertCircle,
   Star,
   Image as ImageIcon,
@@ -24,14 +23,17 @@ import {
   HelpCircle,
   Layers,
   FileText,
-  HeartHandshake
+  HeartHandshake,
+  Sliders
 } from 'lucide-react';
 import Logo from '../components/common/Logo';
 import AdminDashboard from '../components/admin/AdminDashboard';
 import AdminAppointments from '../components/admin/AdminAppointments';
+import AdminCustomRequests from '../components/admin/AdminCustomRequests';
 import AdminServices from '../components/admin/AdminServices';
 import AdminAftercare from '../components/admin/AdminAftercare';
 import AdminSettings from '../components/admin/AdminSettings';
+import AdminBusinessHours from '../components/admin/AdminBusinessHours';
 import AdminReviews from '../components/admin/AdminReviews';
 import AdminGallery from '../components/admin/AdminGallery';
 import AdminContacts from '../components/admin/AdminContacts';
@@ -43,7 +45,6 @@ import AdminFaq from '../components/admin/AdminFaq';
 import AdminComboPackages from '../components/admin/AdminComboPackages';
 import AdminSeasonalMenu from '../components/admin/AdminSeasonalMenu';
 import AdminDownloadableMenu from '../components/admin/AdminDownloadableMenu';
-import { ALL_SERVICES } from '../data/servicesData';
 import salonDB from '../db/salonDatabase';
 
 export default function AdminPage() {
@@ -125,8 +126,12 @@ export default function AdminPage() {
   };
 
   const handleAddAppointment = (newBooking) => {
-    salonDB.addAppointment(newBooking);
-    setAppointments(salonDB.getAppointments());
+    try {
+      salonDB.addAppointment(newBooking);
+      setAppointments(salonDB.getAppointments());
+    } catch (err) {
+      alert(`Appointment could not be saved: ${err.message}`);
+    }
   };
 
   const handleUpdateServices = (updatedList) => {
@@ -261,6 +266,7 @@ export default function AdminPage() {
   const subscribersCount = salonDB.getNewsletterSubscribers().length;
   const offersCount = salonDB.getActiveOffers().length;
   const customersCount = salonDB.getCustomers().length;
+  const customRequestsCount = salonDB.getCustomRequests().filter(r => r.status === 'Pending' || r.status === 'Under Review').length;
 
   const navGroups = [
     {
@@ -268,6 +274,7 @@ export default function AdminPage() {
       items: [
         { id: 'dashboard', name: 'Executive Overview', icon: LayoutDashboard },
         { id: 'appointments', name: 'Appointments Queue', icon: CalendarCheck, badge: appointments.length },
+        { id: 'custom-requests', name: 'Custom Requests', icon: Sliders, badge: customRequestsCount > 0 ? customRequestsCount : undefined, badgeColor: 'bg-amber-100 text-amber-900' },
         { id: 'customers', name: 'Customers & Patrons', icon: Users, badge: customersCount },
         { id: 'messages', name: 'Guest Inquiries', icon: MessageSquare, badge: unreadMessagesCount > 0 ? unreadMessagesCount : undefined, badgeColor: 'bg-[#263D2B]/15 text-[#263D2B]' },
       ]
@@ -295,6 +302,7 @@ export default function AdminPage() {
     {
       groupTitle: 'ADMINISTRATION',
       items: [
+        { id: 'business-hours', name: 'Business Hours', icon: Clock },
         { id: 'users', name: 'Users & Roles', icon: Users },
         { id: 'settings', name: 'Salon Settings', icon: Settings },
       ]
@@ -510,6 +518,10 @@ export default function AdminPage() {
           />
         )}
 
+        {activeTab === 'custom-requests' && (
+          <AdminCustomRequests />
+        )}
+
         {activeTab === 'customers' && (
           <AdminCustomers />
         )}
@@ -573,6 +585,10 @@ export default function AdminPage() {
 
         {activeTab === 'settings' && (
           <AdminSettings />
+        )}
+
+        {activeTab === 'business-hours' && (
+          <AdminBusinessHours />
         )}
       </main>
 

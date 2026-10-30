@@ -12,11 +12,14 @@ export default function FeatureSection() {
           <div className="relative overflow-hidden rounded-2xl border border-[#DCE1D8] shadow-md bg-white">
             <div className="aspect-[4/5] sm:aspect-[16/11] lg:aspect-auto lg:h-[580px]">
               <img
+
                 src="/images/services/makeup/44-shringar-bridal-makeup.webp"
                 alt="Luxury beauty experience at Glam Girl By Janki"
                 className="w-full h-full object-cover object-center"
                 loading="lazy"
               />
+
+
               <div className="absolute inset-0 bg-gradient-to-r from-[#10110F]/20 to-transparent pointer-events-none" />
             </div>
           </div>

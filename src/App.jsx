@@ -1,16 +1,18 @@
-import React, { useEffect, useState, useRef, lazy, Suspense } from 'react';
+import React, { useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import HomePage from './pages/HomePage';
 import ErrorBoundary from './components/common/ErrorBoundary';
-import LuxuryLoader from './components/common/LuxuryLoader';
+import SalonLoader from './components/common/SalonLoader';
 import LuxuryPageTransition from './components/common/LuxuryPageTransition';
 
 // Code-split / Lazy load subpages to boost Initial Performance & reduce initial payload
 const BookingPage = lazy(() => import('./pages/BookingPage'));
 const ServicesPage = lazy(() => import('./pages/ServicesPage'));
-const TreatmentsPage = lazy(() => import('./pages/TreatmentsPage'));
+const BeautyGuideHubPage = lazy(() => import('./pages/BeautyGuideHubPage'));
+const BeautyGuideDetailPage = lazy(() => import('./pages/BeautyGuideDetailPage'));
+const ThreadingGuidancePage = lazy(() => import('./pages/ThreadingGuidancePage'));
 const SpecialTreatmentsPage = lazy(() => import('./pages/SpecialTreatmentsPage'));
 const HairColorPage = lazy(() => import('./pages/HairColorPage'));
 const MehndiDesignStudioPage = lazy(() => import('./pages/MehndiDesignStudioPage'));
@@ -18,6 +20,9 @@ const CategoryPage = lazy(() => import('./pages/CategoryPage'));
 const TreatmentDetailPage = lazy(() => import('./pages/TreatmentDetailPage'));
 const GalleryPage = lazy(() => import('./pages/GalleryPage'));
 const NailArtPage = lazy(() => import('./pages/NailArtPage'));
+const LashAtelierPage = lazy(() => import('./pages/LashAtelierPage'));
+const SkinAtelierPage = lazy(() => import('./pages/SkinAtelierPage'));
+const HairAtelierPage = lazy(() => import('./pages/HairAtelierPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const ReviewsPage = lazy(() => import('./pages/ReviewsPage'));
@@ -32,7 +37,7 @@ const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
 const CustomerDashboardPage = lazy(() => import('./pages/CustomerDashboardPage'));
 const TreatmentConfirmationPage = lazy(() => import('./pages/TreatmentConfirmationPage'));
 const PlanYourSalonDayPage = lazy(() => import('./pages/PlanYourSalonDayPage'));
-const BeautyGuidePage = lazy(() => import('./pages/BeautyGuidePage'));
+const ClientCustomizationPage = lazy(() => import('./pages/ClientCustomizationPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const ReviewInvitePopup = lazy(() => import('./components/common/ReviewInvitePopup'));
 
@@ -95,15 +100,28 @@ function AppLayout() {
                 {/* Dedicated Separate Pages */}
                 <Route path="/" element={<HomePage />} />
                 <Route path="/services" element={<ServicesPage />} />
+                <Route path="/custom-experience" element={<ClientCustomizationPage />} />
+                <Route path="/customization-studio" element={<ClientCustomizationPage />} />
+                <Route path="/custom-studio" element={<ClientCustomizationPage />} />
+                <Route path="/beauty-match-finder" element={<ClientCustomizationPage />} />
+                <Route path="/beauty-match" element={<ClientCustomizationPage />} />
+                <Route path="/create-beauty-experience" element={<ClientCustomizationPage />} />
+                <Route path="/create-your-own-beauty-experience" element={<ClientCustomizationPage />} />
                 <Route path="/plan-your-salon-day" element={<PlanYourSalonDayPage />} />
                 <Route path="/plan-salon-day" element={<PlanYourSalonDayPage />} />
                 <Route path="/salon-day" element={<PlanYourSalonDayPage />} />
                 {/* Redirect old Combos pages directly to Treatments page */}
                 <Route path="/combo-packages" element={<Navigate to="/treatments" replace />} />
                 <Route path="/combos" element={<Navigate to="/treatments" replace />} />
-                <Route path="/packages" element={<Navigate to="/treatments" replace />} />
-                <Route path="/beauty-guide" element={<BeautyGuidePage />} />
-                <Route path="/guide" element={<BeautyGuidePage />} />
+                {/* Dedicated Separate Beauty Guide Compendium */}
+                <Route path="/beauty-guide" element={<BeautyGuideHubPage />} />
+                <Route path="/beauty-guide/threading" element={<ThreadingGuidancePage />} />
+                <Route path="/beauty-guide/:category" element={<BeautyGuideDetailPage />} />
+                <Route path="/threading-guidance" element={<Navigate to="/beauty-guide/threading" replace />} />
+                <Route path="/guide" element={<Navigate to="/beauty-guide" replace />} />
+                <Route path="/skincare-guidance" element={<Navigate to="/beauty-guide/skin-care" replace />} />
+                <Route path="/skincare" element={<Navigate to="/beauty-guide/skin-care" replace />} />
+                <Route path="/skin-care" element={<Navigate to="/beauty-guide/skin-care" replace />} />
                 <Route path="/special-treatments" element={<SpecialTreatmentsPage />} />
                 <Route path="/treatments" element={<SpecialTreatmentsPage />} />
                 <Route path="/hair-colour" element={<HairColorPage />} />
@@ -111,9 +129,34 @@ function AppLayout() {
                 <Route path="/nail-art" element={<NailArtPage />} />
                 <Route path="/nail-design" element={<NailArtPage />} />
                 <Route path="/nails" element={<NailArtPage />} />
+                <Route path="/the-skin-atelier" element={<SkinAtelierPage />} />
+                <Route path="/skin-atelier" element={<SkinAtelierPage />} />
+                <Route path="/the-hair-atelier" element={<HairAtelierPage />} />
+                <Route path="/hair-atelier" element={<HairAtelierPage />} />
+                <Route path="/the-lash-atelier" element={<LashAtelierPage />} />
+                <Route path="/lash-atelier" element={<LashAtelierPage />} />
+                <Route path="/lashes" element={<LashAtelierPage />} />
+                <Route path="/lash-studio" element={<LashAtelierPage />} />
                 <Route path="/mehndi-design-studio" element={<MehndiDesignStudioPage />} />
                 <Route path="/mehndi" element={<Navigate to="/mehndi-design-studio" replace />} />
                 <Route path="/henna" element={<Navigate to="/mehndi-design-studio" replace />} />
+
+                {/* Atelier Direct Navigation Aliases */}
+                <Route path="/makeup-atelier" element={<Navigate to="/services/makeup" replace />} />
+                <Route path="/makeup" element={<Navigate to="/services/makeup" replace />} />
+                <Route path="/brow-atelier" element={<Navigate to="/services/threading" replace />} />
+                <Route path="/brows" element={<Navigate to="/services/threading" replace />} />
+                <Route path="/brow" element={<Navigate to="/services/threading" replace />} />
+                <Route path="/threading" element={<Navigate to="/services/threading" replace />} />
+                <Route path="/wax-atelier" element={<Navigate to="/services/waxing" replace />} />
+                <Route path="/waxing" element={<Navigate to="/services/waxing" replace />} />
+                <Route path="/wax" element={<Navigate to="/services/waxing" replace />} />
+                <Route path="/bridal-atelier" element={<Navigate to="/services/bridal" replace />} />
+                <Route path="/bridal" element={<Navigate to="/services/bridal" replace />} />
+                <Route path="/body-atelier" element={<Navigate to="/services/spa" replace />} />
+                <Route path="/body" element={<Navigate to="/services/spa" replace />} />
+                <Route path="/spa" element={<Navigate to="/services/spa" replace />} />
+                <Route path="/massage" element={<Navigate to="/services/spa" replace />} />
                 <Route path="/gallery" element={<GalleryPage />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/contact" element={<ContactPage />} />
@@ -184,9 +227,13 @@ function AppLayout() {
 }
 
 export default function App() {
+  const [hasInitialLoaded, setHasInitialLoaded] = React.useState(false);
+
   return (
     <Router>
-      <LuxuryLoader />
+      {!hasInitialLoaded && (
+        <SalonLoader onComplete={() => setHasInitialLoaded(true)} />
+      )}
       <RouteScrollManager />
       <ErrorBoundary>
         <AppLayout />

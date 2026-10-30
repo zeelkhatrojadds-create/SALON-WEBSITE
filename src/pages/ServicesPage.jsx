@@ -3,18 +3,26 @@
 // Clicking any card opens the dedicated category detail view (/services/:category).
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { useLocation, Link, useSearchParams } from 'react-router-dom';
-import { Search, Sparkles, SlidersHorizontal, ArrowRight, X, Calendar, Layers, ShieldCheck } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Search, Sparkles, ArrowRight, X, Eye, Scissors } from 'lucide-react';
 import { salonDB } from '../db/salonDatabase';
 import { MAIN_SERVICE_CATEGORIES, getServicesForCategory } from '../data/mainCategoriesData';
 import CategoryCard from '../components/services/CategoryCard';
 import ScrollReveal from '../components/ScrollReveal/ScrollReveal';
 import DownloadableBeautyMenuSection from '../components/services/DownloadableBeautyMenuSection';
+import SkinServiceMenu from '../components/skin-atelier/SkinServiceMenu';
+import SkinConsultationModal from '../components/skin-atelier/SkinConsultationModal';
 
 export default function ServicesPage({ isSection = false }) {
-  const [searchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
   const [servicesData, setServicesData] = useState(() => salonDB.getServices());
+  const [isSkinConsultationOpen, setIsSkinConsultationOpen] = useState(false);
+  const [skinConsultationService, setSkinConsultationService] = useState(null);
+
+  const handleOpenSkinConsultation = (service = null) => {
+    setSkinConsultationService(service);
+    setIsSkinConsultationOpen(true);
+  };
 
   // Load services with live reactive subscription
   useEffect(() => {
@@ -94,10 +102,31 @@ export default function ServicesPage({ isSection = false }) {
           {/* Quick Shortcuts */}
           <div className="pt-5 flex flex-wrap items-center justify-center gap-2.5">
             <Link
-              to="/special-treatments"
+              to="/hair-atelier"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#10110F] hover:bg-[#263D2B] text-white text-xs font-bold uppercase tracking-[0.14em] shadow-sm transition-all duration-200 hover:scale-[1.02]"
+            >
+              <Scissors className="w-3.5 h-3.5 text-[#A8B5A0]" />
+              <span>THE HAIR ATELIER</span>
+            </Link>
+            <a
+              href="#the-skin-atelier"
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#263D2B] hover:bg-[#1C2E20] text-white text-xs font-bold uppercase tracking-[0.14em] shadow-sm transition-all duration-200 hover:scale-[1.02]"
             >
-              <Sparkles className="w-3.5 h-3.5 text-emerald-300" />
+              <Sparkles className="w-3.5 h-3.5 text-[#A8B5A0]" />
+              <span>THE SKIN ATELIER</span>
+            </a>
+            <Link
+              to="/lash-atelier"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white hover:bg-[#F7F4ED] border border-[#DCE1D8] hover:border-[#263D2B] text-[#263D2B] text-xs font-bold uppercase tracking-[0.14em] shadow-2xs transition-all duration-200 hover:scale-[1.02]"
+            >
+              <Eye className="w-3.5 h-3.5 text-[#263D2B]" />
+              <span>THE LASH ATELIER</span>
+            </Link>
+            <Link
+              to="/special-treatments"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white hover:bg-[#F7F4ED] border border-[#DCE1D8] hover:border-[#263D2B] text-[#263D2B] text-xs font-bold uppercase tracking-[0.14em] shadow-2xs transition-all duration-200 hover:scale-[1.02]"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-[#263D2B]" />
               <span>SPECIAL TREATMENTS</span>
             </Link>
             <Link
@@ -155,8 +184,99 @@ export default function ServicesPage({ isSection = false }) {
         </div>
       </div>
 
-      {/* 2.5. SPECIAL TREATMENT SPOTLIGHT: MEHNDI DESIGN STUDIO */}
+      {/* 2.4. ATELIER SPOTLIGHT: THE HAIR ATELIER */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        <div className="rounded-3xl bg-white border border-[#DCE1D8] p-6 sm:p-8 shadow-sm hover:border-[#263D2B] transition-all flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-neutral-900 border border-[#DCE1D8] flex-shrink-0">
+              <img
+                src="/images/hair-care/50-bridal-hair-styling.webp"
+                alt="The Hair Atelier at GLAM GIRL BY JANKI"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#10110F] text-white text-[10.5px] font-bold uppercase tracking-wider">
+                <Scissors className="w-3 h-3 text-[#A8B5A0]" />
+                <span>DISTINCTIVE HAIR EXPERIENCE</span>
+              </div>
+              <h3 className="font-serif text-xl sm:text-2xl text-[#10110F] font-normal">
+                The Hair Atelier
+              </h3>
+              <p className="text-xs sm:text-sm text-[#6B7068] font-light max-w-xl">
+                &ldquo;Your Hair. Your Signature.&rdquo; Discover 5 curated hair experiences: The Transformation Room, The Colour Atelier, The Hair Ritual Studio, The Styling Lounge, and The Bridal Hair Gallery.
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            <Link
+              to="/hair-atelier"
+              className="global-button !px-6 !py-3.5 text-white text-xs font-bold uppercase tracking-wider shadow-sm flex items-center gap-2 whitespace-nowrap cursor-pointer hover:scale-[1.02] transition-transform"
+            >
+              <span>Explore Hair Atelier</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              to="/book-appointment?service=noor-signature-haircut"
+              className="global-button-secondary !px-5 !py-3.5 text-xs font-semibold whitespace-nowrap cursor-pointer"
+            >
+              Book Cut &amp; Style
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* 2.5. ATELIER SPOTLIGHT: THE SKIN ATELIER */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        <div className="rounded-3xl bg-white border border-[#DCE1D8] p-6 sm:p-8 shadow-sm hover:border-[#263D2B] transition-all flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-neutral-900 border border-[#DCE1D8] flex-shrink-0">
+              <img
+                src="/images/facial/the-skin-atelier-hero.jpg"
+                alt="The Skin Atelier at GLAM GIRL BY JANKI"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#263D2B]/10 text-[#263D2B] text-[10.5px] font-bold uppercase tracking-wider">
+                <Sparkles className="w-3 h-3 text-[#263D2B]" />
+                <span>NEW PREMIUM SERVICE CATEGORY</span>
+              </div>
+              <h3 className="font-serif text-xl sm:text-2xl text-[#10110F] font-normal">
+                The Skin Atelier
+              </h3>
+              <p className="text-xs sm:text-sm text-[#6B7068] font-light max-w-xl">
+                Experience curated botanical facials, deep pore purification, and 24K gold firming rituals. Fill an optional consultation form, customize your care focus, and book your private Ottawa suite.
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            <a
+              href="#the-skin-atelier"
+              className="global-button !px-6 !py-3.5 text-white text-xs font-bold uppercase tracking-wider shadow-sm flex items-center gap-2 whitespace-nowrap cursor-pointer hover:scale-[1.02] transition-transform"
+            >
+              <span>Explore Skin Menu</span>
+              <ArrowRight className="w-4 h-4" />
+            </a>
+            <button
+              type="button"
+              onClick={() => handleOpenSkinConsultation()}
+              className="global-button-secondary !px-5 !py-3.5 text-xs font-semibold whitespace-nowrap cursor-pointer"
+            >
+              Skin Consultation
+            </button>
+            <Link
+              to="/skin-atelier"
+              className="px-4 py-3 text-xs font-semibold text-[#263D2B] hover:underline whitespace-nowrap"
+            >
+              Dedicated Studio Page →
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* 2.6. SPECIAL TREATMENT SPOTLIGHT: MEHNDI DESIGN STUDIO */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
         <div className="rounded-3xl bg-white border border-[#DCE1D8] p-6 sm:p-8 shadow-sm hover:border-[#263D2B] transition-all flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
             <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-neutral-900 border border-[#DCE1D8] flex-shrink-0">
@@ -238,6 +358,26 @@ export default function ServicesPage({ isSection = false }) {
           </div>
         )}
 
+        {/* 3.5. THE SKIN ATELIER SERVICE MENU SECTION */}
+        <div id="the-skin-atelier" className="mt-16 sm:mt-24 border-t border-[#DCE1D8] pt-12 sm:pt-16">
+          <div className="mb-10 sm:mb-12 max-w-5xl mx-auto">
+            <div className="w-full bg-[#10110F] rounded-2xl sm:rounded-3xl border border-[#DCE1D8] shadow-xl p-1.5 sm:p-2.5">
+              <img
+                src="/images/facial/the-skin-atelier-hero.jpg"
+                alt="The Skin Atelier Treatment Sanctuary at GLAM GIRL BY JANKI"
+                className="w-full h-auto block rounded-xl sm:rounded-2xl"
+                style={{ width: '100%', height: 'auto', display: 'block' }}
+                loading="lazy"
+              />
+            </div>
+            <div className="mt-3 px-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-[#6B7068]">
+              <span className="font-serif italic text-sm text-[#263D2B]">The Skin Atelier Sanctuary &bull; Private Ottawa Skincare Suite</span>
+              <span className="font-mono text-[11px] text-[#263D2B] font-medium">Certified Aesthetic Director: Janki Khatroja</span>
+            </div>
+          </div>
+          <SkinServiceMenu onOpenConsultation={handleOpenSkinConsultation} />
+        </div>
+
         {/* 4. DOWNLOADABLE BEAUTY MENU SECTION */}
         <div className="mt-16 sm:mt-24">
           <DownloadableBeautyMenuSection />
@@ -275,6 +415,13 @@ export default function ServicesPage({ isSection = false }) {
         </ScrollReveal>
 
       </div>
+
+      {/* Skin Consultation Modal */}
+      <SkinConsultationModal
+        isOpen={isSkinConsultationOpen}
+        onClose={() => setIsSkinConsultationOpen(false)}
+        initialService={skinConsultationService}
+      />
     </div>
   );
 }

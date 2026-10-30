@@ -135,7 +135,7 @@ export default function MobileMenu({
             </div>
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 text-[#263D2B] flex-shrink-0" />
-              <span>Mon-Sat: 9:30 AM – 7:30 PM • Sun: 10:00 AM – 5:30 PM</span>
+              <span>Mon-Sat: 9:30 AM – 7:30 PM • Sun: Closed</span>
             </div>
           </div>
         </div>

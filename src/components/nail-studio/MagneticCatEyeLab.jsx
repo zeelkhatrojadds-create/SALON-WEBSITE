@@ -281,15 +281,6 @@ export default function MagneticCatEyeLab() {
     }
   };
 
-  // Book This Look
-  const handleBookLook = () => {
-    try {
-      const designSpec = `Magnetic Cat-Eye: ${selectedColor.name}, ${selectedFinish.name} finish, ${selectedShape.name} shape (${bandAngle}° magnetic beam, ${bandPosition}% position)`;
-      sessionStorage.setItem('glfy_nail_design_request', designSpec);
-    } catch (e) {}
-    navigate('/book-appointment?service=nail-art-addon');
-  };
-
   // Gradient computation for SVG
   const normalizedPos = useMemo(() => {
     return Math.max(15, Math.min(85, bandPosition));
@@ -624,16 +615,6 @@ export default function MagneticCatEyeLab() {
                   )}
                 </button>
               </div>
-
-              <button
-                type="button"
-                onClick={handleBookLook}
-                className="w-full py-3.5 px-4 rounded-full bg-[#263D2B] hover:bg-[#18271B] text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md border border-[#A8B5A0]/30 hover:border-[#A8B5A0]"
-              >
-                <Calendar className="w-4 h-4 text-[#A8B5A0]" />
-                <span>BOOK THIS LOOK IN OTTAWA</span>
-                <ArrowRight className="w-3.5 h-3.5 ml-1" />
-              </button>
             </div>
 
           </div>

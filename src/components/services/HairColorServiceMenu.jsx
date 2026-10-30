@@ -129,13 +129,6 @@ export default function HairColorServiceMenu() {
 
   const isFiltered = searchQuery.trim() !== '' || selectedCategory !== 'all' || sortBy !== 'default';
 
-  // Navigate to booking flow preserving exact service ID
-  const handleBookService = (service) => {
-    if (!service) return;
-    const serviceRef = service.id || service.slug;
-    navigate(`/book-appointment?service=${encodeURIComponent(serviceRef)}`);
-  };
-
   // Helper for formatting approved prices accurately
   const formatApprovedPrice = (price) => {
     if (price === null || price === undefined || price === '' || isNaN(Number(price))) {
@@ -462,21 +455,10 @@ export default function HairColorServiceMenu() {
                       type="button"
                       onClick={() => setSelectedServiceForModal(service)}
                       aria-label={`View details for ${service.name}`}
-                      className="global-button-secondary !py-2.5 !px-3 text-[11px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer text-center"
+                      className="global-button-secondary w-full !py-2.5 !px-3 text-[11px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer text-center hover:border-[#263D2B] transition-colors"
                     >
                       <Info className="w-3.5 h-3.5 text-[#263D2B]" />
-                      <span>View Details</span>
-                    </button>
-
-                    {/* Book This Service Action */}
-                    <button
-                      type="button"
-                      onClick={() => handleBookService(service)}
-                      aria-label={`Book ${service.name}`}
-                      className="global-button !py-2.5 !px-3 text-[11px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer text-center"
-                    >
-                      <span>{isUnconfirmed ? 'Consult' : 'Book'}</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-white" />
+                      <span>View Service Details &amp; Guidance →</span>
                     </button>
 
                   </div>
@@ -700,22 +682,9 @@ export default function HairColorServiceMenu() {
                 <button
                   type="button"
                   onClick={() => setSelectedServiceForModal(null)}
-                  className="global-button-secondary !py-2.5 !px-5 text-xs font-bold uppercase tracking-wider cursor-pointer w-full sm:w-auto text-center"
+                  className="global-button !py-2.5 !px-6 text-xs font-bold uppercase tracking-wider cursor-pointer w-full sm:w-auto text-center text-white"
                 >
-                  Close
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    const svc = selectedServiceForModal;
-                    setSelectedServiceForModal(null);
-                    handleBookService(svc);
-                  }}
-                  className="global-button !py-2.5 !px-6 text-xs font-bold uppercase tracking-wider cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto text-center"
-                >
-                  <Calendar className="w-4 h-4 text-white" />
-                  <span>Book This Service</span>
+                  Close Window
                 </button>
               </div>
             </div>

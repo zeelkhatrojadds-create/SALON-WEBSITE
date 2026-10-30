@@ -223,7 +223,7 @@ export default function ArtistryCollection({ onApplyPreset }) {
                 </button>
 
               </div>
-
+ 
             </div>
 
           </div>
@@ -316,14 +316,6 @@ export default function ArtistryCollection({ onApplyPreset }) {
                     <span>Try This Design</span>
                     <ArrowUpRight className="w-3.5 h-3.5" />
                   </button>
-
-                  <Link
-                    to={`/book-appointment?service=${art.serviceId || 'nail-art-addon'}`}
-                    onClick={(e) => e.stopPropagation()}
-                    className="text-xs font-semibold text-[#6B7068] hover:text-[#10110F] underline cursor-pointer"
-                  >
-                    Book Look
-                  </Link>
                 </div>
               </div>
 
@@ -454,16 +446,8 @@ export default function ArtistryCollection({ onApplyPreset }) {
                     className="global-button !px-6 !py-2.5 text-white text-xs font-bold uppercase tracking-wider shadow-sm flex items-center gap-1.5 cursor-pointer"
                   >
                     <Layers className="w-3.5 h-3.5" />
-                    <span>TRY THIS DESIGN</span>
+                    <span>TRY THIS DESIGN IN WORKBENCH</span>
                   </button>
-
-                  <Link
-                    to={`/book-appointment?service=${selectedArtwork.serviceId || 'nail-art-addon'}`}
-                    className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-full bg-white text-[#10110F] text-xs font-bold uppercase tracking-wider hover:bg-[#F7F4ED] transition-colors cursor-pointer"
-                  >
-                    <Calendar className="w-3.5 h-3.5 text-[#263D2B]" />
-                    <span>BOOK THIS LOOK</span>
-                  </Link>
                 </div>
               </div>
 

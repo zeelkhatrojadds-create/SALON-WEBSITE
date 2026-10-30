@@ -242,6 +242,6 @@ export const SALON_INFO = {
   hours: [
     { days: 'Monday – Friday', time: '9:30 AM – 7:30 PM' },
     { days: 'Saturday', time: '9:00 AM – 7:00 PM' },
-    { days: 'Sunday', time: '10:00 AM – 5:30 PM' }
+    { days: 'Sunday', time: 'Closed' }
   ]
 };

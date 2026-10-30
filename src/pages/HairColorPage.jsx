@@ -585,11 +585,11 @@ export default function HairColorPage() {
             &ldquo;Master hand-painted dimension, bespoke toning, and healthy bond-protected radiance tailored to your skin tone.&rdquo;
           </p>
 
-          {/* Quick Anchor CTAs */}
+          {/* Quick CTAs */}
           <div className="pt-3 flex flex-wrap items-center justify-center gap-3">
             <a
               href="#live-customizer"
-              className="global-button !px-6 !py-3 text-white text-xs font-bold uppercase tracking-wider shadow-xs cursor-pointer flex items-center gap-2"
+              className="global-button !px-8 !py-3.5 text-white text-xs font-bold uppercase tracking-wider shadow-md cursor-pointer flex items-center gap-2 hover:scale-[1.02] transition-transform"
             >
               <Palette className="w-3.5 h-3.5 text-white" />
               <span>LIVE HAIR CUSTOMIZER</span>
@@ -846,7 +846,7 @@ export default function HairColorPage() {
                 </div>
               </div>
 
-              {/* Card Footer: Discover Technique CTA + Booking */}
+              {/* Card Footer: Discover Technique CTA */}
               <div className="p-5 pt-0 border-t border-[#DCE1D8]/60 mt-3 space-y-3">
                 <div className="flex items-center justify-between pt-3">
                   <div>
@@ -858,13 +858,9 @@ export default function HairColorPage() {
                     </span>
                   </div>
 
-                  <Link
-                    to={`/book-appointment?service=${tech.serviceId}`}
-                    className="text-[11px] font-bold uppercase tracking-wider text-[#263D2B] hover:text-[#18271B] flex items-center gap-1 underline underline-offset-4"
-                  >
-                    <span>{tech.isConsultationRequired ? 'Consultation' : 'Book'}</span>
-                    <ArrowRight className="w-3 h-3" />
-                  </Link>
+                  <span className="text-[11px] font-mono text-[#6B7068]">
+                    {tech.duration}
+                  </span>
                 </div>
 
                 <button
@@ -1523,14 +1519,6 @@ export default function HairColorPage() {
                   <Heart className={`w-4 h-4 ${isShadeSaved(selectedShade?.id) ? 'fill-[#263D2B] text-[#263D2B]' : ''}`} />
                   <span>{isShadeSaved(selectedShade?.id) ? 'Saved in Dream Colour' : 'Save Shade to Moodboard'}</span>
                 </button>
-
-                <Link
-                  to={`/book-appointment?service=${selectedShade?.serviceId || 'noor-balayage'}&shade=${encodeURIComponent(selectedShade?.name || '')}`}
-                  className="global-button !px-7 !py-3.5 text-white text-xs font-bold uppercase tracking-wider shadow-md inline-flex items-center gap-2 cursor-pointer"
-                >
-                  <Calendar className="w-4 h-4" />
-                  <span>Book My Colour Consultation</span>
-                </Link>
               </div>
 
             </div>
@@ -2051,14 +2039,6 @@ export default function HairColorPage() {
                 <Palette className="w-3.5 h-3.5 text-[#A8B5A0] group-hover:scale-110 transition-transform" />
                 <span>Find Your Perfect Shade</span>
               </a>
-
-              <Link
-                to="/book-appointment?service=noor-balayage"
-                className="px-4 py-3.5 rounded-xl bg-[#F7F4ED] hover:bg-white text-[#10110F] text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 text-center group shadow-md cursor-pointer"
-              >
-                <Calendar className="w-3.5 h-3.5 text-[#263D2B] group-hover:scale-110 transition-transform" />
-                <span>Book a Colour Consultation</span>
-              </Link>
             </div>
           </div>
         </div>
@@ -2226,14 +2206,6 @@ export default function HairColorPage() {
                   <Heart className={`w-3.5 h-3.5 ${isInspirationSaved(activeTransformation.id) ? 'fill-[#A8B5A0] text-[#A8B5A0]' : ''}`} />
                   <span>{isInspirationSaved(activeTransformation.id) ? 'Saved to Moodboard' : 'Save Transformation Look'}</span>
                 </button>
-
-                <Link
-                  to="/book-appointment?service=noor-balayage"
-                  className="global-button !px-6 !py-3 text-white text-xs font-bold uppercase tracking-wider shadow-sm flex items-center justify-center gap-2 cursor-pointer w-full text-center"
-                >
-                  <span>BOOK SIMILAR TRANSFORMATION</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
               </div>
 
             </div>
@@ -2342,13 +2314,13 @@ export default function HairColorPage() {
               </div>
 
               <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
-                <Link
-                  to={`/book-appointment?service=${quizResult.serviceId}`}
+                <a
+                  href="#hair-colour-menu"
                   className="global-button !px-8 !py-3.5 text-white text-xs font-bold uppercase tracking-wider shadow-sm flex items-center gap-2 cursor-pointer"
                 >
-                  <span>BOOK YOUR RECOMMENDED SERVICE</span>
+                  <span>VIEW RECOMMENDED IN MENU</span>
                   <ArrowRight className="w-4 h-4" />
-                </Link>
+                </a>
 
                 <button
                   onClick={handleResetQuiz}
@@ -3113,16 +3085,17 @@ export default function HairColorPage() {
 
             <div className="pt-2 flex flex-wrap justify-center items-center gap-3">
               <Link
-                to="/book-appointment?service=noor-balayage"
-                className="global-button !px-8 !py-3.5 text-white text-xs font-bold uppercase tracking-wider shadow-sm cursor-pointer"
+                to="/services"
+                className="global-button !px-8 !py-3.5 text-white text-xs font-bold uppercase tracking-wider shadow-sm cursor-pointer flex items-center gap-2"
               >
-                BOOK NOOR BALAYAGE
+                <span>EXPLORE ALL SALON SERVICES</span>
+                <ArrowRight className="w-4 h-4 text-white" />
               </Link>
               <Link
-                to="/special-treatments"
-                className="global-button-secondary !px-8 !py-3.5 text-xs font-bold uppercase tracking-wider cursor-pointer"
+                to="/contact"
+                className="global-button-secondary !px-8 !py-3.5 text-xs font-bold uppercase tracking-wider cursor-pointer flex items-center gap-2"
               >
-                EXPLORE ALL SPECIAL TREATMENTS
+                <span>CONNECT WITH STUDIO</span>
               </Link>
             </div>
 
@@ -3317,19 +3290,10 @@ export default function HairColorPage() {
                   <button
                     type="button"
                     onClick={() => setSelectedTechniqueModal(null)}
-                    className="flex-1 sm:flex-none px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider border border-[#DCE1D8] text-[#465640] hover:text-[#10110F] hover:bg-[#F7F4ED] transition-colors cursor-pointer"
+                    className="flex-1 sm:flex-none px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider global-button text-white shadow-sm cursor-pointer"
                   >
-                    Close
+                    Close Window
                   </button>
-
-                  <Link
-                    to={`/book-appointment?service=${selectedTechniqueModal.serviceId}`}
-                    onClick={() => setSelectedTechniqueModal(null)}
-                    className="flex-1 sm:flex-none global-button !px-6 !py-3 text-xs uppercase font-bold tracking-wider text-white flex items-center justify-center gap-2 shadow-sm cursor-pointer"
-                  >
-                    <Calendar className="w-4 h-4" />
-                    <span>Book a Consultation</span>
-                  </Link>
                 </div>
               </div>
 
@@ -3492,19 +3456,10 @@ export default function HairColorPage() {
                           setSelectedShade(shade);
                           setIsCompareModalOpen(false);
                         }}
-                        className="w-full py-2 rounded-full border border-[#263D2B] text-xs font-bold uppercase tracking-wider text-[#263D2B] hover:bg-white transition-colors cursor-pointer"
+                        className="w-full py-2.5 rounded-full global-button text-xs font-bold uppercase tracking-wider text-white shadow-xs cursor-pointer"
                       >
                         Select in Explorer
                       </button>
-
-                      <Link
-                        to={`/book-appointment?service=${shade.serviceId || 'noor-balayage'}&shade=${encodeURIComponent(shade.name)}`}
-                        onClick={() => setIsCompareModalOpen(false)}
-                        className="w-full global-button !py-2.5 text-xs text-white uppercase font-bold tracking-wider flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
-                      >
-                        <Calendar className="w-3.5 h-3.5" />
-                        <span>Book Consultation</span>
-                      </Link>
                     </div>
                   </div>
                 ))}

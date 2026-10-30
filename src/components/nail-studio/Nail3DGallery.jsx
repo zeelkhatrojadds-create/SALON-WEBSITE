@@ -295,15 +295,6 @@ export default function Nail3DGallery({ onApplyPreset }) {
                         <Wand2 className="w-3.5 h-3.5" />
                         <span>Try This Design</span>
                       </button>
-
-                      <Link
-                        to={`/book-appointment?service=${activeModalDesign.serviceId}`}
-                        onClick={() => setActiveModalDesign(null)}
-                        className="w-full py-3 px-4 rounded-full bg-white hover:bg-[#F7F4ED] text-[#10110F] border border-[#263D2B] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-xs"
-                      >
-                        <Calendar className="w-3.5 h-3.5 text-[#263D2B]" />
-                        <span>Book Appointment</span>
-                      </Link>
                     </div>
 
                     <button

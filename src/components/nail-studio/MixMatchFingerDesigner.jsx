@@ -613,18 +613,6 @@ export default function MixMatchFingerDesigner() {
     }
   };
 
-  // Book This Manicure
-  const handleBookManicure = () => {
-    try {
-      // Calculate summary
-      const uniqueColors = Array.from(new Set(Object.values(nailsState).map(n => n.colorId))).join(', ');
-      const uniquePatterns = Array.from(new Set(Object.values(nailsState).map(n => n.patternId))).join(', ');
-      const desc = `Bespoke 10-Finger Mix & Match Set: Colors (${uniqueColors}), Patterns (${uniquePatterns})`;
-      sessionStorage.setItem('glfy_nail_design_request', desc);
-    } catch (e) {}
-    navigate('/book-appointment?service=nail-art-addon');
-  };
-
   // Computed Telemetry
   const summaryData = useMemo(() => {
     const list = Object.values(nailsState);
@@ -1297,20 +1285,10 @@ export default function MixMatchFingerDesigner() {
                 <button
                   type="button"
                   onClick={handleSaveDesign}
-                  className="w-full py-3 px-4 rounded-full border border-[#263D2B] bg-white hover:bg-[#F7F4ED] text-[#263D2B] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-2xs"
+                  className="w-full py-3.5 px-4 rounded-full bg-[#263D2B] hover:bg-[#18271B] text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-xs"
                 >
-                  <Bookmark className="w-3.5 h-3.5 text-[#263D2B]" />
+                  <Bookmark className="w-3.5 h-3.5 text-white" />
                   <span>Save My 10-Nail Design</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleBookManicure}
-                  className="w-full py-3.5 px-4 rounded-full bg-[#263D2B] hover:bg-[#18271B] text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
-                >
-                  <Calendar className="w-3.5 h-3.5 text-white" />
-                  <span>Book This Manicure In Ottawa</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
 

@@ -75,13 +75,13 @@ export default function NailAppointmentExperience({
         'Instant appointment confirmation & calendar sync'
       ],
       primaryCta: {
-        label: 'BOOK YOUR APPOINTMENT',
-        href: '/book-appointment?service=gel-manicure',
-        isAnchor: false
+        label: 'VIEW TREATMENT MENU',
+        href: '#salon-catalog-pricing',
+        isAnchor: true
       },
       secondaryCta: {
-        label: 'View Full Treatment Menu',
-        href: '#salon-catalog-pricing',
+        label: 'Explore Nail Artistry',
+        href: '#artistry-collection',
         isAnchor: true
       },
       illustrationType: 'booking'
@@ -155,9 +155,9 @@ export default function NailAppointmentExperience({
         isAnchor: true
       },
       secondaryCta: {
-        label: 'Book Appointment Now',
-        href: '/book-appointment?service=nail-art-addon',
-        isAnchor: false
+        label: 'View Care Advice',
+        href: '#nail-care-guide',
+        isAnchor: true
       },
       illustrationType: 'reveal'
     }
@@ -646,19 +646,19 @@ export default function NailAppointmentExperience({
 
           {/* Action Row */}
           <div className="pt-4 border-t border-[#DCE1D8]/80 flex flex-wrap items-center justify-between gap-3">
-            <Link
-              to={`/book-appointment?service=nail-art-addon&shape=${selectedShape?.id || 'almond'}&color=${encodeURIComponent(selectedColor?.name || 'Forest Green')}`}
-              className="global-button !px-6 !py-3 text-white text-xs font-bold uppercase tracking-wider shadow-sm flex items-center gap-2 cursor-pointer"
-            >
-              <span>CONTINUE WITH THIS LOOK</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-
             <a
               href="#nail-customizer-workbench"
+              className="global-button !px-6 !py-3 text-white text-xs font-bold uppercase tracking-wider shadow-sm flex items-center gap-2 cursor-pointer"
+            >
+              <span>ADAPT IN CUSTOMIZER WORKBENCH</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </a>
+
+            <a
+              href="#artistry-collection"
               className="text-xs font-semibold text-[#263D2B] hover:text-[#18271B] underline cursor-pointer"
             >
-              Modify Choices in Customizer
+              Browse Full Artistry Collection
             </a>
           </div>
         </div>

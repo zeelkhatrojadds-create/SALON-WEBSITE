@@ -17,6 +17,8 @@ import {
   Compass
 } from 'lucide-react';
 import ScrollReveal from '../components/ScrollReveal/ScrollReveal';
+import HairRevivalLoungeSection from '../components/special-treatments/HairRevivalLoungeSection';
+import HairTransformationStudioSection from '../components/special-treatments/HairTransformationStudioSection';
 
 export default function SpecialTreatmentsPage() {
   const navigate = useNavigate();
@@ -231,7 +233,17 @@ export default function SpecialTreatmentsPage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* 3. ATELIER PHILOSOPHY & APPOINTMENT SANCTUARY BANNER                      */}
+      {/* 3. THE HAIR REVIVAL LOUNGE                                                */}
+      {/* ========================================================================= */}
+      <HairRevivalLoungeSection />
+
+      {/* ========================================================================= */}
+      {/* 4. THE HAIR TRANSFORMATION STUDIO                                         */}
+      {/* ========================================================================= */}
+      <HairTransformationStudioSection />
+
+      {/* ========================================================================= */}
+      {/* 5. ATELIER PHILOSOPHY & APPOINTMENT SANCTUARY BANNER                      */}
       {/* ========================================================================= */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pt-16 sm:pt-24">
         <ScrollReveal className="p-8 sm:p-12 rounded-3xl bg-white border border-[#DCE1D8] shadow-xs text-center relative overflow-hidden">
@@ -249,10 +261,10 @@ export default function SpecialTreatmentsPage() {
 
             <div className="pt-2 flex flex-wrap justify-center items-center gap-3">
               <Link
-                to="/book-appointment"
+                to="/services"
                 className="global-button !px-8 !py-3.5 text-white text-xs font-bold uppercase tracking-wider shadow-sm cursor-pointer"
               >
-                BOOK APPOINTMENT ONLINE
+                EXPLORE COMPLETE SERVICE MENU
               </Link>
               <Link
                 to="/about"

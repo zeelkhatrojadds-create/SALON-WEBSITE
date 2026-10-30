@@ -36,7 +36,9 @@ import {
   Check,
   Bookmark,
   BookmarkCheck,
-  ShoppingBag
+  ShoppingBag,
+  BellRing,
+  Smartphone
 } from 'lucide-react';
 import { api } from '../services/api';
 import salonDB from '../db/salonDatabase';
@@ -56,6 +58,20 @@ export default function CustomerDashboardPage() {
   const [notifications, setNotifications] = useState([]);
   const [offers, setOffers] = useState([]);
   const [savedRecommendations, setSavedRecommendations] = useState([]);
+  const [notificationPreferences, setNotificationPreferences] = useState({
+    confirmation: true,
+    reminder24h: true,
+    reminder3h: true,
+    updates: true,
+    aftercare: true,
+    channels: {
+      inApp: true,
+      push: false,
+      email: false,
+      sms: false
+    }
+  });
+  const [scheduledReminders, setScheduledReminders] = useState([]);
 
   // Modals & Action states
   const [selectedAppointment, setSelectedAppointment] = useState(null);
@@ -170,12 +186,23 @@ export default function CustomerDashboardPage() {
       const notifs = salonDB.getCustomerNotifications(currentUser.id || currentUser.email);
       const pubOffers = salonDB.getPublicFestivalOffers();
       const savedRecs = salonDB.getCustomerSavedRecommendations(currentUser.id || currentUser.email);
+      const notifPrefs = salonDB.getNotificationPreferences(currentUser.id || currentUser.email);
+      const allReminders = salonDB.getScheduledReminders();
 
       setAppointments(appts);
       setReviews(revs);
       setNotifications(notifs);
       setOffers(pubOffers);
       setSavedRecommendations(savedRecs);
+      if (notifPrefs) {
+        setNotificationPreferences(notifPrefs);
+      }
+      const userReminders = (allReminders || []).filter(r => 
+        r.customerId === currentUser.id || 
+        r.customerEmail === currentUser.email ||
+        appts.some(a => a.id === r.appointmentId)
+      );
+      setScheduledReminders(userReminders);
       setLoading(false);
     };
 
@@ -406,6 +433,71 @@ export default function CustomerDashboardPage() {
   const handleMarkAllNotifsRead = async () => {
     await api.markAllNotificationsRead(user?.id);
     showToast('All notifications marked as read.');
+  };
+
+  const handleTogglePref = (prefKey) => {
+    const updated = {
+      ...notificationPreferences,
+      [prefKey]: !notificationPreferences[prefKey]
+    };
+    setNotificationPreferences(updated);
+    salonDB.saveNotificationPreferences(user.id || user.email, updated);
+    showToast('Preference updated.');
+  };
+
+  const handleToggleChannel = async (channelKey) => {
+    if (channelKey === 'push') {
+      if (!('Notification' in window)) {
+        showToast('Browser notifications are not supported by this browser.', 'error');
+        return;
+      }
+      if (Notification.permission === 'granted') {
+        const nextVal = !notificationPreferences.channels?.push;
+        const updated = {
+          ...notificationPreferences,
+          channels: {
+            ...notificationPreferences.channels,
+            push: nextVal
+          }
+        };
+        setNotificationPreferences(updated);
+        salonDB.saveNotificationPreferences(user.id || user.email, updated);
+        showToast(nextVal ? 'Browser push enabled.' : 'Browser push disabled.');
+      } else {
+        const perm = await Notification.requestPermission();
+        if (perm === 'granted') {
+          const updated = {
+            ...notificationPreferences,
+            channels: {
+              ...notificationPreferences.channels,
+              push: true
+            }
+          };
+          setNotificationPreferences(updated);
+          salonDB.saveNotificationPreferences(user.id || user.email, updated);
+          showToast('Browser push notifications enabled!');
+        } else {
+          showToast('Browser push permission was declined.', 'error');
+        }
+      }
+      return;
+    }
+
+    if (channelKey === 'email' || channelKey === 'sms') {
+      showToast('This notification delivery channel is currently unavailable.', 'error');
+      return;
+    }
+
+    const updated = {
+      ...notificationPreferences,
+      channels: {
+        ...notificationPreferences.channels,
+        [channelKey]: !notificationPreferences.channels?.[channelKey]
+      }
+    };
+    setNotificationPreferences(updated);
+    salonDB.saveNotificationPreferences(user.id || user.email, updated);
+    showToast('Delivery channel updated.');
   };
 
   // Appointments Filter Logic
@@ -901,10 +993,35 @@ export default function CustomerDashboardPage() {
                           )}
 
                           {appt.customizations && (
-                            <div className="p-3 rounded-2xl bg-[#263D2B]/5 border border-[#263D2B]/15 text-xs space-y-1">
+                            <div className="p-3 rounded-2xl bg-[#263D2B]/5 border border-[#263D2B]/15 text-xs space-y-1.5">
                               <span className="text-[10px] font-bold text-[#263D2B] uppercase tracking-wider block">
-                                ✨ Tailored Customization:
+                                ✨ {appt.customizations.isCustomStudioRequest ? `Custom Studio Formulation (${appt.customizations.categoryTitle || 'Bespoke'})` : 'Tailored Customization'}:
                               </span>
+
+                              {appt.customizations.isCustomStudioRequest && appt.customizations.details && (
+                                <div className="space-y-1 pt-1">
+                                  {Object.entries(appt.customizations.details).map(([k, v]) => (
+                                    <div key={k} className="text-[11px] text-[#10110F] flex items-center justify-between gap-2">
+                                      <span className="text-[#6B7068]">• {k}:</span>
+                                      <span className="font-semibold text-right">{v?.label || v}</span>
+                                    </div>
+                                  ))}
+                                  {appt.customizations.inspirationPhoto && (
+                                    <div className="pt-1 flex items-center gap-2">
+                                      <img
+                                        src={appt.customizations.inspirationPhoto.dataUrl}
+                                        alt="Inspiration"
+                                        className="w-8 h-8 rounded-md object-cover border border-[#DCE1D8]"
+                                      />
+                                      <span className="text-[10px] text-[#465640] italic">Inspiration reference photo attached</span>
+                                    </div>
+                                  )}
+                                  <div className="text-[10px] font-semibold text-[#263D2B] pt-0.5">
+                                    Pricing: {appt.customizations.pricingDisclaimer || 'Price to be confirmed by the salon'}
+                                  </div>
+                                </div>
+                              )}
+
                               {appt.customizations.selectedOption && (
                                 <div className="text-[#10110F]">
                                   • Tier: {appt.customizations.selectedOption.name}
@@ -1823,16 +1940,234 @@ export default function CustomerDashboardPage() {
 
             {/* 8. NOTIFICATIONS TAB */}
             {activeTab === 'notifications' && (
-              <div className="space-y-6 animate-fade-in">
-                <div className="flex items-center justify-between pb-2 border-b border-[#DCE1D8]">
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#263D2B] block">
-                      CONCIERGE FEED
+              <div className="space-y-8 animate-fade-in">
+                
+                {/* Notification Preferences Card */}
+                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#DCE1D8] shadow-xs space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#DCE1D8]">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-2xl bg-[#263D2B]/10 text-[#263D2B] flex items-center justify-center shrink-0">
+                        <BellRing className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#263D2B] block">
+                          CONCIERGE PREFERENCES
+                        </span>
+                        <h2 className="font-serif text-xl sm:text-2xl text-[#10110F] font-normal">
+                          Appointment Notifications & Reminders
+                        </h2>
+                      </div>
+                    </div>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-semibold bg-[#263D2B]/10 text-[#263D2B] self-start sm:self-auto">
+                      <Check className="w-3.5 h-3.5" />
+                      Auto-Synchronized
                     </span>
-                    <h2 className="font-serif text-xl sm:text-2xl text-[#10110F] font-normal mt-0.5">
-                      Notifications & Reminders
-                    </h2>
                   </div>
+
+                  {/* 5 Toggle Options */}
+                  <div className="space-y-3">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#10110F] block">
+                      Reminder & Alert Preferences
+                    </span>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {/* 1. Appointment Confirmation */}
+                      <label className="flex items-start justify-between p-3.5 rounded-2xl border border-[#DCE1D8] hover:border-[#263D2B]/40 bg-[#F7F4ED]/30 cursor-pointer transition-colors">
+                        <div className="space-y-0.5 pr-2">
+                          <span className="text-xs font-semibold text-[#10110F] block">Appointment Confirmation</span>
+                          <span className="text-[11px] text-[#6B7068] leading-tight block">
+                            Notify me when my booking is confirmed.
+                          </span>
+                        </div>
+                        <input
+                          type="checkbox"
+                          checked={!!notificationPreferences.confirmation}
+                          onChange={() => handleTogglePref('confirmation')}
+                          className="mt-1 w-4 h-4 rounded text-[#263D2B] border-[#DCE1D8] focus:ring-[#263D2B] cursor-pointer"
+                        />
+                      </label>
+
+                      {/* 2. 24-Hour Reminder */}
+                      <label className="flex items-start justify-between p-3.5 rounded-2xl border border-[#DCE1D8] hover:border-[#263D2B]/40 bg-[#F7F4ED]/30 cursor-pointer transition-colors">
+                        <div className="space-y-0.5 pr-2">
+                          <span className="text-xs font-semibold text-[#10110F] block">24-Hour Reminder</span>
+                          <span className="text-[11px] text-[#6B7068] leading-tight block">
+                            Remind me one day before my appointment.
+                          </span>
+                        </div>
+                        <input
+                          type="checkbox"
+                          checked={!!notificationPreferences.reminder24h}
+                          onChange={() => handleTogglePref('reminder24h')}
+                          className="mt-1 w-4 h-4 rounded text-[#263D2B] border-[#DCE1D8] focus:ring-[#263D2B] cursor-pointer"
+                        />
+                      </label>
+
+                      {/* 3. 3-Hour Reminder */}
+                      <label className="flex items-start justify-between p-3.5 rounded-2xl border border-[#DCE1D8] hover:border-[#263D2B]/40 bg-[#F7F4ED]/30 cursor-pointer transition-colors">
+                        <div className="space-y-0.5 pr-2">
+                          <span className="text-xs font-semibold text-[#10110F] block">3-Hour Reminder</span>
+                          <span className="text-[11px] text-[#6B7068] leading-tight block">
+                            Remind me three hours before my appointment.
+                          </span>
+                        </div>
+                        <input
+                          type="checkbox"
+                          checked={!!notificationPreferences.reminder3h}
+                          onChange={() => handleTogglePref('reminder3h')}
+                          className="mt-1 w-4 h-4 rounded text-[#263D2B] border-[#DCE1D8] focus:ring-[#263D2B] cursor-pointer"
+                        />
+                      </label>
+
+                      {/* 4. Appointment Updates */}
+                      <label className="flex items-start justify-between p-3.5 rounded-2xl border border-[#DCE1D8] hover:border-[#263D2B]/40 bg-[#F7F4ED]/30 cursor-pointer transition-colors">
+                        <div className="space-y-0.5 pr-2">
+                          <span className="text-xs font-semibold text-[#10110F] block">Appointment Updates</span>
+                          <span className="text-[11px] text-[#6B7068] leading-tight block">
+                            Notify me if my appointment is rescheduled or cancelled.
+                          </span>
+                        </div>
+                        <input
+                          type="checkbox"
+                          checked={!!notificationPreferences.updates}
+                          onChange={() => handleTogglePref('updates')}
+                          className="mt-1 w-4 h-4 rounded text-[#263D2B] border-[#DCE1D8] focus:ring-[#263D2B] cursor-pointer"
+                        />
+                      </label>
+
+                      {/* 5. Aftercare & Review Reminder */}
+                      <label className="flex items-start justify-between p-3.5 rounded-2xl border border-[#DCE1D8] hover:border-[#263D2B]/40 bg-[#F7F4ED]/30 cursor-pointer transition-colors md:col-span-2">
+                        <div className="space-y-0.5 pr-2">
+                          <span className="text-xs font-semibold text-[#10110F] block">Aftercare & Review Reminder</span>
+                          <span className="text-[11px] text-[#6B7068] leading-tight block">
+                            Notify me after my completed appointment when appropriate.
+                          </span>
+                        </div>
+                        <input
+                          type="checkbox"
+                          checked={!!notificationPreferences.aftercare}
+                          onChange={() => handleTogglePref('aftercare')}
+                          className="mt-1 w-4 h-4 rounded text-[#263D2B] border-[#DCE1D8] focus:ring-[#263D2B] cursor-pointer"
+                        />
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Delivery Channels */}
+                  <div className="pt-4 border-t border-[#DCE1D8] space-y-3">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#10110F] block">
+                      Delivery Channels
+                    </span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                      <div className="p-3 rounded-2xl border border-[#263D2B]/30 bg-[#263D2B]/5">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs font-bold text-[#10110F]">In-App Concierge</span>
+                          <span className="text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-[#263D2B] text-white">
+                            Active
+                          </span>
+                        </div>
+                        <p className="text-[10px] text-[#6B7068]">Direct in-browser bell & patron inbox alerts.</p>
+                      </div>
+
+                      <div 
+                        onClick={() => handleToggleChannel('push')}
+                        className={`p-3 rounded-2xl border transition-colors cursor-pointer ${
+                          notificationPreferences.channels?.push 
+                            ? 'border-[#263D2B] bg-[#263D2B]/5' 
+                            : 'border-[#DCE1D8] bg-white hover:border-[#263D2B]/40'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs font-bold text-[#10110F]">Browser Push</span>
+                          <span className={`text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded ${
+                            notificationPreferences.channels?.push ? 'bg-[#263D2B] text-white' : 'bg-[#DCE1D8] text-[#6B7068]'
+                          }`}>
+                            {notificationPreferences.channels?.push ? 'Enabled' : 'Click to Enable'}
+                          </span>
+                        </div>
+                        <p className="text-[10px] text-[#6B7068]">Desktop/mobile browser web push notifications.</p>
+                      </div>
+
+                      <div className="p-3 rounded-2xl border border-dashed border-[#DCE1D8] bg-[#F7F4ED]/50 opacity-80">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs font-semibold text-[#6B7068]">Email</span>
+                          <span className="text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-[#DCE1D8] text-[#6B7068]">
+                            Currently unavailable
+                          </span>
+                        </div>
+                        <p className="text-[10px] text-[#6B7068]">Requires mail provider SMTP setup.</p>
+                      </div>
+
+                      <div className="p-3 rounded-2xl border border-dashed border-[#DCE1D8] bg-[#F7F4ED]/50 opacity-80">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs font-semibold text-[#6B7068]">WhatsApp / SMS</span>
+                          <span className="text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-[#DCE1D8] text-[#6B7068]">
+                            Currently unavailable
+                          </span>
+                        </div>
+                        <p className="text-[10px] text-[#6B7068]">Requires Twilio/Meta Business API integration.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Scheduled Reminders List */}
+                  {scheduledReminders.length > 0 && (
+                    <div className="pt-4 border-t border-[#DCE1D8] space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#10110F] block">
+                          Scheduled Reminder Jobs ({scheduledReminders.length})
+                        </span>
+                        <span className="text-[10px] text-[#6B7068]">Timezone: America/Toronto (EST)</span>
+                      </div>
+                      
+                      <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+                        {scheduledReminders.map((rem) => {
+                          const targetAppt = appointments.find(a => a.id === rem.appointmentId);
+                          return (
+                            <div 
+                              key={rem.id}
+                              className="p-3 rounded-xl border border-[#DCE1D8] bg-[#F7F4ED]/40 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs"
+                            >
+                              <div>
+                                <div className="flex items-center gap-2">
+                                  <span className="font-bold text-[#10110F] capitalize">
+                                    {rem.reminderType === 'reminder24h' ? '24-Hour Reminder' : '3-Hour Reminder'}
+                                  </span>
+                                  <span className="text-[10px] px-2 py-0.2 rounded-full font-semibold uppercase tracking-wider bg-[#263D2B]/10 text-[#263D2B]">
+                                    {rem.status}
+                                  </span>
+                                </div>
+                                <p className="text-[11px] text-[#6B7068] mt-0.5">
+                                  For {targetAppt?.service || 'Appointment'} on {targetAppt?.date || 'Scheduled Date'} at {targetAppt?.time || ''}
+                                </p>
+                              </div>
+                              <div className="text-right sm:text-right">
+                                <span className="text-[10px] font-mono text-[#263D2B] font-semibold block">
+                                  Scheduled: {rem.scheduledForEastern}
+                                </span>
+                                <span className="text-[10px] text-[#6B7068]">
+                                  Channel: {rem.channel === 'push' ? 'Browser Push' : 'In-App'}
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Concierge Feed */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between pb-2 border-b border-[#DCE1D8]">
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#263D2B] block">
+                        ACTIVITY STREAM
+                      </span>
+                      <h3 className="font-serif text-lg sm:text-xl text-[#10110F] font-normal mt-0.5">
+                        Delivered Notifications ({notifications.length})
+                      </h3>
+                    </div>
 
                   {notifications.some((n) => !n.read) && (
                     <button
@@ -1880,6 +2215,7 @@ export default function CustomerDashboardPage() {
                     ))}
                   </div>
                 )}
+                </div>
               </div>
             )}
 
@@ -2097,6 +2433,23 @@ export default function CustomerDashboardPage() {
               </div>
             )}
 
+            {selectedAppointment.styleCustomization && (
+              <div className="p-3.5 rounded-xl bg-[#263D2B]/5 border border-[#263D2B]/20 text-xs space-y-2">
+                <span className="font-bold text-[#263D2B] block uppercase tracking-wider text-[10px] flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-[#263D2B]" />
+                  <span>Custom Studio Style Personalization</span>
+                </span>
+                <div className="grid grid-cols-2 gap-1.5 text-[11px]">
+                  {Object.entries(selectedAppointment.styleCustomization).filter(([k, v]) => v !== undefined && v !== null && v !== '' && typeof v !== 'object').map(([k, v]) => (
+                    <div key={k} className="flex justify-between bg-white/70 p-1.5 rounded-lg border border-[#DCE1D8]">
+                      <span className="text-[#6B7068] capitalize">{k.replace(/([A-Z])/g, ' $1').replace(/Id$/, '')}:</span>
+                      <span className="font-semibold text-[#10110F] truncate max-w-[120px]">{String(v)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="pt-3 border-t border-[#DCE1D8] flex justify-end gap-2">
               <button
                 onClick={() => setSelectedAppointment(null)}
@@ -2149,6 +2502,11 @@ export default function CustomerDashboardPage() {
                   onChange={(e) => setRescheduleDate(e.target.value)}
                   className="w-full h-11 px-4 rounded-xl border border-[#DCE1D8] bg-[#F7F4ED]/40 text-xs text-[#10110F] focus:outline-none focus:border-[#263D2B]"
                 />
+                {rescheduleDate && new Date(rescheduleDate + 'T00:00:00').getDay() === 0 && (
+                  <p className="mt-1 text-[11px] font-semibold text-rose-600 flex items-center gap-1">
+                    <span>⛔</span> Sunday is Closed. Please select a Monday through Saturday appointment date.
+                  </p>
+                )}
               </div>
 
               <div>

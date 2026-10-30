@@ -209,14 +209,13 @@ export default function NailArtPage() {
             &ldquo;Discover your style. Choose your shape. Create your signature nails.&rdquo;
           </p>
 
-          {/* Quick Anchor CTA Buttons */}
+          {/* Quick CTAs */}
           <div className="pt-3 flex flex-wrap items-center justify-center gap-3">
             <a
               href="#choose-nail-shape"
-              className="global-button !px-7 !py-3 text-white text-xs font-bold uppercase tracking-wider shadow-xs cursor-pointer flex items-center gap-2"
+              className="global-button !px-8 !py-3.5 text-white text-xs font-bold uppercase tracking-wider shadow-md cursor-pointer flex items-center gap-2 hover:scale-[1.02] transition-transform"
             >
-              <span>CHOOSE YOUR SHAPE</span>
-              <span className="text-sm">↓</span>
+              <span>CHOOSE YOUR SHAPE ↓</span>
             </a>
 
             <a
@@ -508,10 +507,10 @@ export default function NailArtPage() {
                 </div>
 
                 <Link
-                  to={`/book-appointment?service=${service.id}`}
-                  className="global-button !px-5 !py-2.5 text-xs uppercase font-bold tracking-wider text-white flex items-center gap-1.5 shadow-xs cursor-pointer"
+                  to={`/services/nails/${service.slug || service.id}`}
+                  className="global-button-secondary !px-4 !py-2 text-xs font-semibold flex items-center gap-1.5 cursor-pointer hover:border-[#263D2B]"
                 >
-                  <span>BOOK NOW</span>
+                  <span>DETAILS</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
@@ -539,17 +538,18 @@ export default function NailArtPage() {
 
             <div className="pt-2 flex flex-wrap justify-center items-center gap-3">
               <Link
-                to="/book-appointment?service=gel-manicure"
-                className="global-button !px-8 !py-3.5 text-white text-xs font-bold uppercase tracking-wider shadow-sm cursor-pointer"
+                to="/services"
+                className="global-button !px-8 !py-3.5 text-white text-xs font-bold uppercase tracking-wider shadow-sm cursor-pointer flex items-center gap-2"
               >
-                BOOK NAIL APPOINTMENT
+                <span>EXPLORE ALL SALON SERVICES</span>
+                <ArrowRight className="w-4 h-4 text-white" />
               </Link>
-              <a
-                href="#choose-nail-shape"
-                className="global-button-secondary !px-8 !py-3.5 text-xs font-bold uppercase tracking-wider cursor-pointer"
+              <Link
+                to="/contact"
+                className="global-button-secondary !px-8 !py-3.5 text-xs font-bold uppercase tracking-wider cursor-pointer flex items-center gap-2"
               >
-                SELECT NAIL SHAPE
-              </a>
+                <span>CONNECT WITH JANKI</span>
+              </Link>
             </div>
 
             <div className="pt-4 border-t border-[#DCE1D8] flex flex-wrap items-center justify-center gap-4 text-[11px] text-[#6B7068]">

@@ -310,6 +310,14 @@ export default function TreatmentDetailPage() {
                 <ArrowRight className="w-4 h-4 ml-1" />
               </button>
 
+              <Link
+                to={`/custom-experience?service=${service.slug || service.id}`}
+                className="w-full py-3 px-6 rounded-full border border-[#263D2B] text-[#263D2B] hover:bg-[#263D2B] hover:text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>PERSONALIZE IN CUSTOM STUDIO</span>
+              </Link>
+
               <p className="text-[11px] text-center text-[#6B7068]">
                 Direct instant reservation • No pre-payment fee required
               </p>

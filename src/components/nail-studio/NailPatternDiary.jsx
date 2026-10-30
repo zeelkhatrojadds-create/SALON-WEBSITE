@@ -948,19 +948,12 @@ export default function NailPatternDiary({ onApplyPreset }) {
                     </button>
 
                     <div className="flex items-center gap-2">
-                      <Link
-                        to="/book-appointment?service=nail-art-addon"
-                        className="flex-1 global-button-secondary !py-2.5 text-center text-xs font-bold uppercase tracking-wider cursor-pointer"
-                      >
-                        BOOK TREATMENT WITH THIS PATTERN
-                      </Link>
-
                       <button
                         onClick={() => toggleFavorite(activePattern.id)}
-                        className="px-4 py-2.5 rounded-full border border-[#DCE1D8] bg-white text-xs font-bold text-[#465640] hover:text-[#10110F] hover:border-[#263D2B] transition-colors cursor-pointer flex items-center gap-1"
+                        className="w-full py-2.5 px-4 rounded-full border border-[#DCE1D8] bg-white text-xs font-bold text-[#465640] hover:text-[#10110F] hover:border-[#263D2B] transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-2xs"
                       >
                         <Bookmark className="w-3.5 h-3.5 text-[#263D2B]" />
-                        <span>{favorites[activePattern.id] ? 'Saved' : 'Bookmark'}</span>
+                        <span>{favorites[activePattern.id] ? 'Pattern Saved in Favorites' : 'Save Pattern to Favorites'}</span>
                       </button>
                     </div>
                   </div>

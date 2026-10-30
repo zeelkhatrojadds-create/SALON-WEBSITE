@@ -33,12 +33,14 @@ import salonDB from '../db/salonDatabase';
 import CreateYourMehndiPackage from '../components/mehndi/CreateYourMehndiPackage';
 import MehndiBanavaniRit from '../components/mehndi/MehndiBanavaniRit';
 import MehndiProcessPriceTime from '../components/mehndi/MehndiProcessPriceTime';
+import MehndiIngredientsPrep from '../components/mehndi/MehndiIngredientsPrep';
 
 export default function MehndiDesignStudioPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const packageBuilderRef = useRef(null);
   const ritRef = useRef(null);
+  const ingredientsRef = useRef(null);
   const priceTimeRef = useRef(null);
   const galleryRef = useRef(null);
   const chooserRef = useRef(null);
@@ -58,18 +60,7 @@ export default function MehndiDesignStudioPage() {
   // Modal preview state for "View Design"
   const [previewModalDesign, setPreviewModalDesign] = useState(null);
 
-  // Booking Form State
-  const todayStr = useMemo(() => new Date().toISOString().split('T')[0], []);
-  const [bookingData, setBookingData] = useState({
-    date: '',
-    time: '11:00 AM',
-    fullName: '',
-    email: '',
-    phone: '',
-    notes: ''
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [confirmedBooking, setConfirmedBooking] = useState(null);
+  // Toast notification state
   const [toastMessage, setToastMessage] = useState(null);
 
   useEffect(() => {
@@ -113,65 +104,9 @@ export default function MehndiDesignStudioPage() {
     });
   }, [selectedFilter, searchQuery]);
 
-  // Handle card "Choose & Book"
-  const handleSelectForBooking = (design) => {
+  // Handle design selection
+  const handleSelectDesign = (design) => {
     setSelectedDesign(design);
-    if (bookingRef.current) {
-      bookingRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
-  // Submit appointment directly to existing salon booking engine
-  const handleBookingSubmit = (e) => {
-    e.preventDefault();
-
-    if (!bookingData.fullName || !bookingData.phone || !bookingData.date) {
-      alert('Please fill in your name, phone number, and preferred date.');
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    const bookingPayload = {
-      id: 'bk_m_' + Date.now().toString(36),
-      serviceId: selectedDesign.serviceId,
-      serviceName: `${selectedDesign.name} (Mehndi Studio)`,
-      category: 'henna',
-      price: selectedDesign.numericPrice || 0,
-      priceDisplay: selectedDesign.priceDisplay,
-      duration: selectedDesign.estimatedTime,
-      date: bookingData.date,
-      time: bookingData.time,
-      customerName: bookingData.fullName.trim(),
-      customerEmail: bookingData.email.trim(),
-      customerPhone: bookingData.phone.trim(),
-      notes: `Design Selected: ${selectedDesign.name}. ${bookingData.notes.trim()}`,
-      createdAt: new Date().toISOString(),
-      status: 'Pending',
-      appointmentStatus: 'Pending',
-      source: 'Mehndi Design Studio'
-    };
-
-    try {
-      salonDB.addAppointment(bookingPayload);
-    } catch (err) {
-      console.warn('DB appointment save error:', err);
-    }
-
-    // Trigger celebration confetti
-    import('canvas-confetti')
-      .then(({ default: confetti }) => {
-        confetti({
-          particleCount: 75,
-          spread: 60,
-          origin: { y: 0.6 },
-          colors: ['#263D2B', '#465640', '#A8B5A0', '#F7F4ED']
-        });
-      })
-      .catch(() => {});
-
-    setConfirmedBooking(bookingPayload);
-    setIsSubmitting(false);
   };
 
   return (
@@ -243,6 +178,15 @@ export default function MehndiDesignStudioPage() {
 
                 <button
                   type="button"
+                  onClick={() => ingredientsRef.current?.scrollIntoView({ behavior: 'smooth' })}
+                  className="global-button-secondary !px-6 !py-4 text-xs font-bold uppercase tracking-wider cursor-pointer flex items-center gap-2"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-[#263D2B]" />
+                  <span>Henna Ingredients &amp; Prep</span>
+                </button>
+
+                <button
+                  type="button"
                   onClick={() => priceTimeRef.current?.scrollIntoView({ behavior: 'smooth' })}
                   className="global-button-secondary !px-6 !py-4 text-xs font-bold uppercase tracking-wider cursor-pointer flex items-center gap-2"
                 >
@@ -257,15 +201,6 @@ export default function MehndiDesignStudioPage() {
                 >
                   <span>12 Design Categories</span>
                   <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => bookingRef.current?.scrollIntoView({ behavior: 'smooth' })}
-                  className="px-5 py-4 rounded-full border border-[#DCE1D8] bg-white hover:border-[#263D2B] text-xs font-bold uppercase tracking-wider text-[#465640] hover:text-[#10110F] cursor-pointer flex items-center gap-1.5 shadow-2xs"
-                >
-                  <Calendar className="w-3.5 h-3.5 text-[#263D2B]" />
-                  <span>Book Appointment</span>
                 </button>
               </div>
 
@@ -344,6 +279,13 @@ export default function MehndiDesignStudioPage() {
       {/* ===================================================================== */}
       <div ref={ritRef}>
         <MehndiBanavaniRit />
+      </div>
+
+      {/* ===================================================================== */}
+      {/* 2.55 SECTION: WHAT IS MEHNDI MADE OF? — INGREDIENTS & PREPARATION     */}
+      {/* ===================================================================== */}
+      <div ref={ingredientsRef}>
+        <MehndiIngredientsPrep />
       </div>
 
       {/* ===================================================================== */}
@@ -620,26 +562,15 @@ export default function MehndiDesignStudioPage() {
                     </div>
                   </div>
 
-                  {/* Action Buttons: View Design & Book Appointment */}
-                  <div className="pt-4 border-t border-[#DCE1D8]/80 grid grid-cols-2 gap-2">
-                    {/* View Design Button */}
+                  {/* Action Button: View Design */}
+                  <div className="pt-4 border-t border-[#DCE1D8]/80">
                     <button
                       type="button"
                       onClick={() => setPreviewModalDesign(design)}
-                      className="w-full py-2.5 rounded-xl border border-[#263D2B] bg-white text-[11px] font-bold text-[#263D2B] uppercase tracking-wider hover:bg-[#263D2B]/5 transition-all flex items-center justify-center gap-1 cursor-pointer shadow-xs"
+                      className="w-full py-2.5 rounded-xl global-button text-[11px] font-bold text-white uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
                     >
-                      <Eye className="w-3.5 h-3.5" />
-                      <span>View Design</span>
-                    </button>
-
-                    {/* Book Appointment Button */}
-                    <button
-                      type="button"
-                      onClick={() => handleSelectForBooking(design)}
-                      className="w-full py-2.5 rounded-xl bg-[#263D2B] text-white text-[11px] font-bold uppercase tracking-wider hover:bg-[#1f3123] transition-all flex items-center justify-center gap-1 cursor-pointer shadow-xs"
-                    >
-                      <span>Book Now</span>
-                      <ArrowRight className="w-3 h-3" />
+                      <Eye className="w-3.5 h-3.5 text-white" />
+                      <span>View Design &amp; Motifs</span>
                     </button>
                   </div>
 
@@ -667,249 +598,34 @@ export default function MehndiDesignStudioPage() {
       </section>
 
       {/* ===================================================================== */}
-      {/* 4. INTEGRATED BOOKING FORM                                           */}
+      {/* 4. BESPOKE BRIDAL & CELEBRATION CONSULTATION                         */}
       {/* ===================================================================== */}
-      <section ref={bookingRef} id="book-mehndi-form" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-[#DCE1D8]">
-        <div className="bg-white rounded-3xl border border-[#DCE1D8] shadow-md p-6 sm:p-12 relative overflow-hidden">
-          
-          <ScrollReveal className="space-y-3 text-center max-w-2xl mx-auto mb-10">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#F7F4ED] border border-[#DCE1D8]">
-              <Calendar className="w-3.5 h-3.5 text-[#263D2B]" />
-              <span className="text-[10.5px] font-bold uppercase tracking-[0.22em] text-[#263D2B]">
-                RESERVE YOUR MEHNDI CEREMONY
-              </span>
-            </div>
-            <h2 className="font-serif text-3xl sm:text-4xl text-[#10110F] font-normal">
-              Book Your Mehndi Appointment
-            </h2>
-            <p className="text-xs sm:text-sm text-[#6B7068] font-light">
-              Connect to our private salon appointment booking flow. Fill in your details below to secure your date with Janki.
-            </p>
-          </ScrollReveal>
-
-          {confirmedBooking ? (
-            /* Confirmation State */
-            <div className="max-w-xl mx-auto text-center space-y-6 p-8 rounded-3xl bg-[#F7F4ED] border border-[#DCE1D8]">
-              <div className="w-16 h-16 rounded-full bg-[#263D2B] text-white flex items-center justify-center mx-auto shadow-md">
-                <CheckCircle2 className="w-8 h-8" />
-              </div>
-              <div className="space-y-2">
-                <h3 className="font-serif text-2xl text-[#10110F]">
-                  Appointment Request Received!
-                </h3>
-                <p className="text-xs sm:text-sm text-[#6B7068] leading-relaxed">
-                  Thank you, <strong className="text-[#10110F]">{confirmedBooking.customerName}</strong>. 
-                  Your appointment for <strong className="text-[#263D2B]">{confirmedBooking.serviceName}</strong> has been logged in our system for{' '}
-                  <strong className="text-[#10110F]">{confirmedBooking.date} at {confirmedBooking.time}</strong>.
-                </p>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-white border border-[#DCE1D8] text-xs text-left space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-[#6B7068]">Reference:</span>
-                  <span className="font-mono font-bold text-[#10110F]">{confirmedBooking.id}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#6B7068]">Price:</span>
-                  <span className="font-bold text-[#263D2B]">{confirmedBooking.priceDisplay}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#6B7068]">Duration:</span>
-                  <span className="text-[#10110F]">{confirmedBooking.duration}</span>
-                </div>
-              </div>
-
-              <div className="pt-2 flex flex-wrap justify-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setConfirmedBooking(null);
-                    setBookingData({
-                      date: '',
-                      time: '11:00 AM',
-                      fullName: '',
-                      email: '',
-                      phone: '',
-                      notes: ''
-                    });
-                  }}
-                  className="global-button !px-6 !py-3 text-white text-xs font-bold uppercase tracking-wider"
-                >
-                  Book Another Design
-                </button>
-                <Link
-                  to="/services"
-                  className="global-button-secondary !px-6 !py-3 text-xs font-bold uppercase tracking-wider"
-                >
-                  Return to Services
-                </Link>
-              </div>
-            </div>
-          ) : (
-            /* Booking Form */
-            <form onSubmit={handleBookingSubmit} className="max-w-3xl mx-auto space-y-6">
-              
-              {/* Selected Design Banner in Form */}
-              <div className="p-4 rounded-2xl bg-[#F7F4ED] border border-[#DCE1D8] flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3.5">
-                  <img
-                    src={selectedDesign.image}
-                    alt={selectedDesign.name}
-                    className="w-14 h-14 rounded-xl object-cover border border-[#DCE1D8]"
-                  />
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#263D2B] block">
-                      SELECTED DESIGN
-                    </span>
-                    <h4 className="font-serif text-base text-[#10110F] font-normal">
-                      {selectedDesign.name}
-                    </h4>
-                    <span className="text-xs text-[#6B7068]">
-                      {selectedDesign.priceDisplay} • {selectedDesign.estimatedTime}
-                    </span>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => chooserRef.current?.scrollIntoView({ behavior: 'smooth' })}
-                  className="text-xs font-bold text-[#263D2B] hover:underline whitespace-nowrap"
-                >
-                  Change Design
-                </button>
-              </div>
-
-              {/* Form Input Fields */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
-                
-                {/* Date */}
-                <div className="space-y-1.5">
-                  <label htmlFor="mehndi-booking-date" className="text-xs font-bold text-[#10110F] uppercase tracking-wider block">
-                    Preferred Date *
-                  </label>
-                  <input
-                    id="mehndi-booking-date"
-                    type="date"
-                    required
-                    min={todayStr}
-                    value={bookingData.date}
-                    onChange={(e) => setBookingData({ ...bookingData, date: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#DCE1D8] focus:border-[#263D2B] text-xs text-[#10110F] focus:outline-none shadow-xs"
-                  />
-                </div>
-
-                {/* Time */}
-                <div className="space-y-1.5">
-                  <label htmlFor="mehndi-booking-time" className="text-xs font-bold text-[#10110F] uppercase tracking-wider block">
-                    Preferred Time Slot *
-                  </label>
-                  <select
-                    id="mehndi-booking-time"
-                    value={bookingData.time}
-                    onChange={(e) => setBookingData({ ...bookingData, time: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#DCE1D8] focus:border-[#263D2B] text-xs text-[#10110F] focus:outline-none shadow-xs cursor-pointer"
-                  >
-                    <option value="10:00 AM">10:00 AM — Morning Sanctuary</option>
-                    <option value="11:30 AM">11:30 AM — Mid-Morning</option>
-                    <option value="1:00 PM">1:00 PM — Afternoon</option>
-                    <option value="2:30 PM">2:30 PM — Afternoon</option>
-                    <option value="4:00 PM">4:00 PM — Late Afternoon</option>
-                    <option value="5:30 PM">5:30 PM — Evening Glow</option>
-                  </select>
-                </div>
-
-                {/* Full Name */}
-                <div className="space-y-1.5">
-                  <label htmlFor="mehndi-booking-name" className="text-xs font-bold text-[#10110F] uppercase tracking-wider block">
-                    Full Name *
-                  </label>
-                  <input
-                    id="mehndi-booking-name"
-                    type="text"
-                    required
-                    placeholder="Your full name"
-                    value={bookingData.fullName}
-                    onChange={(e) => setBookingData({ ...bookingData, fullName: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#DCE1D8] focus:border-[#263D2B] text-xs text-[#10110F] placeholder-[#6B7068] focus:outline-none shadow-xs"
-                  />
-                </div>
-
-                {/* Phone */}
-                <div className="space-y-1.5">
-                  <label htmlFor="mehndi-booking-phone" className="text-xs font-bold text-[#10110F] uppercase tracking-wider block">
-                    Phone Number *
-                  </label>
-                  <input
-                    id="mehndi-booking-phone"
-                    type="tel"
-                    required
-                    placeholder="e.g. +1 (613) 555-0199"
-                    value={bookingData.phone}
-                    onChange={(e) => setBookingData({ ...bookingData, phone: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#DCE1D8] focus:border-[#263D2B] text-xs text-[#10110F] placeholder-[#6B7068] focus:outline-none shadow-xs"
-                  />
-                </div>
-
-                {/* Email */}
-                <div className="sm:col-span-2 space-y-1.5">
-                  <label htmlFor="mehndi-booking-email" className="text-xs font-bold text-[#10110F] uppercase tracking-wider block">
-                    Email Address *
-                  </label>
-                  <input
-                    id="mehndi-booking-email"
-                    type="email"
-                    required
-                    placeholder="your.email@example.com"
-                    value={bookingData.email}
-                    onChange={(e) => setBookingData({ ...bookingData, email: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#DCE1D8] focus:border-[#263D2B] text-xs text-[#10110F] placeholder-[#6B7068] focus:outline-none shadow-xs"
-                  />
-                </div>
-
-                {/* Notes */}
-                <div className="sm:col-span-2 space-y-1.5">
-                  <label htmlFor="mehndi-booking-notes" className="text-xs font-bold text-[#10110F] uppercase tracking-wider block">
-                    Special Requests / Event Details (Optional)
-                  </label>
-                  <textarea
-                    id="mehndi-booking-notes"
-                    rows={3}
-                    placeholder="e.g. Sangeet date, bridal ceremony details, placement preference, or custom motif ideas..."
-                    value={bookingData.notes}
-                    onChange={(e) => setBookingData({ ...bookingData, notes: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#DCE1D8] focus:border-[#263D2B] text-xs text-[#10110F] placeholder-[#6B7068] focus:outline-none shadow-xs"
-                  />
-                </div>
-
-              </div>
-
-              {/* Submit Button & Master Booking Link */}
-              <div className="pt-4 space-y-3">
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full global-button !py-4 text-white text-xs font-bold uppercase tracking-wider shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                >
-                  <Calendar className="w-4 h-4" />
-                  <span>
-                    {isSubmitting ? 'Reserving Appointment...' : `Book Appointment for ${selectedDesign.name}`}
-                  </span>
-                </button>
-
-                <div className="text-center">
-                  <Link
-                    to={`/book-appointment?service=${selectedDesign.serviceId}`}
-                    className="text-xs text-[#465640] hover:text-[#10110F] underline font-medium inline-flex items-center gap-1"
-                  >
-                    <span>Prefer our step-by-step master booking calendar? Click here</span>
-                    <ArrowRight className="w-3 h-3" />
-                  </Link>
-                </div>
-              </div>
-
-            </form>
-          )}
-
+      <section id="mehndi-consultation" className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-[#DCE1D8]">
+        <div className="bg-[#263D2B] text-white rounded-3xl p-8 sm:p-14 text-center space-y-5 shadow-xl relative overflow-hidden">
+          <span className="text-[10.5px] font-mono uppercase tracking-widest text-[#A8B5A0] block">
+            BESPOKE MEHNDI ARTISTRY
+          </span>
+          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal leading-tight">
+            Planning a Wedding or Special Celebration?
+          </h2>
+          <p className="text-xs sm:text-sm text-white/80 max-w-xl mx-auto font-light leading-relaxed">
+            Every session is personalized with natural Rajasthani henna cones formulated in-house. Explore our complete treatment catalogue or connect with master artist Janki Khatroja for tailored bridal motifs.
+          </p>
+          <div className="pt-2 flex flex-wrap justify-center items-center gap-3">
+            <Link
+              to="/services"
+              className="global-button !bg-white !text-[#10110F] hover:!bg-[#F7F4ED] !py-3.5 !px-8 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+            >
+              <span>Explore All Salon Services</span>
+              <ArrowRight className="w-4 h-4 text-[#263D2B]" />
+            </Link>
+            <Link
+              to="/contact"
+              className="px-6 py-3.5 rounded-full border border-white/30 text-white hover:bg-white/10 text-xs font-semibold flex items-center justify-center gap-2 transition-colors cursor-pointer"
+            >
+              <span>Connect with Studio</span>
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -1008,17 +724,10 @@ export default function MehndiDesignStudioPage() {
               <div className="pt-4 border-t border-[#DCE1D8] flex gap-3">
                 <button
                   type="button"
-                  onClick={() => {
-                    setSelectedDesign(previewModalDesign);
-                    setPreviewModalDesign(null);
-                    if (bookingRef.current) {
-                      bookingRef.current.scrollIntoView({ behavior: 'smooth' });
-                    }
-                  }}
+                  onClick={() => setPreviewModalDesign(null)}
                   className="w-full global-button !py-3.5 text-white text-xs font-bold uppercase tracking-wider shadow-sm flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  <Calendar className="w-4 h-4" />
-                  <span>Book This Design</span>
+                  <span>Close Window</span>
                 </button>
               </div>
             </div>
