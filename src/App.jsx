@@ -147,6 +147,7 @@ function AppLayout() {
                 <Route path="/the-makeup-atelier" element={<MakeupAtelierPage />} />
                 <Route path="/makeup-atelier" element={<MakeupAtelierPage />} />
                 <Route path="/makeup" element={<MakeupAtelierPage />} />
+                <Route path="/makeup-studio" element={<MakeupAtelierPage />} />
                 {/* The Brow Atelier Routes */}
                 <Route path="/the-brow-atelier" element={<BrowAtelierPage />} />
                 <Route path="/brow-atelier" element={<BrowAtelierPage />} />

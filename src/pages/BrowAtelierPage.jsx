@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { 
   Sparkles, 
+  Eye, 
+  Scissors, 
   ShieldCheck, 
   Compass, 
-  ArrowRight, 
-  Check, 
-  Layers, 
   Award,
-  Feather,
-  Info,
+  Layers,
+  Heart,
+  Droplets,
   CheckCircle2,
-  Heart
+  HelpCircle,
+  Clock
 } from 'lucide-react';
 import BrowGallerySection from '../components/brow-atelier/BrowGallerySection';
 import BrowShapeExplorer from '../components/brow-atelier/BrowShapeExplorer';
@@ -21,47 +21,33 @@ import jankiPhoto from '../assets/janki-khatroja.webp';
 
 export default function BrowAtelierPage() {
   useEffect(() => {
-    document.title = 'The Brow Atelier — GLAM GIRL BY JANKI | Ottawa Luxury Studio';
-    
-    // Set meta description
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) {
-      metaDesc.setAttribute('content', 'Explore The Brow Atelier by GLAM GIRL BY JANKI. Discover brow inspiration styles, interactive shape explorer, approved threading & waxing services, and complete maintenance guides.');
-    }
-    
+    document.title = 'The Brow Atelier — GLAM GIRL BY JANKI | Ottawa';
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
-
-  const scrollToSection = (id) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   return (
     <div className="bg-[#F7F4ED] text-[#10110F] min-h-screen">
       
-      {/* ============================================================ */}
-      {/* 1. BROW ATELIER HERO (Strictly Informational, No Booking) */}
-      {/* ============================================================ */}
+      {/* =========================================================================
+          1. BROW ATELIER HERO (Editorial & Luxury Studio, Strictly Informational)
+      ========================================================================= */}
       <section className="relative overflow-hidden pt-12 sm:pt-20 pb-16 sm:pb-24 border-b border-[#DCE1D8] bg-white">
         
-        {/* Subtle Luxury Pattern Accents */}
+        {/* Subtle Atmospheric Accents in Brand Tones (#263D2B, #A8B5A0) */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#263D2B]/5 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#A8B5A0]/10 rounded-full blur-2xl pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             
-            {/* Left Content (7 cols) */}
+            {/* Left Column: Editorial Content (7 cols) */}
             <div className="lg:col-span-7 space-y-6">
               
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F7F4ED] border border-[#DCE1D8] shadow-xs">
-                <Feather className="w-3.5 h-3.5 text-[#263D2B]" />
+                <Scissors className="w-3.5 h-3.5 text-[#263D2B]" />
                 <span className="text-[11px] font-bold uppercase tracking-[0.24em] text-[#263D2B]">
-                  LUXURY BROW ARCHITECTURE & DESIGN
+                  PRECISION BROW ARCHITECTURE &amp; DESIGN
                 </span>
               </div>
 
@@ -74,107 +60,102 @@ export default function BrowAtelierPage() {
                 </p>
               </div>
 
-              <p className="text-sm sm:text-base text-[#465640] leading-relaxed max-w-xl">
-                Discover the art of beautifully defined brows through personalized shaping, refined details, and timeless brow inspiration.
+              <p className="text-sm sm:text-base text-[#465640] max-w-xl leading-relaxed">
+                Discover the art of beautifully defined brows through personalized shaping, refined details, and timeless brow inspiration. Explore 12 editorial silhouettes, interactive shape preferences, and certified threading craftsmanship.
               </p>
 
-              {/* Atelier Key Pillars */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 py-2">
+              {/* 4 Atelier Pillars */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
                 <div className="p-3.5 rounded-2xl bg-[#F7F4ED] border border-[#DCE1D8]">
-                  <span className="text-[10px] uppercase font-bold text-[#263D2B] tracking-wider block mb-1">
-                    Organic Technique
-                  </span>
-                  <span className="text-xs text-[#465640] leading-snug">
-                    100% antibacterial cotton thread
-                  </span>
+                  <div className="text-sm font-bold text-[#10110F]">100% Organic</div>
+                  <div className="text-[10px] text-[#465640] uppercase font-mono">Cotton Thread</div>
                 </div>
                 <div className="p-3.5 rounded-2xl bg-[#F7F4ED] border border-[#DCE1D8]">
-                  <span className="text-[10px] uppercase font-bold text-[#263D2B] tracking-wider block mb-1">
-                    Personalized Map
-                  </span>
-                  <span className="text-xs text-[#465640] leading-snug">
-                    Calibrated to your natural bone structure
-                  </span>
+                  <div className="text-sm font-bold text-[#10110F]">Millimeter</div>
+                  <div className="text-[10px] text-[#465640] uppercase font-mono">Precision Arch</div>
                 </div>
                 <div className="p-3.5 rounded-2xl bg-[#F7F4ED] border border-[#DCE1D8]">
-                  <span className="text-[10px] uppercase font-bold text-[#263D2B] tracking-wider block mb-1">
-                    Certified Director
-                  </span>
-                  <span className="text-xs text-[#465640] leading-snug">
-                    Led personally by Janki Khatroja
-                  </span>
+                  <div className="text-sm font-bold text-[#10110F]">Pure Aloe</div>
+                  <div className="text-[10px] text-[#465640] uppercase font-mono">Soothing Seal</div>
+                </div>
+                <div className="p-3.5 rounded-2xl bg-[#F7F4ED] border border-[#DCE1D8]">
+                  <div className="text-sm font-bold text-[#10110F]">Zero Burns</div>
+                  <div className="text-[10px] text-[#465640] uppercase font-mono">Skin Preserving</div>
                 </div>
               </div>
 
-              {/* Informational Guidance Notice - Strictly No Booking */}
-              <div className="flex items-center gap-2 p-3 rounded-xl bg-[#F7F4ED] border border-[#DCE1D8] text-xs text-[#465640]">
-                <Info className="w-4 h-4 text-[#263D2B] flex-shrink-0" />
-                <span>
-                  <strong>Informational Atelier:</strong> Explore 12 inspiration styles, shape finder, approved salon treatments, and aftercare guides.
-                </span>
-              </div>
-
-              {/* Action Buttons (Scroll to content sections — NO BOOKING) */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
-                <button
-                  type="button"
-                  onClick={() => scrollToSection('brow-gallery')}
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-[#10110F] text-white text-xs sm:text-sm font-medium hover:bg-[#263D2B] transition-all duration-300 shadow-sm group"
+              {/* Action Buttons (Strictly Informational, Scrolls to Sections) */}
+              <div className="flex flex-col sm:flex-row items-center gap-3 pt-3">
+                <a
+                  href="#brow-gallery"
+                  className="global-button w-full sm:w-auto !py-3.5 !px-8 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md cursor-pointer hover:scale-[1.02] transition-transform"
                 >
-                  <Sparkles className="w-4 h-4 text-[#A8B5A0] group-hover:scale-110 transition-transform" />
-                  <span>Explore Brow Styles</span>
-                </button>
+                  <Eye className="w-4 h-4 text-white" />
+                  <span>Explore Brow Styles (12) ↓</span>
+                </a>
 
-                <button
-                  type="button"
-                  onClick={() => scrollToSection('brow-explorer')}
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-white text-[#10110F] text-xs sm:text-sm font-medium border border-[#DCE1D8] hover:bg-[#F7F4ED] hover:border-[#263D2B] transition-all duration-300"
+                <a
+                  href="#brow-explorer"
+                  className="global-button-secondary w-full sm:w-auto !py-3.5 !px-6 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Compass className="w-4 h-4 text-[#263D2B]" />
                   <span>Discover Your Brow Look</span>
-                </button>
+                </a>
               </div>
 
             </div>
 
-            {/* Right Images Editorial Composition (5 cols) */}
+            {/* Right Column: Photography Showcase (5 cols - Displays images completely without unwanted cropping) */}
             <div className="lg:col-span-5 space-y-4">
               
-              {/* Main Wide Eyebrow Close-Up Photograph */}
-              <div className="relative rounded-3xl overflow-hidden border border-[#DCE1D8] shadow-lg group bg-[#EAE7DC]">
+              {/* Primary Wide Close-Up Image Card */}
+              <div className="relative rounded-3xl overflow-hidden border border-[#DCE1D8] shadow-xl bg-[#10110F] group">
                 <img
-                  src="/images/brows/brow-hero.jpg"
-                  alt="High definition eyebrow close-up displaying feathered texture and natural arch symmetry"
-                  className="w-full h-72 sm:h-80 object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                  src="/images/brows/brow-hero.webp"
+                  alt="Professional eyebrow close-up showing pristine precision hair removal and natural arch definition"
+                  className="w-full h-auto max-h-[340px] sm:max-h-[380px] object-cover object-center transition-transform duration-700 group-hover:scale-102"
+                  loading="eager"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none" />
-                <div className="absolute bottom-4 left-5 right-5 text-white">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#A8B5A0] block mb-1">
-                    Editorial Architecture
+                
+                {/* Floating Top Badge */}
+                <div className="absolute top-3 left-3 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#10110F]/75 backdrop-blur-md border border-white/15 text-white shadow-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#A8B5A0] animate-pulse" />
+                  <span className="text-[9.5px] uppercase font-mono tracking-[0.2em] text-[#F7F4ED]">
+                    The Brow Atelier
                   </span>
-                  <p className="font-serif text-lg font-light">
-                    Precision micro-thread shaping & balanced bone mapping
-                  </p>
+                </div>
+
+                <div className="absolute bottom-3 left-3 right-3 bg-[#10110F]/85 backdrop-blur-md rounded-2xl p-3 border border-white/10 flex items-center justify-between text-white">
+                  <div>
+                    <div className="text-xs font-serif font-medium">Macro Brow Definition</div>
+                    <div className="text-[10px] text-[#A8B5A0]">High-definition natural hair retention</div>
+                  </div>
+                  <span className="text-[10px] uppercase font-mono text-[#F7F4ED] bg-[#263D2B] px-2.5 py-1 rounded-full">
+                    Symmetry
+                  </span>
                 </div>
               </div>
 
-              {/* Secondary Inset: Professional Brow Artist Working on a Client */}
-              <div className="relative rounded-2xl overflow-hidden border border-[#DCE1D8] bg-[#F7F4ED] p-4 flex items-center gap-4 shadow-sm hover:border-[#263D2B]/50 transition-colors">
-                <img
-                  src="/images/brows/brow-artist.jpg"
-                  alt="Professional brow artist carefully shaping client eyebrows with organic cotton thread"
-                  className="w-20 h-20 rounded-xl object-cover border border-[#DCE1D8] flex-shrink-0"
-                />
-                <div className="space-y-1">
-                  <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#263D2B]">
+              {/* Secondary Artist Working Image Card */}
+              <div className="p-3 bg-[#F7F4ED] rounded-3xl border border-[#DCE1D8] flex items-center gap-3 shadow-xs">
+                <div className="w-20 h-20 rounded-2xl overflow-hidden border border-[#DCE1D8] flex-shrink-0 bg-white">
+                  <img
+                    src="/images/brows/brow-artist-client.webp"
+                    alt="Certified brow artist Janki Khatroja shaping client brows with organic cotton thread"
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="space-y-0.5">
+                  <div className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#263D2B]">
                     <ShieldCheck className="w-3.5 h-3.5" />
-                    <span>In-Studio Artistry</span>
+                    <span>In-Studio Craftsmanship</span>
                   </div>
-                  <h2 className="font-serif text-sm font-medium text-[#10110F]">
-                    Organic Threading Technique
-                  </h2>
-                  <p className="text-[11px] text-[#465640] leading-snug">
-                    Zero chemical exposure, zero skin peeling. Safe for delicate eye contours.
+                  <h3 className="font-serif text-sm font-semibold text-[#10110F]">
+                    Artist at Work with Client
+                  </h3>
+                  <p className="text-[11px] text-[#465640] line-clamp-1">
+                    Custom thread mapping tailored to personal facial bone structure.
                   </p>
                 </div>
               </div>
@@ -183,140 +164,192 @@ export default function BrowAtelierPage() {
 
           </div>
 
+          {/* Quick Anchor Navigation Strip */}
+          <div className="pt-10 flex items-center justify-center">
+            <div className="inline-flex items-center gap-1.5 p-1.5 rounded-full bg-[#F7F4ED] border border-[#DCE1D8] overflow-x-auto max-w-full text-xs">
+              <a href="#brow-gallery" className="px-3.5 py-1.5 rounded-full hover:bg-white text-[#465640] font-semibold transition-colors whitespace-nowrap">
+                1. Inspiration Gallery
+              </a>
+              <a href="#brow-explorer" className="px-3.5 py-1.5 rounded-full hover:bg-white text-[#465640] font-semibold transition-colors whitespace-nowrap">
+                2. Shape Explorer
+              </a>
+              <a href="#brow-services" className="px-3.5 py-1.5 rounded-full hover:bg-white text-[#465640] font-semibold transition-colors whitespace-nowrap">
+                3. Approved Services
+              </a>
+              <a href="#brow-artist" className="px-3.5 py-1.5 rounded-full hover:bg-white text-[#465640] font-semibold transition-colors whitespace-nowrap">
+                4. Master Artist
+              </a>
+              <a href="#brow-experience" className="px-3.5 py-1.5 rounded-full hover:bg-white text-[#465640] font-semibold transition-colors whitespace-nowrap">
+                5. 6-Step Experience
+              </a>
+              <a href="#brow-maintenance" className="px-3.5 py-1.5 rounded-full hover:bg-white text-[#465640] font-semibold transition-colors whitespace-nowrap">
+                6. Maintenance &amp; Care
+              </a>
+              <a href="#brow-faqs" className="px-3.5 py-1.5 rounded-full hover:bg-white text-[#465640] font-semibold transition-colors whitespace-nowrap">
+                7. FAQs
+              </a>
+            </div>
+          </div>
+
         </div>
       </section>
 
-      {/* ============================================================ */}
-      {/* 2. BROW INSPIRATION GALLERY */}
-      {/* ============================================================ */}
+      {/* =========================================================================
+          2. BROW INSPIRATION GALLERY (12 Individual Cards with Functional Filters)
+      ========================================================================= */}
       <BrowGallerySection />
 
-      {/* ============================================================ */}
-      {/* 3. BROW SHAPE EXPLORER */}
-      {/* ============================================================ */}
+      {/* =========================================================================
+          3. INTERACTIVE BROW SHAPE EXPLORER (5 Preferences, Dynamic Scoring)
+      ========================================================================= */}
       <BrowShapeExplorer />
 
-      {/* ============================================================ */}
-      {/* 4. EXISTING BROW SERVICE COLLECTION */}
-      {/* ============================================================ */}
+      {/* =========================================================================
+          4. EXISTING APPROVED BROW SERVICES (Direct from Salon Database)
+      ========================================================================= */}
       <BrowServiceCollection />
 
-      {/* ============================================================ */}
-      {/* 5, 6, 7, 8. BROW DESIGN EXPERIENCE, AFTERCARE, CHECKLIST, FAQS */}
-      {/* ============================================================ */}
-      <BrowExperienceGuide />
-
-      {/* ============================================================ */}
-      {/* MASTER ARTIST SPOTLIGHT */}
-      {/* ============================================================ */}
-      <section className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-[#DCE1D8]">
-        <div className="rounded-3xl bg-[#263D2B] text-white p-8 sm:p-12 lg:p-16 relative overflow-hidden shadow-xl">
+      {/* =========================================================================
+          5. MASTER ARTIST SPOTLIGHT (Janki Khatroja - Certified Specialist)
+      ========================================================================= */}
+      <section id="brow-artist" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-[#DCE1D8]">
+        <div className="bg-white rounded-3xl border border-[#DCE1D8] p-8 sm:p-12 lg:p-16 shadow-xs relative overflow-hidden">
           
-          <div className="absolute top-0 right-0 w-96 h-96 bg-[#A8B5A0]/10 rounded-full blur-3xl pointer-events-none" />
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             
-            <div className="lg:col-span-4 flex justify-center">
-              <div className="relative">
+            {/* Artist Photo */}
+            <div className="lg:col-span-5 relative">
+              <div className="relative rounded-2xl overflow-hidden border border-[#DCE1D8] aspect-[4/5] max-w-sm mx-auto shadow-md bg-[#F7F4ED]">
                 <img
                   src={jankiPhoto}
-                  alt="Janki Khatroja — Master Beauty & Brow Director"
-                  className="w-48 h-48 sm:w-60 sm:h-60 rounded-full object-cover border-4 border-[#A8B5A0]/30 shadow-2xl"
+                  alt="Janki Khatroja, Founder & Certified Threading Specialist at GLAM GIRL BY JANKI Ottawa"
+                  className="w-full h-full object-cover object-top"
+                  loading="lazy"
                 />
-                <div className="absolute -bottom-2 -right-2 p-2.5 rounded-full bg-[#10110F] border border-[#A8B5A0]/40 text-[#A8B5A0] shadow-md">
-                  <Award className="w-5 h-5" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#10110F]/80 via-transparent to-transparent flex items-end p-6">
+                  <div className="text-white">
+                    <span className="text-[10px] uppercase font-mono tracking-widest text-[#A8B5A0] block">
+                      Founder &amp; Certified Specialist
+                    </span>
+                    <h3 className="font-serif text-2xl font-normal">Janki Khatroja</h3>
+                    <p className="text-xs text-[#DCE1D8]/80 mt-0.5">
+                      10+ Years of Threading &amp; Facial Symmetry Mastery
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="lg:col-span-8 space-y-4 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 text-[10.5px] uppercase font-bold tracking-widest text-[#A8B5A0]">
-                <span>Artisan Esthetics Direction</span>
+            {/* Artist Biography & Philosophy */}
+            <div className="lg:col-span-7 space-y-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F7F4ED] border border-[#DCE1D8] text-[10.5px] font-bold text-[#263D2B] uppercase tracking-wider">
+                <Award className="w-3.5 h-3.5" />
+                <span>MEET YOUR BROW ARCHITECT</span>
               </div>
 
-              <h2 className="font-serif text-3xl sm:text-4xl font-normal leading-tight">
-                "The most flattering brow doesn't copy a trend—it mirrors your natural expression."
+              <h2 className="font-serif text-3xl sm:text-4xl text-[#10110F] font-normal leading-tight">
+                "Eyebrows are not twins; they are sisters. True beauty lies in honoring your unique symmetry."
               </h2>
 
-              <p className="text-xs sm:text-sm text-white/80 leading-relaxed max-w-2xl">
-                With over a decade of mastery in organic facial threading, skin mapping, and brow architecture, Janki Khatroja approaches every pair of brows as an individual artwork. In our studio, we reject harsh stencils in favor of organic symmetry that enhances your unique facial bone structure.
+              <p className="text-xs sm:text-sm text-[#465640] leading-relaxed">
+                Eyebrow threading is an art passed down through generations. At GLAM GIRL BY JANKI, we approach every arch with scientific precision and artistic intuition. We don't believe in generic stencil cut-outs or aggressive hair removal. Instead, we study your orbital bone structure, hair growth direction, and facial contours to sculpt a frame that feels authentically yours.
               </p>
 
-              <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-4 sm:gap-6 text-xs text-[#A8B5A0]">
-                <div className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-white" />
-                  <span>100% Antibacterial Thread</span>
+              {/* Quality & Craftsmanship Metrics */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-2">
+                <div className="p-4 rounded-2xl bg-[#F7F4ED] border border-[#DCE1D8]">
+                  <div className="font-serif text-2xl font-bold text-[#10110F]">10,000+</div>
+                  <div className="text-xs font-medium text-[#263D2B] mt-0.5">Brows Shaped</div>
+                  <div className="text-[10.5px] text-[#6B7068]">Ottawa &amp; Beyond</div>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-white" />
-                  <span>Zero Epidermal Pulling</span>
+
+                <div className="p-4 rounded-2xl bg-[#F7F4ED] border border-[#DCE1D8]">
+                  <div className="font-serif text-2xl font-bold text-[#10110F]">100%</div>
+                  <div className="text-xs font-medium text-[#263D2B] mt-0.5">Organic Thread</div>
+                  <div className="text-[10.5px] text-[#6B7068]">Skin-Safe &amp; Sanitary</div>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-white" />
-                  <span>Private Women's Studio</span>
+
+                <div className="p-4 rounded-2xl bg-[#F7F4ED] border border-[#DCE1D8] col-span-2 sm:col-span-1">
+                  <div className="font-serif text-2xl font-bold text-[#10110F]">5.0 ★</div>
+                  <div className="text-xs font-medium text-[#263D2B] mt-0.5">Client Rating</div>
+                  <div className="text-[10.5px] text-[#6B7068]">Verified Reviews</div>
                 </div>
               </div>
+
+              <div className="p-4 rounded-2xl bg-[#F7F4ED] border border-[#DCE1D8] flex items-center gap-3">
+                <ShieldCheck className="w-5 h-5 text-[#263D2B] flex-shrink-0" />
+                <p className="text-xs text-[#465640] leading-snug">
+                  <strong>The Atelier Hygiene Promise:</strong> A fresh strand of organic cotton thread is drawn for every single client. All scissors and grooming tools undergo hospital-grade sanitization between appointments.
+                </p>
+              </div>
+
             </div>
 
           </div>
+
         </div>
       </section>
 
-      {/* ============================================================ */}
-      {/* ATELIER EXPLORATION BANNER (Strictly Informational, Links to Other Ateliers & Catalog) */}
-      {/* ============================================================ */}
-      <section className="pb-16 sm:pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-white border border-[#DCE1D8] p-8 sm:p-12 text-center space-y-6 shadow-xs">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#F7F4ED] border border-[#DCE1D8] text-[10.5px] font-bold uppercase tracking-widest text-[#263D2B]">
-            <Layers className="w-3.5 h-3.5" />
-            <span>THE ATELIER COLLECTION</span>
+      {/* =========================================================================
+          6. BROW EXPERIENCE GUIDE (6 Steps, 5 Care Cards, Checklist, & 7 FAQs)
+      ========================================================================= */}
+      <BrowExperienceGuide />
+
+      {/* =========================================================================
+          7. BOTTOM INFORMATIONAL EXPLORATION BANNER (Strictly No Booking CTAs)
+      ========================================================================= */}
+      <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-[#DCE1D8]">
+        <div className="bg-[#10110F] text-white rounded-3xl p-8 sm:p-12 lg:p-16 relative overflow-hidden text-center space-y-6">
+          
+          <div className="absolute top-0 right-1/4 w-72 h-72 bg-[#263D2B]/30 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-1/4 w-72 h-72 bg-[#A8B5A0]/20 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative z-10 max-w-2xl mx-auto space-y-4">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[10.5px] font-mono tracking-widest text-[#A8B5A0] uppercase">
+              <Sparkles className="w-3.5 h-3.5 text-[#F7F4ED]" />
+              <span>THE BROW ATELIER DIRECTORY</span>
+            </div>
+
+            <h2 className="font-serif text-3xl sm:text-4xl text-white font-normal tracking-tight">
+              Ready to Explore Our Other Flagship Ateliers?
+            </h2>
+
+            <p className="text-xs sm:text-sm text-[#DCE1D8]/80 leading-relaxed">
+              GLAM GIRL BY JANKI offers specialized atelier spaces dedicated to lash architecture, bespoke makeup artistry, clinical skin therapy, and organic hair spas.
+            </p>
+
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-3">
+              <a
+                href="/lash-atelier"
+                className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white hover:text-[#10110F] text-white text-xs font-semibold border border-white/15 transition-all"
+              >
+                The Lash Atelier →
+              </a>
+              <a
+                href="/makeup-atelier"
+                className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white hover:text-[#10110F] text-white text-xs font-semibold border border-white/15 transition-all"
+              >
+                The Makeup Atelier →
+              </a>
+              <a
+                href="/skin-atelier"
+                className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white hover:text-[#10110F] text-white text-xs font-semibold border border-white/15 transition-all"
+              >
+                The Skin Atelier →
+              </a>
+              <a
+                href="/hair-atelier"
+                className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white hover:text-[#10110F] text-white text-xs font-semibold border border-white/15 transition-all"
+              >
+                The Hair Atelier →
+              </a>
+            </div>
+
+            <div className="pt-4 text-[11px] text-[#A8B5A0] font-mono">
+              The Brow Atelier • GLAM GIRL BY JANKI • 3004 Woodroffe Ave, Ottawa, ON
+            </div>
           </div>
 
-          <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl text-[#10110F] font-normal">
-            Explore All GLAM GIRL Artistry Studios
-          </h2>
-
-          <p className="text-xs sm:text-sm text-[#465640] max-w-2xl mx-auto leading-relaxed">
-            Continue your beauty exploration through our curated visual ateliers, from tailored lash extensions to red-carpet event makeup and holistic Ayurvedic skin therapy.
-          </p>
-
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-            <Link
-              to="/the-lash-atelier"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#F7F4ED] border border-[#DCE1D8] text-xs font-semibold text-[#10110F] hover:bg-[#263D2B] hover:text-white hover:border-[#263D2B] transition-all"
-            >
-              <span>The Lash Atelier</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-
-            <Link
-              to="/the-makeup-atelier"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#F7F4ED] border border-[#DCE1D8] text-xs font-semibold text-[#10110F] hover:bg-[#263D2B] hover:text-white hover:border-[#263D2B] transition-all"
-            >
-              <span>The Makeup Atelier</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-
-            <Link
-              to="/the-skin-atelier"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#F7F4ED] border border-[#DCE1D8] text-xs font-semibold text-[#10110F] hover:bg-[#263D2B] hover:text-white hover:border-[#263D2B] transition-all"
-            >
-              <span>The Skin Atelier</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-
-            <Link
-              to="/services"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#10110F] text-white text-xs font-semibold hover:bg-[#263D2B] transition-all"
-            >
-              <span>Full Services Menu</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-
-          <div className="pt-4 border-t border-[#DCE1D8]/60 text-[11px] text-[#465640]">
-            GLAM GIRL BY JANKI — Private Women's Beauty Atelier • Ottawa, ON • Strictly Informational Atelier Suite
-          </div>
         </div>
       </section>
 

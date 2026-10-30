@@ -1,6 +1,6 @@
 // Brow Atelier Constants & Configuration
 // GLAM GIRL BY JANKI — Ottawa Luxury Beauty Studio
-// Editorial Brand Palette: Deep Black (#10110F), Forest Green (#263D2B), Olive (#465640), Sage (#A8B5A0), Warm Cream (#F7F4ED)
+// Brand Palette: Deep Black (#10110F), Forest Green (#263D2B), Olive (#465640), Sage (#A8B5A0), Warm Cream (#F7F4ED)
 
 export const BROW_GALLERY_FILTERS = [
   { id: 'all', label: 'All Styles' },
@@ -12,431 +12,419 @@ export const BROW_GALLERY_FILTERS = [
   { id: 'laminated', label: 'Laminated' }
 ];
 
-export const BROW_INSPIRATION_STYLES = [
+export const BROW_INSPIRATION_GALLERY = [
   {
     id: 'natural-brows',
     name: 'Natural Brows',
     category: 'natural',
-    subtitle: 'Gentle Clean Border & Soft Original Density',
-    tagline: 'Your natural brow shape, effortlessly refined',
-    image: '/images/threading/eyebrow-threading.jpg',
-    description: 'An organic, understated enhancement that preserves the natural curvature and density of your brows while cleaning stray hairs along the perimeter for neat, polished framing.',
-    shapeCharacteristics: [
-      'Follows natural brow bone curvature',
-      'Soft diffused perimeter without harsh edges',
-      'Subtle cleanup of stray hairs beneath the arch',
-      'Zero artificial pencil lines or heavy pomades'
+    subtitle: 'Understated Arch Following Native Bone Structure',
+    tagline: 'Your natural brow shape, elevated with gentle polish',
+    image: '/images/brows/brow-natural.jpg',
+    description: 'An effortless, organic brow shape that respects your unique hair growth pattern. Subtle stray-hair cleanup frames the eyes while preserving full, authentic density.',
+    characteristics: [
+      'Soft, diffused brow bulb with zero harsh lines',
+      'Gentle natural arch following the supraorbital ridge',
+      'Preserves natural brow thickness and texture',
+      'Ideal for low-maintenance daily grooming'
     ],
-    suitableLook: 'Everyday workplace polish, minimal beauty routines, and clients who love their natural brow density.',
+    suitableLook: 'Best for clients with balanced natural growth who want clean, tidy framing without obvious cosmetic shaping.',
     isServiceInCatalog: true,
-    offeredServiceName: 'Eyebrow Threading ($10 CAD / 15 min)',
+    offeredTreatmentName: 'Eyebrow Threading ($10 CAD / 15 min)',
     serviceId: 'eyebrow-threading',
-    inspirationNote: 'Style inspiration reference. Threading removes perimeter strays while honoring your natural brow thickness.'
+    inspirationNote: 'Inspiration visual style. Threading technique is calibrated to your individual bone contour.'
   },
   {
     id: 'soft-defined-brows',
     name: 'Soft Defined Brows',
     category: 'soft',
-    subtitle: 'Balanced Arch Symmetry & Gentle Definition',
-    tagline: 'Refined structure with a soft, touchable finish',
-    image: '/images/brows/brow-hero.jpg',
-    description: 'A harmonious brow shape featuring a gently tailored arch and defined lower border, creating a balanced frame that lifts the eye area without feeling overly structured or sharp.',
-    shapeCharacteristics: [
-      'Gently contoured arch peak aligned to outer iris',
-      'Tapered tail following the temple angle',
-      'Soft powder or tint shading in sparse zones',
-      'Crisp yet natural baseline definition'
+    subtitle: 'Tailored Clean Edges with Velvety Interior Texture',
+    tagline: 'Refined clarity without rigidity',
+    image: '/images/brows/brow-artist-client.webp',
+    description: 'Crisp, clean perimeter grooming paired with a soft, feathery interior fill. Strikes the perfect harmony between polished precision and touchable softness.',
+    characteristics: [
+      'Clean baseline contour removing stray fuzz',
+      'Softened upper border for a blended silhouette',
+      'Medium arch height calibrated to eye clearance',
+      'Smooth tail tapering toward the outer temple'
     ],
-    suitableLook: 'Versatile day-to-night elegance, almond or round eye shapes, and client headshot photography.',
+    suitableLook: 'Everyday corporate polish, versatile day-to-night elegance, and clients who love structured yet approachable brows.',
     isServiceInCatalog: true,
-    offeredServiceName: 'Eyebrow Threading ($10 CAD / 15 min)',
+    offeredTreatmentName: 'Eyebrow Threading ($10 CAD / 15 min)',
     serviceId: 'eyebrow-threading',
-    inspirationNote: 'Style inspiration reference. Shaping is calibrated to your natural facial landmarks during consultation.'
+    inspirationNote: 'Inspiration styling approach. Threading creates clean lines with millimeter accuracy.'
   },
   {
     id: 'feathered-brows',
     name: 'Feathered Brows',
     category: 'feathered',
-    subtitle: 'Airy Hair-Stroke Texture & Dispersed Separation',
-    tagline: 'Lightweight, multidirectional hair-stroke flutter',
-    image: '/images/threading/sitara-full-face-threading.jpg',
-    description: 'A lightweight, modern editorial style highlighting individual brow hair strokes. Hair is brushed gently outward and upward to create an airy, feathered texture with effortless movement.',
-    shapeCharacteristics: [
-      'Visible individual hair-stroke texture',
-      'Airy spacing rather than a solid color block',
-      'Soft, dispersed brow tail with natural gradient',
-      'Micro-trimmed tips preserving feathery volume'
+    subtitle: 'Airy Upward Strands with Individual Hair Separation',
+    tagline: 'Light, wispy flutter mimicking micro-blade strokes',
+    image: '/images/brows/brow-fluffy.jpg',
+    description: 'Characterized by separated, upward-brushed hairs that create an airy, textured, and youthful appearance. Focuses on individual hair movement rather than solid pigment fill.',
+    characteristics: [
+      'Separated hairs brushed upward at a 45-degree angle',
+      'Lightweight, transparent skin visibility between strands',
+      'Natural feathery tail with organic dispersion',
+      'Maintained with a clean spoolie and clear brow gel'
     ],
-    suitableLook: 'Editorial photography, contemporary fashion styling, and clients with medium to full natural brow hair.',
+    suitableLook: 'Modern editorial lovers, oval and heart-shaped faces, and clients wanting a youthful, eye-opening lift.',
     isServiceInCatalog: false,
-    offeredServiceName: 'Inspiration Design Style (Consultation & Shaping available)',
-    serviceId: 'eyebrow-threading',
-    inspirationNote: 'Style inspiration design. Achieved with precision threading cleanup and clear grooming styling.'
+    inspirationNote: 'Inspiration styling technique. Can be achieved with precision threading cleanup and daily spoolie styling.'
   },
   {
     id: 'fluffy-brows',
     name: 'Fluffy Brows',
     category: 'feathered',
-    subtitle: 'Full-Bodied Volume & Brushed-Up Fuller Width',
-    tagline: 'Youthful, lifted, and voluminous brow density',
-    image: '/images/brows/brow-artist.jpg',
-    description: 'A high-volume brow look that maximizes the optical width of your brows by brushing all healthy hairs upward and outward, creating a youthful, wide-awake, and softly relaxed aesthetic.',
-    shapeCharacteristics: [
-      'Expanded vertical brow width',
-      'Hairs brushed upward at the head and diagonally through body',
-      'Full, relaxed texture with zero thinning',
-      'Cleaned lower edge emphasizing upward lift'
+    subtitle: 'Generous Volume & Textured Full-Bodied Density',
+    tagline: 'Effortlessly full, boyish brow grandeur',
+    image: '/images/brows/brow-fluffy.jpg',
+    description: 'A full-bodied, high-density brow aesthetic where hairs are groomed upward and outward to maximize vertical height and create a soft, cloud-like frame.',
+    characteristics: [
+      'Expanded vertical brow height with brushed hairs',
+      'Soft, un-tweezed look with only stray cleanup beneath the arch',
+      'Textured, multi-dimensional strand overlapping',
+      'Effortless runway and editorial appeal'
     ],
-    suitableLook: 'Clients with sparse brows wanting fuller appearance, youthful everyday styling, and casual chic looks.',
+    suitableLook: 'Clients with abundant natural brow hair who want to embrace maximum fullness without over-plucking.',
     isServiceInCatalog: false,
-    offeredServiceName: 'Inspiration Design Style',
-    serviceId: 'eyebrow-threading',
-    inspirationNote: 'Style inspiration reference. Focuses on minimal hair removal to preserve maximum hair volume.'
+    inspirationNote: 'Inspiration styling silhouette. Threading removes only stray hairs outside the natural shape.'
   },
   {
     id: 'straight-brows',
     name: 'Straight Brows',
-    category: 'defined',
-    subtitle: 'Horizontal Korean-Inspired Archless Symmetry',
-    tagline: 'Youthful, modern, and gentle ocular framing',
-    image: '/images/threading/eyebrow-threading.jpg',
-    description: 'Inspired by East-Asian beauty trends, straight brows feature a minimal or virtually flat arch with a horizontal baseline, giving the face a gentle, innocent, and youthful expression.',
-    shapeCharacteristics: [
-      'Flat or subtly angled baseline with minimal arch peak',
-      'Short, soft tail without sharp downward droop',
-      'Softens strong jawlines and lengthens round faces',
-      'Cleaned perimeter with straight guide paths'
+    category: 'natural',
+    subtitle: 'Minimal Arch Angle with Horizontal Elongation',
+    tagline: 'Youthful Korean-inspired linear grace',
+    image: '/images/brows/brow-natural.jpg',
+    description: 'Inspired by modern East-Asian beauty trends, this shape minimizes the upward peak of the arch in favor of a gentle, linear horizontal line that softens facial angles.',
+    characteristics: [
+      'Subtle, nearly flat arch with minimal vertical rise',
+      'Soft horizontal baseline extending outward',
+      'Visually shortens long or oval facial silhouettes',
+      'Creates a sweet, youthful, and innocent expression'
     ],
-    suitableLook: 'Oval, heart-shaped, and longer face shapes, minimal makeup lovers, and contemporary clean aesthetics.',
-    isServiceInCatalog: true,
-    offeredServiceName: 'Eyebrow Threading ($10 CAD / 15 min)',
-    serviceId: 'eyebrow-threading',
-    inspirationNote: 'Style inspiration reference. Natural brow bone alignment determines how straight a brow can safely be styled.'
+    suitableLook: 'Long, rectangular, or high-forehead face shapes seeking balanced facial harmony.',
+    isServiceInCatalog: false,
+    inspirationNote: 'Inspiration design map. Our certified threading specialist shapes the arch to your natural eye fold.'
   },
   {
     id: 'arched-brows',
     name: 'Arched Brows',
     category: 'defined',
-    subtitle: 'High-Lift Architectural Curve & Eye Opening Height',
-    tagline: 'Dramatic, feminine lift opening the eye contour',
-    image: '/images/brows/brow-hero.jpg',
-    description: 'A classic high-lift arch positioned precisely two-thirds of the way along the brow. Creates an instant open-eye illusion and frames the brow bone with graceful, feminine curvature.',
-    shapeCharacteristics: [
-      'Pronounced, sculpted arch peak over the outer iris',
-      'Clean, clear clearance above the eyelid fold',
-      'Visually lifts deep-set or hooded eyes',
-      'Crisply shaped lower arch curve'
+    subtitle: 'Crisp Elevated Peak for an Optical Eye Lift',
+    tagline: 'Classic architectural symmetry and lift',
+    image: '/images/brows/brow-arched.jpg',
+    description: 'A timeless silhouette featuring a well-defined peak positioned over the outer two-thirds of the eye, visually drawing the eyelids upward and opening the entire gaze.',
+    characteristics: [
+      'Crisp upward rise from bulb to highest arch peak',
+      'Graceful downward taper toward the temple',
+      'Accentuates high cheekbones and bone structure',
+      'Provides a natural, non-surgical lifting illusion'
     ],
-    suitableLook: 'Round and square face contours, hooded eyes needing vertical lift, and formal celebration makeup.',
+    suitableLook: 'Round, square, or hooded eye contours wanting to add vertical dimension and definition.',
     isServiceInCatalog: true,
-    offeredServiceName: 'Eyebrow Threading ($10 CAD / 15 min)',
+    offeredTreatmentName: 'Eyebrow Threading ($10 CAD / 15 min)',
     serviceId: 'eyebrow-threading',
-    inspirationNote: 'Style inspiration reference. We never over-pluck the arch; height is mapped to your natural muscle movement.'
+    inspirationNote: 'Approved salon service mapping. Achieved through precision threading and mapping.'
   },
   {
     id: 'soft-angled-brows',
     name: 'Soft Angled Brows',
     category: 'soft',
-    subtitle: 'Subtle Angular Bend with Tenderly Curved Edges',
-    tagline: 'Gentle structure that flatters every facial contour',
-    image: '/images/threading/sitara-full-face-threading.jpg',
-    description: 'A delicate compromise between a high arch and a straight brow, featuring a subtle angle at the peak that is softened around the curve to create gentle definition without sternness.',
-    shapeCharacteristics: [
-      'Soft triangular peak with rounded corners',
-      'Harmonious transition from brow head to tail',
-      'Gentle lift suitable for all facial contours',
-      'Balanced density throughout the brow body'
+    subtitle: 'Gentle Curved Apex Balancing Softness & Structure',
+    tagline: 'The universally flattering architectural curve',
+    image: '/images/brows/brow-artist-client.webp',
+    description: 'Features a subtle, rounded angle at the arch peak rather than a sharp point. Combines the lift of an arched brow with the approachable softness of a curved brow.',
+    characteristics: [
+      'Subtly rounded arch apex without rigid corners',
+      'Consistent, gentle tapering toward the outer tail',
+      'Harmonizes with natural facial movements',
+      'Flattering across virtually all eye shapes'
     ],
-    suitableLook: 'Universally flattering on oval, heart, diamond, and round face shapes for everyday wear.',
+    suitableLook: 'First-time brow shaping clients, diamond and heart-shaped faces, and balanced everyday wear.',
     isServiceInCatalog: true,
-    offeredServiceName: 'Eyebrow Threading ($10 CAD / 15 min)',
+    offeredTreatmentName: 'Eyebrow Threading ($10 CAD / 15 min)',
     serviceId: 'eyebrow-threading',
-    inspirationNote: 'Style inspiration reference. The most requested natural arch pattern in our Ottawa studio.'
+    inspirationNote: 'Approved salon service mapping. Our master artist guides arch curvature to brow-bone landmarks.'
   },
   {
     id: 'bold-defined-brows',
     name: 'Bold Defined Brows',
     category: 'bold',
-    subtitle: 'Rich Pigment Density & Crisp Architectural Borders',
-    tagline: 'Statement elegance for bridal and celebratory glam',
-    image: '/images/brows/brow-artist.jpg',
-    description: 'A high-impact statement brow featuring deep pigment definition, crisp top and bottom borders, and full density that commands attention alongside festive or bridal makeup.',
-    shapeCharacteristics: [
-      'Impeccably sharp lower and upper borders',
-      'Rich, uniform color saturation from mid-brow to tail',
-      'Ombré soft fade at the front inner head',
-      'Photogenic 4K finish matching high-glam looks'
+    subtitle: 'High-Impact Sculpted Density & Crisp Precision',
+    tagline: 'Dramatic, photo-ready statement framing',
+    image: '/images/brows/brow-arched.jpg',
+    description: 'An authoritative, high-contrast look featuring a rich, solid brow baseline, sharp arch corners, and saturated fullness designed to anchor bold makeup styles.',
+    characteristics: [
+      'Sharp, crisp upper and lower perimeter borders',
+      'Deep, continuous pigment density along the body',
+      'Structured, commanding arch angle',
+      'Complements red-carpet and evening glam makeup'
     ],
-    suitableLook: 'Bridal ceremonies, sangeet performances, evening galas, and clients who love dramatic makeup.',
+    suitableLook: 'Galas, weddings, evening celebrations, and clients who love dramatic, high-fashion facial structure.',
     isServiceInCatalog: false,
-    offeredServiceName: 'Inspiration Design Style (Consultation available)',
-    serviceId: 'eyebrow-threading',
-    inspirationNote: 'Style inspiration reference. Paired beautifully with our bridal and occasion makeup services.'
+    inspirationNote: 'Inspiration aesthetic look. Beautifully paired with full-glam or bridal makeup artistry.'
   },
   {
     id: 'brushed-up-brows',
     name: 'Brushed-Up Brows',
     category: 'feathered',
-    subtitle: 'Vertical Spoolie Grooming & Natural Directional Flow',
-    tagline: 'Wide-awake vertical lift and groomed separation',
-    image: '/images/threading/sitara-full-face-threading.jpg',
-    description: 'A clean grooming technique where natural brow hairs are guided vertically and set with transparent styling balm to lift the eyelid area and accentuate hair-by-hair texture.',
-    shapeCharacteristics: [
-      'Vertical orientation of hairs at the inner head',
-      'Smooth diagonal sweep through the arch and tail',
-      'Highlights the natural gloss and health of brow hairs',
-      'Keeps brows in place all day without stiffness'
+    subtitle: 'Directional Upward Styling with Clean Perimeter',
+    tagline: 'Disciplined lift that elongates the eye area',
+    image: '/images/brows/brow-fluffy.jpg',
+    description: 'Hairs are combed upward and neatly swept toward the temples along the top line, creating clean directional flow that exposes the eyelid and lifts hooded brows.',
+    characteristics: [
+      'Uniform upward grooming along the inner bulb',
+      'Diagonal 45-degree sweep through the arch body',
+      'Clean, hair-free lower eyelid margin',
+      'Enhanced light reflection across the brow bone'
     ],
-    suitableLook: 'Active lifestyles, clean-girl aesthetic, corporate professionals, and minimal makeup days.',
+    suitableLook: 'Hooded eyes, mature eye contours, and clients seeking an awakened, wide-open gaze.',
     isServiceInCatalog: false,
-    offeredServiceName: 'Inspiration Design Style',
-    serviceId: 'eyebrow-threading',
-    inspirationNote: 'Style inspiration reference. Easily styled at home with a clean spoolie and transparent brow balm.'
+    inspirationNote: 'Inspiration styling technique. Clean threading beneath the brow accentuates the upward sweep.'
   },
   {
     id: 'classic-brows',
     name: 'Classic Brows',
-    category: 'natural',
-    subtitle: 'Timeless Proportions & Golden-Ratio Architecture',
-    tagline: 'The enduring standard of balanced beauty',
-    image: '/images/threading/eyebrow-threading.jpg',
-    description: 'Based on time-tested golden-ratio brow architecture: the head aligns with the tear duct, the arch aligns with the iris, and the tail tapers toward the outer corner of the eye.',
-    shapeCharacteristics: [
-      'Mathematically balanced 3-point alignment',
-      'Medium thickness tapering symmetrically to tail',
-      'Never goes out of style or follows fleeting trends',
-      'Complements natural bone structure seamlessly'
+    category: 'soft',
+    subtitle: 'The Gold Standard Balanced Golden-Ratio Silhouette',
+    tagline: 'Timeless proportions that never go out of style',
+    image: '/images/brows/brow-natural.jpg',
+    description: 'Rooted in classic golden-ratio aesthetics: starts directly above the inner nostril, arches above the outer iris, and ends along the diagonal from nostril to outer eye corner.',
+    characteristics: [
+      'Balanced proportions based on traditional facial mapping',
+      'Moderate thickness neither too thin nor overly bushy',
+      'Natural arch curvature that moves with facial expression',
+      'Decades-tested timeless elegance'
     ],
-    suitableLook: 'All ages, corporate environments, milestone family portraits, and first-time salon clients.',
+    suitableLook: 'Clients who prefer classic elegance over fast-moving social media trends; perfect for all ages.',
     isServiceInCatalog: true,
-    offeredServiceName: 'Eyebrow Threading ($10 CAD / 15 min)',
+    offeredTreatmentName: 'Eyebrow Threading ($10 CAD / 15 min)',
     serviceId: 'eyebrow-threading',
-    inspirationNote: 'Style inspiration reference. Our master artist maps these 3 golden points before every treatment.'
+    inspirationNote: 'Approved salon service mapping. Handcrafted with authentic antibacterial cotton thread.'
   },
   {
     id: 'laminated-brow-inspiration',
     name: 'Laminated Brow Inspiration',
     category: 'laminated',
-    subtitle: 'High-Gloss Semi-Permanent Hair Direction & Sleek Lift',
-    tagline: 'Sleek, uniform, magazine-cover brow architecture',
-    image: '/images/brows/brow-hero.jpg',
-    description: 'An editorial design inspiration simulating the sleek, uniform, high-gloss appearance of professionally set brow hairs, relaxing unruly curls and locking hairs into a uniform upward sweep.',
-    shapeCharacteristics: [
-      'Uniformly aligned hair shafts in an upward sweep',
-      'Covers natural brow gaps by redistributing existing hair',
-      'High-gloss sheen catching natural daylight',
-      'Full, lifted illusion lasting throughout the day'
+    subtitle: 'Sleek Uniform Lift with Semi-Permanent Direction',
+    tagline: 'Sleek, glossy high-fashion strand alignment',
+    image: '/images/brows/brow-fluffy.jpg',
+    description: 'An inspirational modern treatment style where unruly brow hairs are smoothed, aligned upward, and set into uniform sleekness for maximum fullness and shine.',
+    characteristics: [
+      'All brow hairs brushed and aligned in uniform direction',
+      'Covers sparse patches by redistributing natural hair volume',
+      'Glossy, high-shine editorial reflection',
+      'Creates the illusion of 30% thicker brows'
     ],
-    suitableLook: 'Clients with coarse or downward-growing brow hairs, editorial shoots, and modern trendsetters.',
+    suitableLook: 'Clients with curly, downward-pointing, or sparse brow hairs seeking structured vertical fullness.',
     isServiceInCatalog: false,
-    offeredServiceName: 'Inspiration Design Concept',
-    serviceId: 'eyebrow-threading',
-    inspirationNote: 'Inspiration styling concept. We provide precision shaping and consultation to achieve this aesthetic.'
+    inspirationNote: 'Inspiration reference look. Demonstrates the aesthetic effect of brow lamination and styling.'
   },
   {
     id: 'minimal-everyday-brows',
     name: 'Minimal Everyday Brows',
     category: 'natural',
-    subtitle: 'Zero-Maintenance Tidy & Stray-Hair Soft Clearance',
-    tagline: 'Effortless maintenance for low-key confidence',
-    image: '/images/threading/eyebrow-threading.jpg',
-    description: 'The ultimate low-maintenance approach: gentle threading solely focused on clearing stray unibrow and eyelid hairs while leaving the main brow density 100% untouched and natural.',
-    shapeCharacteristics: [
-      'Preserves original thickness and natural borders',
-      'Only clears stray fuzz between and beneath brows',
-      'Quick, comfortable 10-15 minute appointment',
-      'Zero downtime or noticeable redness'
+    subtitle: 'Clean Precision Grooming with Zero Daily Maintenance',
+    tagline: 'Groom and go with effortless confidence',
+    image: '/images/brows/brow-hero.webp',
+    description: 'A practical, understated approach focused on clean hair removal along the bridge of the nose and lower eyelid, leaving the natural brow body entirely untouched.',
+    characteristics: [
+      'Removal of mono-brow center hairs for facial openness',
+      'Gentle lower line cleanup without reshaping the main body',
+      'Zero home pencils, powders, or pomades required',
+      'Quick 15-minute maintenance appointment'
     ],
-    suitableLook: 'Busy students, athletes, minimalists, and clients who dislike thin or heavily shaped brows.',
+    suitableLook: 'Busy professionals, athletes, students, and anyone desiring low-maintenance, clean daily grooming.',
     isServiceInCatalog: true,
-    offeredServiceName: 'Eyebrow Threading ($10 CAD / 15 min)',
+    offeredTreatmentName: 'Eyebrow Threading ($10 CAD / 15 min)',
     serviceId: 'eyebrow-threading',
-    inspirationNote: 'Approved catalog service. The gentlest, purest way to keep brows tidy without changing your natural shape.'
+    inspirationNote: 'Approved salon service mapping. Fast, gentle, and chemical-free threading.'
   }
 ];
 
 export const BROW_EXPLORER_CRITERIA = {
   appearance: [
-    { id: 'natural', label: 'Natural', desc: 'Soft organic borders preserving original density' },
-    { id: 'defined', label: 'Defined', desc: 'Crisp architectural contours with clear shape' }
+    { id: 'natural', name: 'Natural Appearance', desc: 'Soft, organic framing that embraces your native brow growth and density.' },
+    { id: 'defined', name: 'Defined Appearance', desc: 'Crisp perimeters and structured lines for high-definition facial framing.' }
   ],
   archStructure: [
-    { id: 'soft', label: 'Soft Arch', desc: 'Gentle, tender curve following the brow bone' },
-    { id: 'structured', label: 'Structured Arch', desc: 'Noticeable high-lift peak opening the eyelid' }
+    { id: 'soft', name: 'Soft Gentle Arch', desc: 'Curved, rounded apex that softens angular bone structure and expressions.' },
+    { id: 'structured', name: 'Structured High Arch', desc: 'Prominent, elevated peak that visually lifts the eye and creates dramatic height.' }
   ],
-  shapeCurvature: [
-    { id: 'straight', label: 'Straight Brow', desc: 'Horizontal alignment with minimal upward bend' },
-    { id: 'arched', label: 'Curved Arch', desc: 'Classic sweeping curvature creating eye height' }
+  shapeSilhouette: [
+    { id: 'straight', name: 'Straight / Linear Silhouette', desc: 'Horizontal flow with minimal vertical rise for a youthful, modern look.' },
+    { id: 'arched', name: 'Classic Arched Silhouette', desc: 'Graceful curve from inner corner to peak, tapering neatly toward temples.' }
   ],
-  finishDensity: [
-    { id: 'light', label: 'Light & Soft', desc: 'Airy, sheer density that looks effortless' },
-    { id: 'bold', label: 'Bold & Full', desc: 'Rich saturation and prominent presence' }
+  finishIntensity: [
+    { id: 'light', name: 'Light & Feathery Finish', desc: 'Airy, transparent density with visible skin between individual strands.' },
+    { id: 'bold', name: 'Bold & Saturated Finish', desc: 'Rich, uniform density creating an authoritative, camera-ready frame.' }
   ],
-  stylingLook: [
-    { id: 'minimal', label: 'Minimal Tidy', desc: 'Uncomplicated natural groom-and-go' },
-    { id: 'groomed-up', label: 'Groomed-Up / Feathery', desc: 'Brushed-up vertical lift and feathery strokes' }
+  groomingStyle: [
+    { id: 'minimal', name: 'Minimal & Effortless', desc: 'Simple stray cleanup with zero daily pencil or gel maintenance needed.' },
+    { id: 'brushed-up', name: 'Brushed-Up & Fluffy', desc: 'Directional upward grooming creating vertical height and editorial flair.' }
   ]
 };
 
-export const BROW_DESIGN_STEPS = [
+export const BROW_EXPERIENCE_STEPS = [
   {
     step: '01',
     title: 'Brow Inspiration',
-    summary: 'Explore different brow styles, finishes, and optical silhouettes.',
-    details: 'Begin by exploring our inspiration anthology. Discuss whether you prefer feathery brushed-up brows, classic arches, or minimal everyday tidy styling with master artist Janki Khatroja.'
+    summary: 'Explore brow silhouettes, arches, and finishes tailored to your aesthetic.',
+    details: 'Begin by browsing our gallery of natural, feathered, arched, and fluffy brow shapes to identify the aesthetic direction that aligns with your lifestyle and personal taste.'
   },
   {
     step: '02',
     title: 'Preference Discovery',
-    summary: 'Identify your desired shape, arch height, and thickness preferences.',
-    details: 'We discuss your comfort zone, personal grooming habits, makeup routine, and whether you prefer keeping maximum natural fullness or creating a clean, defined contour.'
+    summary: 'Share your comfort zone, daily makeup routine, and growth history.',
+    details: 'We discuss whether you prefer low-maintenance natural framing or crisp architectural lines, along with any previous over-plucking areas you are currently growing out.'
   },
   {
     step: '03',
-    title: 'Natural Brow Assessment',
-    summary: 'Assess natural brow growth, hair density, and facial symmetry landmarks.',
-    details: 'Using 3-point golden ratio mapping (tear duct alignment, pupil arch peak, and outer eye tail), we evaluate your natural follicle growth and identify areas to preserve or gently shape.'
+    title: 'Brow Assessment',
+    summary: 'Facial bone analysis, brow-bone landmark mapping, and symmetry check.',
+    details: 'Master artist Janki Khatroja examines your orbital bone structure, hair growth direction, natural density, and eyelid clearance to plan your custom brow blueprint.'
   },
   {
     step: '04',
     title: 'Precision Brow Service',
-    summary: 'Perform your selected approved salon service using sanitary organic thread or wax.',
-    details: 'Using 100% antibacterial organic cotton thread or gentle facial wax, your artist isolates and lifts stray hairs from the root with swift, precise millimeter accuracy.'
+    summary: 'Execution with 100% antibacterial cotton thread or gentle wax.',
+    details: 'Using sterile techniques, we remove unwanted hairs row by row directly from the root with surgical precision, creating crisp lines without peeling or traumatizing the skin.'
   },
   {
     step: '05',
     title: 'Finishing Touches',
-    summary: 'Soothe the skin with pure organic aloe vera gel and review symmetry.',
-    details: 'We apply cooling, organic aloe vera gel and calming rosewater to instantly soothe freshly treated skin, then present a handheld mirror to review balanced symmetry under natural daylight.'
+    summary: 'Soothing organic aloe vera infusion, scissor trimming, and spoolie styling.',
+    details: 'We gently trim long brow hairs for uniform lie, apply pure soothing organic aloe vera to calm micro-circulation, and brush hairs into place for a pristine mirror reveal.'
   },
   {
     step: '06',
     title: 'Maintenance Guidance',
-    summary: 'Explain personalized home aftercare, spoolie brushing, and regrowth cycles.',
-    details: 'We share tips on gentle spoolie brushing, avoiding over-plucking at home, and when to schedule your next tidy based on your unique natural hair growth cycle.'
+    summary: 'Personalized home spoolie routines and natural regrowth timelines.',
+    details: 'We explain your natural hair cycle, demonstrate how to brush your brows daily without strain, and provide honest guidance on when a maintenance appointment is beneficial.'
   }
 ];
 
-export const BROW_DESIGN_EXPERIENCE_STEPS = BROW_DESIGN_STEPS;
+export const BROW_DESIGN_EXPERIENCE_STEPS = BROW_EXPERIENCE_STEPS;
 
-export const BROW_MAINTENANCE_SECTIONS = [
+export const BROW_MAINTENANCE_CARDS = [
   {
-    id: 'daily-brow-care',
-    badge: 'Daily Ritual',
+    id: 'daily-care',
+    badge: 'Daily Routine',
     title: 'Daily Brow Care & Spoolie Routine',
     points: [
-      'Brush brows gently each morning using a clean, dry spoolie in the direction of natural hair growth.',
-      'Avoid unnecessary rubbing, pulling, or aggressive scrubbing around the brow hair follicles.',
-      'Keep the brow area clean and free from heavy comedogenic face oils or trapped foundation.',
-      'Follow certified professional instructions for any specifically treated or tinted brows.'
+      'Brush brows gently every morning using a clean, dry spoolie in the direction of natural hair growth.',
+      'Avoid unnecessary rubbing, scratching, or picking at brow hairs throughout the day.',
+      'Keep the brow area clean with a gentle, non-comedogenic daily facial cleanser.',
+      'Follow professional artist instructions for grooming and conditioning.'
     ]
   },
   {
-    id: 'after-threading-shaping',
+    id: 'after-threading',
     badge: 'Post-Treatment',
-    title: 'Care After Threading or Shaping',
+    title: 'After Threading or Waxing Care',
     points: [
-      'Avoid unnecessary touching, picking, or scratching the freshly threaded area for at least 6 to 12 hours.',
-      'Follow your artist\'s specific skin-care advice and apply cooling aloe vera gel if mild redness occurs.',
-      'Avoid perfumed skincare, alcohol-based toners, and exfoliating acids around freshly treated follicles.',
-      'Use gentle, fragrance-free moisturizers and avoid steam rooms or intense gym workouts immediately post-service.'
+      'Avoid touching the freshly threaded skin with unwashed hands for at least 2 to 4 hours.',
+      'Apply pure soothing aloe vera gel or rosewater to calm temporary redness or warmth.',
+      'Avoid harsh chemical exfoliants, retinoids, swimming pools, and direct sunlight for 24 hours.',
+      'Do not apply heavy foundations directly onto freshly opened follicles.'
     ]
   },
   {
     id: 'after-tinting',
     badge: 'Tint Longevity',
-    title: 'Care After Brow Tinting',
+    title: 'After Brow Tinting Protocol',
     points: [
-      'Keep brows completely dry for the first 12 to 24 hours to allow organic tint pigments to oxidize fully.',
-      'Avoid harsh rubbing, exfoliating scrubs, or oil-based makeup removers directly over the brow hairs.',
-      'Cleanse your face gently around the brows using lukewarm water and a soft washcloth.',
-      'Avoid excessive sun exposure or chlorine pools that can accelerate tint fading.'
+      'Follow product-specific aftercare guidance provided by your specialist.',
+      'Keep tinted brows dry for the first 12 to 24 hours to allow dye molecules to set.',
+      'Avoid harsh oil-based cleansers, clarifying toners, and scrubs directly across the brow area.',
+      'Cleanse gently with lukewarm water and a soft cloth to preserve rich color depth.'
     ]
   },
   {
     id: 'after-lamination',
     badge: 'Lamination Care',
-    title: 'Care After Brow Lamination',
+    title: 'After Brow Lamination Guidance',
     points: [
-      'Follow your technician\'s exact aftercare instructions strictly for the initial 24 to 48 hours.',
-      'Keep brows dry and avoid steam, hot showers, saunas, and intense sweating while chemical bonds stabilize.',
-      'Avoid manipulating, sleeping face-down, or crushing brow hairs into pillows.',
-      'Apply recommended nourishing brow oil or keratin conditioner nightly starting 48 hours post-treatment.'
+      'Follow the technician\'s aftercare instructions strictly during the first 24 to 48 hours.',
+      'Keep brows completely dry and avoid steam rooms, saunas, and intense workouts while bonds cure.',
+      'Avoid manipulating, flattening, or sleeping face-down against pillows.',
+      'Apply recommended nourishing brow oils or peptide serums once the initial curing window passes.'
     ]
   },
   {
-    id: 'brow-maintenance-cycle',
-    badge: 'Growth Cycles',
-    title: 'Natural Regrowth & Maintenance Cadence',
+    id: 'growth-cycles',
+    badge: 'Natural Growth',
+    title: 'Brow Hair Biology & Maintenance',
     points: [
-      'Natural brow growth cycles vary between individuals, typically taking 3 to 6 weeks for complete regrowth.',
-      'Encourage gentle salon maintenance rather than aggressive home tweezing, which can damage hair roots.',
-      'We avoid promising fixed maintenance intervals because hormonal and biological growth rates differ.',
-      'Schedule a tidy when stray hairs begin to obscure your natural arch line.'
+      'Natural eyebrow hairs cycle through growth (anagen), resting (catagen), and shedding (telogen) phases every 3 to 4 months.',
+      'Eyebrow hairs grow at a slower rate than scalp hair — typically about 0.14mm to 0.16mm per day.',
+      'Gentle grooming preserves the delicate hair follicle sheath; avoid aggressive over-tweezing at home.',
+      'Schedule maintenance based on your personal hair growth speed rather than rigid, false schedules.'
     ]
   }
 ];
 
-export const BROW_CHECKLIST_ITEMS = [
+export const BROW_CHECKLIST_DATA = [
   {
-    id: 'brush-gently',
-    title: 'Brush brows gently each morning with a clean, dedicated spoolie',
-    category: 'Daily Care'
+    id: 'brush-spoolie',
+    title: 'Brush brows gently every morning using a clean dry spoolie',
+    category: 'Daily Routine'
   },
   {
-    id: 'avoid-excessive-plucking',
-    title: 'Avoid excessive plucking or tweezing between salon appointments',
+    id: 'avoid-plucking',
+    title: 'Avoid excessive home tweezing or plucking between salon visits',
     category: 'Preservation'
   },
   {
-    id: 'keep-tools-clean',
-    title: 'Keep personal grooming tweezers and spoolies sanitized and clean',
+    id: 'clean-tools',
+    title: 'Keep personal brow brushes, tweezers, and grooming tools sanitized',
     category: 'Hygiene'
   },
   {
-    id: 'follow-aftercare',
-    title: 'Follow treatment-specific aftercare instructions for threading or tinting',
-    category: 'Treatment Protocol'
+    id: 'treatment-aftercare',
+    title: 'Follow treatment-specific aftercare guidance for threading, tinting, or lamination',
+    category: 'Safety'
   },
   {
-    id: 'avoid-irritating-products',
-    title: 'Avoid perfumed skincare or harsh chemical exfoliants on freshly threaded skin',
-    category: 'Skin Safety'
+    id: 'avoid-irritants',
+    title: 'Avoid harsh scrubs, acids, or heavy makeup on freshly treated brow skin for 24 hours',
+    category: 'Skin Barrier'
   },
   {
-    id: 'maintain-gentle-routine',
-    title: 'Maintain a gentle daily routine with soothing hydration and gentle cleansing',
-    category: 'Barrier Health'
+    id: 'gentle-routine',
+    title: 'Maintain a gentle daily routine and nourish brow hairs with botanical oils',
+    category: 'Nourishment'
   }
 ];
 
 export const BROW_FAQS = [
   {
-    question: 'What is the difference between brow shaping and eyebrow threading?',
-    answer: 'Eyebrow threading is the precise method of hair removal using an organic antibacterial twisted cotton thread that rolls over the skin to lift stray hairs cleanly from the root. Brow shaping is the artistic design process — mapping the golden ratio, arch peak, and tail length — that guides which hairs should be removed. In our studio, eyebrow threading is the preferred vehicle for achieving flawless, tailored brow shaping with zero chemical exposure.'
+    question: 'What is the difference between brow shaping and threading?',
+    answer: 'Eyebrow threading is an ancient precision hair-removal technique that uses a twisted, 100% antibacterial cotton thread rolled across the skin to trap and gently lift individual hairs from the root. Brow shaping is the overall artistic design process of creating symmetry, arch height, and tail length tailored to your facial landmarks. At GLAM GIRL BY JANKI, threading is our premier method for brow shaping because it does not peel the skin, uses zero hot chemicals, and allows millimeter-level accuracy.'
   },
   {
     question: 'What are feathered brows?',
-    answer: 'Feathered brows are an airy, modern brow style characterized by visible individual hair-stroke texture rather than a solid or stenciled block of color. Hairs are brushed gently outward and upward, creating a soft, dispersed, and youthful look that celebrates the natural movement of your brows.'
+    answer: 'Feathered brows are an airy, natural brow styling technique that emphasizes individual strand separation, brushed-up hair direction, and a light, wispy finish. Unlike heavily filled-in or stamped brows, feathered brows celebrate natural skin visibility between the hairs, creating a soft, youthful, and eye-opening effect that can be maintained with precision threading and clear brow gel.'
   },
   {
-    question: 'How do I maintain my natural brow shape without making them too thin?',
-    answer: 'The key is avoiding magnifying mirrors and resisting the urge to tweeze near the main brow body at home. Clean only stray hairs far below the arch on the eyelid or between the brows. Visiting a certified threading specialist every 3 to 4 weeks ensures that your natural brow width and follicle health are permanently protected.'
+    question: 'How do I maintain my natural brow shape without over-plucking?',
+    answer: 'The most important rule is to avoid magnifying mirrors and aggressive daily tweezing at home. When you tweeze daily, it is easy to accidentally pluck hairs from the main brow body, leading to thinning or uneven arches that take months to regrow. We recommend only plucking obvious stray hairs on the bridge of the nose and having your main brow shape professionally maintained every 2 to 4 weeks.'
   },
   {
     question: 'What is brow lamination?',
-    answer: 'Brow lamination is a gentle cosmetic treatment that relaxes and realigns natural brow hairs into a uniform, upward-swept direction using a specialized keratin perm solution. It helps coarse or unruly hairs lie flat, fills in sparse gaps by redistributing hair volume, and creates a sleek, high-gloss editorial look.'
+    answer: 'Brow lamination is a cosmetic treatment that uses a gentle chemical solution to relax and redirect natural brow hairs, allowing them to be brushed and set into a uniform, upward, and fuller direction. It creates a sleek, fluffy, and brushed-up appearance that lasts several weeks. It is ideal for clients with coarse, downward-growing, or unruly brow hairs who want manageable, high-fashion fullness.'
   },
   {
     question: 'Is brow tinting suitable for everyone?',
-    answer: 'Brow tinting is suitable for most clients looking to darken pale, sun-bleached, or fine gray brow hairs for enhanced definition without daily pencil application. However, for clients with sensitive skin, active dermatitis, or a history of allergic reactions to hair dyes, a complimentary 24-hour patch test is strongly recommended before full application.'
+    answer: 'Brow tinting is suitable for most clients looking to add depth, definition, and the appearance of thickness to their brows, especially those with blonde, light brown, red, or gray hairs. However, clients with active eczema, open skin abrasions near the brows, or a history of dye allergies should request a complimentary 24-hour patch test before undergoing tinting.'
   },
   {
     question: 'What should I avoid immediately after eyebrow threading?',
-    answer: 'Immediately after threading, hair follicles remain slightly open for a few hours. Avoid touching the area with unwashed hands, and avoid perfumed lotions, alcohol-based toners, foundation makeup, hot steam rooms, and direct sun exposure for 6 to 12 hours. We apply pure soothing organic aloe vera gel to calm any transient pinkness.'
+    answer: 'For the first 2 to 4 hours after eyebrow threading, avoid touching the area with unwashed hands, as open follicles are susceptible to surface bacteria. For 24 hours, avoid swimming in chlorinated pools, saunas, hot steam rooms, heavy foundation makeup directly over the brow bone, and harsh exfoliating acids or retinoids. Apply pure organic aloe vera gel to soothe any mild pinkness.'
   },
   {
     question: 'How often should I maintain my brows?',
-    answer: 'Because natural hair growth rates vary between individuals, most clients find that scheduling an eyebrow threading appointment every 3 to 4 weeks maintains crisp arch symmetry and prevents hairs from growing into unmanageable clusters. Your artist will observe your hair growth speed during your consultation and advise on a cadence tailored to you.'
+    answer: 'Maintenance frequency depends entirely on your personal hair growth rate and lifestyle. Most clients find that scheduling a professional threading appointment every 2 to 4 weeks keeps their arch crisp, eliminates stray fuzz, and prevents hairs from growing out of alignment. If you are actively growing out thin brows, your artist may recommend 4 to 6-week maintenance intervals.'
   }
 ];

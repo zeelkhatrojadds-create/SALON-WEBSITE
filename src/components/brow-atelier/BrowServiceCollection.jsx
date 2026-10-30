@@ -8,37 +8,34 @@ import {
   Search, 
   X, 
   Info, 
-  Feather,
-  Flame,
+  Scissors,
   CheckCircle2,
-  AlertCircle
+  Calendar
 } from 'lucide-react';
 import salonDB from '../../db/salonDatabase';
 import SafeServiceImage from '../common/SafeServiceImage';
+
+// Specific approved salon services that directly involve brow shaping, framing, and architecture
+const BROW_SERVICE_IDS = [
+  'eyebrow-threading',
+  'eyebrows-waxing',
+  'sitara-full-face-threading',
+  'forehead-threading'
+];
 
 export default function BrowServiceCollection() {
   const [searchQuery, setSearchQuery] = useState('');
   const [modalService, setModalService] = useState(null);
 
-  // Retrieve approved brow-related services strictly from master salon database
+  // Retrieve approved brow services directly from master salon database
   const approvedBrowServices = useMemo(() => {
-    const services = salonDB.getServices() || [];
-    // Filter services that explicitly target eyebrows or contain full brow shaping in their inclusions
-    return services.filter((s) => {
-      if (s.active === false) return false;
-      const lowerId = (s.id || '').toLowerCase();
-      const lowerName = (s.name || '').toLowerCase();
-      
-      // Known catalog brow treatments
-      const isEyebrowSpecific = 
-        lowerId === 'eyebrow-threading' || 
-        lowerId === 'eyebrows-waxing' || 
-        lowerId === 'sitara-full-face-threading' ||
-        lowerName.includes('eyebrow') ||
-        lowerName.includes('brow');
-
-      return isEyebrowSpecific;
-    });
+    const allServices = salonDB.getServices() || [];
+    return allServices.filter(s => 
+      s.active !== false && (
+        BROW_SERVICE_IDS.includes(s.id) ||
+        (s.name && s.name.toLowerCase().includes('eyebrow'))
+      )
+    );
   }, []);
 
   const filteredServices = useMemo(() => {
@@ -48,7 +45,7 @@ export default function BrowServiceCollection() {
       s.name.toLowerCase().includes(q) ||
       (s.description && s.description.toLowerCase().includes(q)) ||
       (s.features && s.features.some(f => f.toLowerCase().includes(q))) ||
-      (s.categoryName && s.categoryName.toLowerCase().includes(q))
+      (s.whatsIncluded && s.whatsIncluded.some(item => item.toLowerCase().includes(q)))
     );
   }, [approvedBrowServices, searchQuery]);
 
@@ -58,9 +55,9 @@ export default function BrowServiceCollection() {
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14 space-y-3">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white border border-[#DCE1D8] shadow-xs">
-          <Sparkles className="w-3.5 h-3.5 text-[#263D2B]" />
+          <Scissors className="w-3.5 h-3.5 text-[#263D2B]" />
           <span className="text-[10.5px] font-bold uppercase tracking-[0.24em] text-[#263D2B]">
-            AUTHENTIC ATELIER MENU
+            AUTHENTIC SALON MENU
           </span>
         </div>
 
@@ -69,275 +66,226 @@ export default function BrowServiceCollection() {
         </h2>
 
         <p className="text-xs sm:text-sm text-[#465640] max-w-2xl mx-auto leading-relaxed">
-          Every brow service is performed by certified beauty director Janki Khatroja using authentic, salon-approved pricing, actual treatment durations, and hospital-grade antibacterial organic thread.
+          Every shaping ritual is personally performed by certified threading specialist Janki Khatroja using authentic, catalog-approved pricing, actual service durations, and 100% organic antibacterial thread.
         </p>
 
-        {/* Informational Guidance Notice - Strictly No Booking */}
+        {/* Informational Guidance Notice */}
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-[#F7F4ED] border border-[#DCE1D8] text-[11px] text-[#465640] max-w-xl text-left sm:text-center mt-2">
           <Info className="w-4 h-4 text-[#263D2B] flex-shrink-0" />
           <span>
-            <strong>Informational Catalog:</strong> Exact approved rates in Canadian Dollars (CAD). Reused directly from our master salon service menu with zero duplicate listings.
+            <strong>Informational Catalog:</strong> Exact approved rates in Canadian Dollars (CAD). Click any service card to view complete treatment inclusions and salon protocol.
           </span>
         </div>
       </div>
 
-      {/* Filter and Search Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
-        <div className="relative w-full sm:w-80">
-          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#465640]" />
+      {/* Search Input Bar */}
+      <div className="flex items-center justify-between gap-4 mb-8 sm:mb-10 max-w-md mx-auto">
+        <div className="relative w-full">
+          <Search className="w-4 h-4 text-[#6B7068] absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search approved brow services..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-full bg-white border border-[#DCE1D8] text-xs sm:text-sm text-[#10110F] placeholder-[#465640]/60 focus:outline-none focus:ring-1 focus:ring-[#263D2B] focus:border-[#263D2B] transition-all"
+            placeholder="Search approved brow treatments..."
+            className="w-full h-10 pl-9 pr-4 rounded-xl border border-[#DCE1D8] bg-white text-xs text-[#10110F] placeholder-[#6B7068]/60 focus:outline-none focus:border-[#263D2B]"
           />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#465640] hover:text-[#10110F] p-0.5"
-              aria-label="Clear search"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
-          )}
-        </div>
-
-        <div className="flex items-center gap-2 text-xs text-[#465640]">
-          <span className="font-medium text-[#10110F]">{filteredServices.length}</span> approved treatments shown
         </div>
       </div>
 
-      {/* Service Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-        {filteredServices.map((service) => {
-          const isThreading = service.category === 'threading';
-          const isWaxing = service.category === 'waxing';
+      {/* Services Grid */}
+      {filteredServices.length === 0 ? (
+        <div className="p-12 text-center rounded-3xl bg-white border border-[#DCE1D8] space-y-3 max-w-md mx-auto">
+          <h3 className="font-serif text-xl text-[#10110F]">No brow treatments matched your search</h3>
+          <p className="text-xs text-[#6B7068]">Try searching with a different keyword or reset search.</p>
+          <button
+            type="button"
+            onClick={() => setSearchQuery('')}
+            className="global-button-secondary !py-2 !px-4 text-xs font-semibold"
+          >
+            Reset Search
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {filteredServices.map((service) => {
+            const priceDisplay = `$${service.price} CAD`;
+            const durationDisplay = service.durationDisplay || service.duration || '15 min';
 
-          return (
-            <article
-              key={service.id}
-              className="group flex flex-col rounded-2xl bg-white border border-[#DCE1D8] overflow-hidden shadow-xs hover:shadow-md hover:border-[#263D2B]/40 transition-all duration-300"
-            >
-              {/* Image Container */}
-              <div className="relative h-56 w-full overflow-hidden bg-[#EAE7DC]">
-                <SafeServiceImage
-                  src={service.image}
-                  alt={service.name}
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-
-                {/* Category & Badge Overlay */}
-                <div className="absolute top-3 left-3 flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-[10px] font-medium uppercase tracking-wider text-white">
-                  {isThreading ? (
-                    <Feather className="w-3 h-3 text-[#A8B5A0]" />
-                  ) : (
-                    <Flame className="w-3 h-3 text-[#A8B5A0]" />
-                  )}
-                  <span>{service.categoryName || (isThreading ? 'Threading' : 'Waxing')}</span>
-                </div>
-
-                {service.featured && (
-                  <div className="absolute top-3 right-3 px-2.5 py-0.5 rounded-full bg-[#263D2B] text-white text-[10px] font-bold uppercase tracking-wider shadow-xs">
-                    Popular
-                  </div>
-                )}
-
-                {/* Duration Overlay */}
-                <div className="absolute bottom-3 left-3 flex items-center gap-1 text-[11px] font-medium text-white/90 drop-shadow-sm">
-                  <Clock className="w-3.5 h-3.5 text-[#A8B5A0]" />
-                  <span>{service.duration || service.durationDisplay}</span>
-                </div>
-              </div>
-
-              {/* Content Block */}
-              <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between">
+            return (
+              <div
+                key={service.id}
+                className="group bg-white rounded-3xl border border-[#DCE1D8] overflow-hidden shadow-xs hover:shadow-md hover:border-[#263D2B]/40 transition-all duration-300 flex flex-col justify-between"
+              >
                 <div>
-                  <div className="flex items-baseline justify-between gap-3 mb-2">
-                    <h3 className="font-serif text-lg sm:text-xl font-medium text-[#10110F] group-hover:text-[#263D2B] transition-colors line-clamp-1">
-                      {service.name}
-                    </h3>
-                    <div className="text-right flex-shrink-0">
-                      <span className="text-lg sm:text-xl font-semibold text-[#10110F]">
-                        ${service.price}
+                  {/* Service Image */}
+                  <div className="relative h-48 sm:h-52 overflow-hidden bg-[#F7F4ED]">
+                    <SafeServiceImage
+                      src={service.image}
+                      alt={service.name}
+                      category={service.category || 'threading'}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
+                      <span className="px-2.5 py-1 rounded-full bg-[#10110F]/80 backdrop-blur-md text-[10px] font-medium text-white uppercase tracking-wider">
+                        {service.categoryName || (service.category === 'waxing' ? 'Waxing' : 'Threading')}
                       </span>
-                      <span className="text-[10px] font-medium text-[#465640] ml-1 uppercase">CAD</span>
+                    </div>
+
+                    <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-md px-3 py-1 rounded-full shadow-xs flex items-center gap-1.5 text-xs font-semibold text-[#10110F]">
+                      <Clock className="w-3.5 h-3.5 text-[#263D2B]" />
+                      <span>{durationDisplay}</span>
                     </div>
                   </div>
 
-                  <p className="text-xs text-[#465640] leading-relaxed line-clamp-2 mb-4">
-                    {service.description}
-                  </p>
+                  {/* Card Content */}
+                  <div className="p-5 sm:p-6 space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 className="font-serif text-lg font-semibold text-[#10110F] leading-snug group-hover:text-[#263D2B] transition-colors">
+                        {service.name}
+                      </h3>
+                      <div className="text-right flex-shrink-0">
+                        <span className="font-serif text-base font-bold text-[#263D2B] block">
+                          {priceDisplay}
+                        </span>
+                      </div>
+                    </div>
 
-                  {/* Highlights/What's included preview */}
-                  {service.whatsIncluded && service.whatsIncluded.length > 0 && (
-                    <ul className="space-y-1.5 mb-5 border-t border-[#DCE1D8]/70 pt-3">
-                      {service.whatsIncluded.slice(0, 3).map((item, idx) => (
-                        <li key={idx} className="flex items-center gap-2 text-[11.5px] text-[#465640]">
-                          <Check className="w-3.5 h-3.5 text-[#263D2B] flex-shrink-0" />
-                          <span className="line-clamp-1">{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+                    <p className="text-xs text-[#465640] line-clamp-3 leading-relaxed">
+                      {service.description}
+                    </p>
+
+                    {/* Features list */}
+                    {(service.whatsIncluded || service.features) && (
+                      <div className="pt-2 border-t border-[#DCE1D8]/60 space-y-1.5">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#6B7068]">
+                          Service Inclusions:
+                        </span>
+                        <ul className="space-y-1">
+                          {(service.whatsIncluded || service.features).slice(0, 3).map((item, idx) => (
+                            <li key={idx} className="flex items-start gap-1.5 text-[11px] text-[#465640]">
+                              <Check className="w-3.5 h-3.5 text-[#263D2B] flex-shrink-0 mt-0.5" />
+                              <span className="line-clamp-1">{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                {/* View Details CTA Button - Purely informational modal, no booking */}
-                <button
-                  type="button"
-                  onClick={() => setModalService(service)}
-                  className="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-[#F7F4ED] text-[#10110F] text-xs font-semibold hover:bg-[#263D2B] hover:text-white transition-all duration-200 border border-[#DCE1D8] group-hover:border-[#263D2B]"
-                >
-                  <span>View Details & Protocol</span>
-                  <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
-                </button>
+                {/* Card Action - Pure View Details (NO BOOKING BUTTONS) */}
+                <div className="p-5 sm:p-6 pt-0 mt-auto">
+                  <button
+                    type="button"
+                    onClick={() => setModalService(service)}
+                    className="w-full py-2.5 px-4 rounded-xl border border-[#DCE1D8] bg-[#F7F4ED] hover:bg-[#263D2B] text-[#10110F] hover:text-white transition-all text-xs font-semibold flex items-center justify-center gap-2 group/btn shadow-2xs"
+                  >
+                    <span>View Treatment Details</span>
+                    <ChevronRight className="w-3.5 h-3.5 text-[#465640] group-hover/btn:text-white group-hover/btn:translate-x-0.5 transition-all" />
+                  </button>
+                </div>
               </div>
-            </article>
-          );
-        })}
-      </div>
-
-      {/* Catalog Transparency Notice */}
-      <div className="mt-12 rounded-2xl bg-white border border-[#DCE1D8] p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-5 justify-between">
-        <div className="space-y-1.5 max-w-2xl text-center sm:text-left">
-          <div className="flex items-center justify-center sm:justify-start gap-2 text-xs font-bold uppercase tracking-wider text-[#263D2B]">
-            <ShieldCheck className="w-4 h-4 text-[#263D2B]" />
-            <span>Salon Catalog Guarantee</span>
-          </div>
-          <p className="text-xs sm:text-sm text-[#465640] leading-relaxed">
-            All prices and durations shown reflect our verified in-salon master registry. We honor your natural skin sensitivity with strict single-use disposables, medical-grade sanitization, and gentle organic aloe vera post-care.
-          </p>
+            );
+          })}
         </div>
-        <div className="flex flex-col sm:flex-row gap-2.5 flex-shrink-0 w-full sm:w-auto">
-          <a
-            href="/services"
-            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#10110F] text-white text-xs font-medium hover:bg-[#263D2B] transition-colors"
-          >
-            <span>Explore Full 72-Service Catalog</span>
-          </a>
-        </div>
-      </div>
+      )}
 
-      {/* Service Details Modal (Informational Only - No Booking) */}
+      {/* Service Details Modal */}
       {modalService && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn"
+        <div
+          className="fixed inset-0 z-50 bg-[#10110F]/80 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
           role="dialog"
           aria-modal="true"
-          aria-labelledby="brow-modal-title"
+          onClick={() => setModalService(null)}
         >
-          <div 
-            className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-[#DCE1D8] overflow-hidden flex flex-col max-h-[90vh]"
+          <div
+            className="bg-white rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto border border-[#DCE1D8] shadow-2xl relative animate-in fade-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal Header Image */}
-            <div className="relative h-48 w-full bg-[#EAE7DC] flex-shrink-0">
+            {/* Modal Image Header */}
+            <div className="relative h-56 sm:h-64 bg-[#F7F4ED] overflow-hidden rounded-t-3xl">
               <SafeServiceImage
                 src={modalService.image}
                 alt={modalService.name}
+                category={modalService.category || 'threading'}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-              
               <button
                 type="button"
                 onClick={() => setModalService(null)}
-                className="absolute top-4 right-4 p-2 rounded-full bg-black/50 hover:bg-black/80 text-white backdrop-blur-sm transition-colors"
-                aria-label="Close dialog"
+                aria-label="Close treatment details"
+                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/90 backdrop-blur-md text-[#10110F] hover:bg-white flex items-center justify-center shadow-md transition-colors"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
 
-              <div className="absolute bottom-4 left-5 right-5 text-white">
-                <span className="px-2.5 py-0.5 rounded-full bg-[#263D2B] text-[10px] font-bold uppercase tracking-wider text-white inline-block mb-1.5">
-                  {modalService.categoryName || 'Brow Service'}
+              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+                <span className="px-3 py-1 rounded-full bg-[#10110F]/85 backdrop-blur-md text-xs font-semibold text-white uppercase tracking-wider">
+                  {modalService.categoryName || (modalService.category === 'waxing' ? 'Waxing' : 'Threading')}
                 </span>
-                <h3 id="brow-modal-title" className="font-serif text-2xl font-normal leading-tight">
-                  {modalService.name}
-                </h3>
+                <span className="px-3 py-1 rounded-full bg-white/95 backdrop-blur-md text-xs font-bold text-[#263D2B] shadow-xs">
+                  ${modalService.price} CAD • {modalService.durationDisplay || modalService.duration || '15 min'}
+                </span>
               </div>
             </div>
 
-            {/* Modal Body */}
-            <div className="p-6 overflow-y-auto space-y-5 text-xs sm:text-sm text-[#465640]">
-              {/* Quick Specs */}
-              <div className="grid grid-cols-2 gap-3 p-3.5 rounded-2xl bg-[#F7F4ED] border border-[#DCE1D8]">
-                <div>
-                  <span className="text-[10px] uppercase font-bold text-[#465640]/70 tracking-wider block">
-                    Approved Rate
-                  </span>
-                  <span className="text-base sm:text-lg font-bold text-[#10110F]">
-                    ${modalService.price} CAD
-                  </span>
-                </div>
-                <div>
-                  <span className="text-[10px] uppercase font-bold text-[#465640]/70 tracking-wider block">
-                    Duration
-                  </span>
-                  <span className="text-base sm:text-lg font-bold text-[#10110F] flex items-center gap-1">
-                    <Clock className="w-4 h-4 text-[#263D2B]" />
-                    {modalService.duration || modalService.durationDisplay}
-                  </span>
-                </div>
-              </div>
-
-              {/* Description */}
+            {/* Modal Content */}
+            <div className="p-6 sm:p-8 space-y-6">
               <div>
-                <h4 className="font-serif text-base text-[#10110F] font-medium mb-1.5">
-                  Service Overview
-                </h4>
-                <p className="leading-relaxed">
+                <h3 className="font-serif text-2xl sm:text-3xl font-semibold text-[#10110F] mb-2">
+                  {modalService.name}
+                </h3>
+                <p className="text-xs sm:text-sm text-[#465640] leading-relaxed">
                   {modalService.description}
                 </p>
               </div>
 
               {/* What's Included */}
-              {modalService.whatsIncluded && modalService.whatsIncluded.length > 0 && (
-                <div>
-                  <h4 className="font-serif text-base text-[#10110F] font-medium mb-2">
-                    What's Included in This Service
+              {(modalService.whatsIncluded || modalService.features) && (
+                <div className="space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#10110F] flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-[#263D2B]" />
+                    <span>Included in This Brow Treatment</span>
                   </h4>
-                  <ul className="space-y-2">
-                    {modalService.whatsIncluded.map((step, idx) => (
-                      <li key={idx} className="flex items-start gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {(modalService.whatsIncluded || modalService.features).map((item, idx) => (
+                      <div key={idx} className="flex items-start gap-2 p-3 rounded-xl bg-[#F7F4ED] border border-[#DCE1D8]">
                         <CheckCircle2 className="w-4 h-4 text-[#263D2B] flex-shrink-0 mt-0.5" />
-                        <span className="leading-snug">{step}</span>
-                      </li>
+                        <span className="text-xs text-[#10110F] font-medium">{item}</span>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               )}
 
-              {/* Hygiene & Sensitivity Guidance */}
-              <div className="p-4 rounded-2xl bg-white border border-[#DCE1D8] space-y-1.5">
-                <div className="flex items-center gap-1.5 text-xs font-bold text-[#10110F]">
-                  <AlertCircle className="w-4 h-4 text-[#263D2B]" />
-                  <span>Atelier Hygiene Standards</span>
+              {/* Atelier Quality Guarantee */}
+              <div className="p-4 rounded-2xl bg-white border border-[#DCE1D8] space-y-2">
+                <div className="flex items-center gap-2 text-xs font-bold text-[#263D2B]">
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>The Glam Girl Brow Standard</span>
                 </div>
                 <p className="text-[11.5px] text-[#465640] leading-relaxed">
-                  100% antibacterial twisted cotton thread or sensitive hypoallergenic wax. Hands and target areas are sanitized before and after treatment, followed by cooling pure aloe vera soothing gel.
+                  Every treatment utilizes sterile, single-use organic cotton thread or low-temperature hypoallergenic botanical strip wax. Includes complimentary arch symmetry assessment and calming botanical aloe infusion.
                 </p>
               </div>
-            </div>
 
-            {/* Modal Footer (Purely Informational Close, Strictly No Booking) */}
-            <div className="p-4 sm:p-5 border-t border-[#DCE1D8] bg-[#F7F4ED] flex items-center justify-between gap-3">
-              <span className="text-[11px] text-[#465640]">
-                Informational studio compendium
-              </span>
-              <button
-                type="button"
-                onClick={() => setModalService(null)}
-                className="px-5 py-2 rounded-full bg-[#10110F] text-white text-xs font-medium hover:bg-[#263D2B] transition-colors"
-              >
-                Close Details
-              </button>
+              {/* Informational Notice (No Booking) */}
+              <div className="pt-2 border-t border-[#DCE1D8] flex items-center justify-between">
+                <span className="text-[11px] text-[#6B7068] italic">
+                  Informational preview from Glam Girl by Janki service catalog.
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setModalService(null)}
+                  className="px-5 py-2.5 rounded-xl bg-[#10110F] text-white text-xs font-semibold hover:bg-[#263D2B] transition-colors"
+                >
+                  Close Details
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
-
     </section>
   );
 }

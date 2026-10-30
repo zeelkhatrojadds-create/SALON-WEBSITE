@@ -99,23 +99,23 @@ const flagshipAteliers = [
   { 
     name: 'The Lash Atelier', 
     desc: 'Lash extensions, lifts, and tinting treatments.', 
-    path: '/the-lash-atelier',
+    path: '/lash-atelier',
     badge: 'NEW',
     icon: Eye
   },
   { 
     name: 'The Makeup Atelier', 
     desc: 'Editorial makeup, bridal beauty, and signature looks.', 
-    path: '/the-makeup-atelier',
+    path: '/makeup-atelier',
     badge: 'NEW',
     icon: Sparkles
   },
   { 
     name: 'The Brow Atelier', 
-    desc: 'Brow architecture, organic threading, and style guides.', 
-    path: '/the-brow-atelier',
+    desc: 'Precision threading, natural framing, and brow design.', 
+    path: '/brow-atelier',
     badge: 'NEW',
-    icon: Feather
+    icon: Scissors
   },
 ];
 
@@ -328,11 +328,6 @@ export default function Navbar() {
       path.startsWith('/the-skin-atelier') || 
       path.startsWith('/lash-atelier') || 
       path.startsWith('/the-lash-atelier') || 
-      path.startsWith('/makeup-atelier') || 
-      path.startsWith('/the-makeup-atelier') || 
-      path.startsWith('/brow-atelier') || 
-      path.startsWith('/the-brow-atelier') || 
-      path.startsWith('/brows') || 
       path.startsWith('/nail-art') || 
       path.startsWith('/mehndi-design-studio') || 
       path.startsWith('/mehndi') ||
@@ -873,6 +868,8 @@ export default function Navbar() {
               { name: 'The Hair Atelier', path: '/hair-atelier', badge: 'ATELIER' },
               { name: 'The Skin Atelier', path: '/skin-atelier', badge: 'PREMIUM' },
               { name: 'The Lash Atelier', path: '/lash-atelier', badge: 'NEW' },
+              { name: 'The Makeup Atelier', path: '/makeup-atelier', badge: 'NEW' },
+              { name: 'The Brow Atelier', path: '/brow-atelier', badge: 'NEW' },
               { name: 'Hair Colour Atelier', path: '/hair-colour' },
               { name: 'Nail Art Studio', path: '/nail-art' },
               { name: 'Mehndi Design Studio', path: '/mehndi-design-studio' },

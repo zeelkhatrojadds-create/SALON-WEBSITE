@@ -1,30 +1,31 @@
 import React, { useState } from 'react';
 import { 
   Sparkles, 
-  CheckCircle2, 
-  RotateCcw, 
+  Check, 
   ChevronDown, 
   ShieldCheck, 
-  Info, 
+  RotateCcw, 
   Heart, 
-  Layers, 
-  Feather,
-  Droplet,
+  CheckCircle2, 
+  Scissors,
+  HelpCircle,
   Clock,
-  Sparkle,
-  Check
+  Layers,
+  Award,
+  Feather,
+  Droplets
 } from 'lucide-react';
 import { 
   BROW_DESIGN_EXPERIENCE_STEPS, 
-  BROW_MAINTENANCE_SECTIONS, 
-  BROW_CHECKLIST_ITEMS, 
+  BROW_MAINTENANCE_CARDS, 
+  BROW_CHECKLIST_DATA, 
   BROW_FAQS 
 } from './BrowConstants';
 
 export default function BrowExperienceGuide() {
-  // Interactive checklist state (all unchecked by default, or partially checked)
+  // Checklist interactive state
   const [checkedItems, setCheckedItems] = useState({});
-  // FAQ accordion state
+  // FAQ expandable state
   const [openFaqIndex, setOpenFaqIndex] = useState(0);
 
   const toggleCheck = (id) => {
@@ -38,26 +39,21 @@ export default function BrowExperienceGuide() {
     setCheckedItems({});
   };
 
-  const totalChecklist = BROW_CHECKLIST_ITEMS.length;
-  const completedCount = Object.values(checkedItems).filter(Boolean).length;
-  const progressPercent = Math.round((completedCount / totalChecklist) * 100);
-
-  const toggleFaq = (index) => {
-    setOpenFaqIndex(openFaqIndex === index ? null : index);
-  };
+  const checkedCount = Object.values(checkedItems).filter(Boolean).length;
+  const progressPercent = Math.round((checkedCount / BROW_CHECKLIST_DATA.length) * 100);
 
   return (
-    <div className="space-y-20 sm:space-y-28 py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-[#DCE1D8]">
-
-      {/* ============================================================ */}
-      {/* 5. BROW DESIGN EXPERIENCE */}
-      {/* ============================================================ */}
-      <section id="brow-experience">
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 space-y-3">
+    <div className="space-y-20 sm:space-y-28 py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-[#DCE1D8]">
+      
+      {/* =========================================================================
+          SECTION 6: BROW DESIGN EXPERIENCE (6-STEP VISUAL JOURNEY)
+      ========================================================================= */}
+      <section id="brow-experience" className="space-y-12">
+        <div className="text-center max-w-3xl mx-auto space-y-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white border border-[#DCE1D8] shadow-xs">
-            <Layers className="w-3.5 h-3.5 text-[#263D2B]" />
+            <Scissors className="w-3.5 h-3.5 text-[#263D2B]" />
             <span className="text-[10.5px] font-bold uppercase tracking-[0.24em] text-[#263D2B]">
-              THE 6-STEP ATELIER PROTOCOL
+              THE 6-STEP ATELIER METHOD
             </span>
           </div>
 
@@ -66,276 +62,252 @@ export default function BrowExperienceGuide() {
           </h2>
 
           <p className="text-xs sm:text-sm text-[#465640] max-w-2xl mx-auto leading-relaxed">
-            From initial shape discovery to precision salon threading and post-care education, each step is tailored to honor your individual bone structure and natural hair growth patterns.
-          </p>
-
-          <p className="text-[11px] text-[#465640]/80 italic">
-            * Note: Because each individual's brow bone anatomy and natural hair growth density are unique, brow shaping results are personalized and vary between clients.
+            From initial silhouette discovery to organic soothing botanicals, experience the step-by-step artistry behind our custom brow architecture.
           </p>
         </div>
 
-        {/* Step-by-Step Grid */}
+        {/* 6 Steps Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {BROW_DESIGN_EXPERIENCE_STEPS.map((stepItem, idx) => (
             <div
               key={stepItem.step}
-              className="relative p-6 sm:p-7 rounded-3xl bg-white border border-[#DCE1D8] hover:border-[#263D2B]/50 transition-all duration-300 shadow-xs hover:shadow-md flex flex-col justify-between group"
+              className="group bg-white rounded-3xl p-7 border border-[#DCE1D8] hover:border-[#263D2B]/50 transition-all duration-300 shadow-xs hover:shadow-md flex flex-col justify-between relative overflow-hidden"
             >
-              <div>
-                {/* Step Number & Badge */}
-                <div className="flex items-center justify-between mb-5">
-                  <span className="font-serif text-2xl sm:text-3xl font-light text-[#263D2B]/40 group-hover:text-[#263D2B] transition-colors">
+              {/* Top Accent Bar */}
+              <div className="absolute top-0 left-0 right-0 h-1 bg-[#263D2B]/10 group-hover:bg-[#263D2B] transition-colors duration-300" />
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="font-serif text-3xl sm:text-4xl text-[#263D2B]/30 group-hover:text-[#263D2B] transition-colors font-bold">
                     {stepItem.step}
                   </span>
-                  <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-[#F7F4ED] text-[#263D2B] border border-[#DCE1D8]">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#465640] px-2.5 py-1 rounded-full bg-[#F7F4ED] border border-[#DCE1D8]">
                     Phase {idx + 1}
                   </span>
                 </div>
 
-                <h3 className="font-serif text-lg sm:text-xl font-medium text-[#10110F] mb-2 group-hover:text-[#263D2B] transition-colors">
-                  {stepItem.title}
-                </h3>
+                <div>
+                  <h3 className="font-serif text-xl sm:text-2xl font-semibold text-[#10110F] group-hover:text-[#263D2B] transition-colors">
+                    {stepItem.title}
+                  </h3>
+                  <p className="text-xs font-medium text-[#263D2B] mt-1">
+                    {stepItem.summary}
+                  </p>
+                </div>
 
-                <p className="text-xs font-medium text-[#263D2B] mb-3 leading-relaxed">
-                  {stepItem.summary}
-                </p>
-
-                <p className="text-xs text-[#465640] leading-relaxed">
+                <p className="text-xs text-[#465640] leading-relaxed pt-2 border-t border-[#DCE1D8]/60">
                   {stepItem.details}
                 </p>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-[#DCE1D8]/60 flex items-center justify-between text-[11px] text-[#465640]">
-                <span>Artisan Touch</span>
-                <Sparkle className="w-3.5 h-3.5 text-[#263D2B]" />
+              <div className="mt-6 pt-4 border-t border-[#DCE1D8]/40 flex items-center gap-2 text-[11px] text-[#6B7068]">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#263D2B]" />
+                <span>Certified Sanitary Standard</span>
               </div>
             </div>
           ))}
         </div>
       </section>
 
-
-      {/* ============================================================ */}
-      {/* 6. BROW MAINTENANCE & AFTERCARE GUIDE */}
-      {/* ============================================================ */}
-      <section id="brow-maintenance">
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 space-y-3">
+      {/* =========================================================================
+          SECTION 7: BROW MAINTENANCE GUIDE (5 DETAILED CARDS)
+      ========================================================================= */}
+      <section id="brow-maintenance" className="space-y-12">
+        <div className="text-center max-w-3xl mx-auto space-y-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white border border-[#DCE1D8] shadow-xs">
             <Feather className="w-3.5 h-3.5 text-[#263D2B]" />
             <span className="text-[10.5px] font-bold uppercase tracking-[0.24em] text-[#263D2B]">
-              ESSENTIAL AT-HOME AFTERCARE
+              EXPERT CARE PROTOCOLS
             </span>
           </div>
 
           <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-[#10110F] font-normal tracking-tight">
-            Brow Maintenance Guide
+            Brow Maintenance & Aftercare
           </h2>
 
           <p className="text-xs sm:text-sm text-[#465640] max-w-2xl mx-auto leading-relaxed">
-            Comprehensive care instructions to safeguard your skin barrier, maintain healthy hair follicles, and preserve your brow arch between visits.
+            Essential guidance for daily grooming, post-threading skin protection, tint longevity, lamination care, and natural hair growth biology.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {BROW_MAINTENANCE_SECTIONS.map((section) => (
+        {/* 5 Maintenance Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
+          {BROW_MAINTENANCE_CARDS.map((card, idx) => (
             <div
-              key={section.id}
-              className="p-6 sm:p-7 rounded-3xl bg-[#F7F4ED] border border-[#DCE1D8] flex flex-col justify-between hover:border-[#263D2B]/40 transition-all duration-300"
+              key={card.id}
+              className={`bg-white rounded-3xl p-7 border border-[#DCE1D8] shadow-xs hover:border-[#263D2B]/40 transition-all flex flex-col justify-between ${
+                idx === 4 ? 'md:col-span-2 lg:col-span-1' : ''
+              }`}
             >
-              <div>
-                <div className="inline-block px-3 py-1 rounded-full bg-white text-[#263D2B] text-[10px] font-bold uppercase tracking-wider border border-[#DCE1D8] mb-3 shadow-xs">
-                  {section.badge}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="px-3 py-1 rounded-full bg-[#F7F4ED] border border-[#DCE1D8] text-[10.5px] font-bold uppercase tracking-wider text-[#263D2B]">
+                    {card.badge}
+                  </span>
+                  <Droplets className="w-4 h-4 text-[#A8B5A0]" />
                 </div>
 
-                <h3 className="font-serif text-lg sm:text-xl font-medium text-[#10110F] mb-4">
-                  {section.title}
+                <h3 className="font-serif text-xl font-semibold text-[#10110F]">
+                  {card.title}
                 </h3>
 
-                <ul className="space-y-3">
-                  {section.points.map((point, pIdx) => (
+                <ul className="space-y-2.5 pt-2">
+                  {card.points.map((pt, pIdx) => (
                     <li key={pIdx} className="flex items-start gap-2.5 text-xs text-[#465640] leading-relaxed">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#263D2B] mt-1.5 flex-shrink-0" />
-                      <span>{point}</span>
+                      <span>{pt}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-[#DCE1D8] flex items-center gap-2 text-[11px] text-[#263D2B] font-medium">
-                <ShieldCheck className="w-3.5 h-3.5 flex-shrink-0" />
-                <span>Certified Esthetician Practice</span>
+              <div className="mt-6 pt-4 border-t border-[#DCE1D8]/60 text-[11px] text-[#6B7068] italic">
+                *Adhere to individualized salon recommendations for best results.
               </div>
             </div>
           ))}
         </div>
       </section>
 
-
-      {/* ============================================================ */}
-      {/* 7. INTERACTIVE BROW CARE CHECKLIST */}
-      {/* ============================================================ */}
-      <section id="brow-checklist" className="rounded-3xl bg-white border border-[#DCE1D8] p-6 sm:p-10 lg:p-12 shadow-xs">
-        <div className="max-w-3xl mx-auto">
-          
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 text-center sm:text-left">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F7F4ED] border border-[#DCE1D8] text-[10.5px] font-bold uppercase tracking-widest text-[#263D2B] mb-2">
-                <Check className="w-3.5 h-3.5" />
-                <span>INTERACTIVE ROUTINE BUILDER</span>
-              </div>
-              <h2 className="font-serif text-2xl sm:text-3xl text-[#10110F] font-normal">
-                Daily Brow Care Checklist
-              </h2>
-              <p className="text-xs sm:text-sm text-[#465640] mt-1">
-                Check off items as you build healthy daily and post-treatment brow grooming habits.
-              </p>
+      {/* =========================================================================
+          SECTION 8: INTERACTIVE BROW CARE CHECKLIST
+      ========================================================================= */}
+      <section id="brow-checklist" className="bg-[#F7F4ED] rounded-3xl p-6 sm:p-10 lg:p-12 border border-[#DCE1D8] space-y-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-[#DCE1D8]">
+          <div className="space-y-2 max-w-xl">
+            <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-white border border-[#DCE1D8] text-[10.5px] font-bold text-[#263D2B] uppercase tracking-wider">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>Interactive Adherence Tool</span>
             </div>
-
-            <button
-              onClick={resetChecklist}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-[#DCE1D8] text-xs text-[#465640] hover:text-[#10110F] hover:bg-[#F7F4ED] transition-colors"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>Reset Checklist</span>
-            </button>
+            <h3 className="font-serif text-2xl sm:text-3xl text-[#10110F] font-semibold">
+              Interactive Brow Care Checklist
+            </h3>
+            <p className="text-xs sm:text-sm text-[#465640] leading-relaxed">
+              Track your essential daily habits and aftercare practices. Check each milestone to ensure healthy follicles, clean symmetry, and long-lasting definition.
+            </p>
           </div>
 
-          {/* Progress Bar */}
-          <div className="mb-8 p-4 rounded-2xl bg-[#F7F4ED] border border-[#DCE1D8]">
-            <div className="flex justify-between items-center text-xs mb-2">
-              <span className="font-medium text-[#10110F]">
-                Your Brow Wellness Progress: <span className="text-[#263D2B] font-bold">{completedCount} of {totalChecklist} completed</span>
-              </span>
-              <span className="font-semibold text-[#263D2B]">{progressPercent}%</span>
+          {/* Progress Tracker & Reset */}
+          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-[#DCE1D8] shadow-xs flex flex-col gap-3 min-w-[240px]">
+            <div className="flex items-center justify-between text-xs font-bold text-[#10110F]">
+              <span>Checklist Progress</span>
+              <span className="text-[#263D2B]">{checkedCount} of {BROW_CHECKLIST_DATA.length} Complete ({progressPercent}%)</span>
             </div>
-            <div className="w-full h-2 rounded-full bg-white overflow-hidden border border-[#DCE1D8]/60">
+
+            <div className="w-full bg-[#F7F4ED] h-2 rounded-full overflow-hidden border border-[#DCE1D8]">
               <div 
-                className="h-full bg-[#263D2B] transition-all duration-500 rounded-full"
+                className="bg-[#263D2B] h-full transition-all duration-300 rounded-full"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
-          </div>
 
-          {/* Checklist Items */}
-          <div className="space-y-3">
-            {BROW_CHECKLIST_ITEMS.map((item) => {
-              const isChecked = !!checkedItems[item.id];
-              return (
-                <div
-                  key={item.id}
-                  onClick={() => toggleCheck(item.id)}
-                  className={`flex items-start sm:items-center justify-between gap-4 p-4 rounded-2xl border transition-all duration-200 cursor-pointer select-none ${
-                    isChecked 
-                      ? 'bg-[#F7F4ED]/80 border-[#263D2B]' 
-                      : 'bg-white border-[#DCE1D8] hover:border-[#263D2B]/40'
-                  }`}
-                  role="checkbox"
-                  aria-checked={isChecked}
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === ' ' || e.key === 'Enter') {
-                      e.preventDefault();
-                      toggleCheck(item.id);
-                    }
-                  }}
+            <div className="flex items-center justify-between pt-1">
+              <span className="text-[11px] text-[#6B7068]">
+                {progressPercent === 100 ? '✨ Brow Routine Perfected!' : 'Click items to mark complete'}
+              </span>
+              {checkedCount > 0 && (
+                <button
+                  type="button"
+                  onClick={resetChecklist}
+                  className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#263D2B] hover:text-[#10110F] transition-colors"
                 >
-                  <div className="flex items-start sm:items-center gap-3.5">
-                    <div 
-                      className={`w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 transition-colors mt-0.5 sm:mt-0 ${
-                        isChecked 
-                          ? 'bg-[#263D2B] text-white' 
-                          : 'border border-[#DCE1D8] bg-white'
-                      }`}
-                    >
-                      {isChecked && <Check className="w-3.5 h-3.5" />}
-                    </div>
-                    <div>
-                      <p className={`text-xs sm:text-sm ${isChecked ? 'line-through text-[#465640]/70' : 'text-[#10110F] font-medium'}`}>
-                        {item.title}
-                      </p>
-                      <span className="text-[10px] uppercase font-bold text-[#465640]/70 tracking-wider">
-                        {item.category}
-                      </span>
-                    </div>
-                  </div>
-
-                  <span className={`text-[10.5px] font-semibold px-2.5 py-0.5 rounded-full flex-shrink-0 ${
-                    isChecked 
-                      ? 'bg-[#263D2B] text-white' 
-                      : 'bg-[#F7F4ED] text-[#465640]'
-                  }`}>
-                    {isChecked ? 'Completed' : 'Pending'}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Completion Celebration Message */}
-          {completedCount === totalChecklist && (
-            <div className="mt-6 p-4 rounded-2xl bg-[#263D2B] text-white flex items-center gap-3 animate-fadeIn">
-              <CheckCircle2 className="w-5 h-5 text-[#A8B5A0] flex-shrink-0" />
-              <div className="text-xs">
-                <span className="font-bold">Outstanding Commitment!</span> You've completed all brow care practices. Maintaining this mindful routine will keep your brow arches defined and healthy.
-              </div>
+                  <RotateCcw className="w-3 h-3" />
+                  <span>Reset</span>
+                </button>
+              )}
             </div>
-          )}
+          </div>
+        </div>
 
+        {/* Checkbox Items */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {BROW_CHECKLIST_DATA.map((item) => {
+            const isChecked = !!checkedItems[item.id];
+            return (
+              <div
+                key={item.id}
+                onClick={() => toggleCheck(item.id)}
+                className={`p-4 sm:p-5 rounded-2xl border transition-all duration-200 cursor-pointer flex items-start gap-4 select-none ${
+                  isChecked 
+                    ? 'bg-white border-[#263D2B] shadow-sm' 
+                    : 'bg-white/70 hover:bg-white border-[#DCE1D8]'
+                }`}
+              >
+                <div 
+                  className={`w-6 h-6 rounded-lg border flex items-center justify-center flex-shrink-0 mt-0.5 transition-all duration-200 ${
+                    isChecked
+                      ? 'bg-[#263D2B] border-[#263D2B] text-white'
+                      : 'border-[#A8B5A0] bg-white text-transparent'
+                  }`}
+                >
+                  <Check className="w-4 h-4 stroke-[3]" />
+                </div>
+
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#263D2B] px-2 py-0.5 rounded-md bg-[#F7F4ED]">
+                      {item.category}
+                    </span>
+                  </div>
+                  <p className={`text-xs sm:text-sm font-medium transition-colors ${
+                    isChecked ? 'text-[#10110F] line-through opacity-80' : 'text-[#10110F]'
+                  }`}>
+                    {item.title}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 
-
-      {/* ============================================================ */}
-      {/* 8. BROW FAQS */}
-      {/* ============================================================ */}
-      <section id="brow-faqs" className="max-w-4xl mx-auto">
-        <div className="text-center mb-10 sm:mb-12 space-y-3">
+      {/* =========================================================================
+          SECTION 9: BROW FAQS (ACCORDION WITH 7 APPROVED QUESTIONS)
+      ========================================================================= */}
+      <section id="brow-faqs" className="space-y-10">
+        <div className="text-center max-w-3xl mx-auto space-y-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white border border-[#DCE1D8] shadow-xs">
-            <Info className="w-3.5 h-3.5 text-[#263D2B]" />
+            <HelpCircle className="w-3.5 h-3.5 text-[#263D2B]" />
             <span className="text-[10.5px] font-bold uppercase tracking-[0.24em] text-[#263D2B]">
-              EXPERT CONSULTATION KNOWLEDGE
+              RESPONSIBLE GUIDANCE
             </span>
           </div>
 
-          <h2 className="font-serif text-3xl sm:text-4xl text-[#10110F] font-normal tracking-tight">
-            Frequently Asked Brow Questions
+          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-[#10110F] font-normal tracking-tight">
+            Frequently Asked Questions
           </h2>
 
-          <p className="text-xs sm:text-sm text-[#465640] max-w-xl mx-auto leading-relaxed">
-            Clear, transparent answers regarding brow shaping, organic threading, lamination, and aftercare. We encourage a direct consultation for sensitive skin or individual suitability.
+          <p className="text-xs sm:text-sm text-[#465640] max-w-2xl mx-auto leading-relaxed">
+            Honest, professional answers to help you navigate shaping techniques, home preservation, and treatment choices.
           </p>
         </div>
 
-        {/* FAQ Accordion List */}
-        <div className="space-y-4">
-          {BROW_FAQS.map((faq, index) => {
-            const isOpen = openFaqIndex === index;
+        {/* FAQs Accordion */}
+        <div className="max-w-3xl mx-auto space-y-3.5">
+          {BROW_FAQS.map((faq, idx) => {
+            const isOpen = openFaqIndex === idx;
             return (
               <div
-                key={index}
-                className="rounded-2xl bg-white border border-[#DCE1D8] overflow-hidden transition-all duration-200"
+                key={idx}
+                className="bg-white rounded-2xl border border-[#DCE1D8] overflow-hidden transition-all duration-200 shadow-2xs"
               >
                 <button
                   type="button"
-                  onClick={() => toggleFaq(index)}
-                  className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 hover:bg-[#F7F4ED]/50 transition-colors"
+                  onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
                   aria-expanded={isOpen}
+                  className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 hover:bg-[#F7F4ED]/50 transition-colors"
                 >
                   <span className="font-serif text-base sm:text-lg font-medium text-[#10110F]">
                     {faq.question}
                   </span>
-                  <div className={`p-1.5 rounded-full bg-[#F7F4ED] text-[#263D2B] transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180 bg-[#263D2B] text-white' : ''}`}>
+                  <div className={`w-8 h-8 rounded-full border border-[#DCE1D8] flex items-center justify-center flex-shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180 bg-[#263D2B] text-white border-[#263D2B]' : 'bg-white text-[#465640]'}`}>
                     <ChevronDown className="w-4 h-4" />
                   </div>
                 </button>
 
                 {isOpen && (
-                  <div className="px-5 pb-5 sm:px-6 sm:pb-6 text-xs sm:text-sm text-[#465640] leading-relaxed border-t border-[#DCE1D8]/60 pt-4 bg-[#F7F4ED]/20">
+                  <div className="px-5 sm:px-6 pb-6 pt-1 text-xs sm:text-sm text-[#465640] leading-relaxed border-t border-[#DCE1D8]/60 bg-white animate-in fade-in duration-200">
                     <p>{faq.answer}</p>
-                    <div className="mt-3 flex items-center gap-1.5 text-[11px] text-[#263D2B] font-medium">
-                      <ShieldCheck className="w-3.5 h-3.5 flex-shrink-0" />
-                      <span>Certified Esthetics Protocol by Janki Khatroja</span>
-                    </div>
                   </div>
                 )}
               </div>
@@ -343,9 +315,15 @@ export default function BrowExperienceGuide() {
           })}
         </div>
 
-        {/* Sensitivities Note */}
-        <div className="mt-8 p-4 rounded-2xl bg-[#F7F4ED] border border-[#DCE1D8] text-center text-xs text-[#465640]">
-          <strong>Skin Sensitivity Notice:</strong> If you are using prescription retinoids, Accutane, or chemical peels, please notify your artist before any brow hair removal. A patch test is always available.
+        {/* Informational Guidance Footer Box */}
+        <div className="p-6 rounded-2xl bg-white border border-[#DCE1D8] text-center max-w-2xl mx-auto space-y-2">
+          <div className="inline-flex items-center gap-2 text-xs font-bold text-[#263D2B]">
+            <ShieldCheck className="w-4 h-4" />
+            <span>Ethical Brow Consultation Note</span>
+          </div>
+          <p className="text-[11.5px] text-[#465640] leading-relaxed">
+            Our specialists prioritize natural brow preservation and skin integrity. We never over-thread or thin natural arches unnecessarily, ensuring your brow architecture grows gracefully over time.
+          </p>
         </div>
       </section>
 

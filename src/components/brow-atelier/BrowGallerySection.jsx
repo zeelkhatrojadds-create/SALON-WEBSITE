@@ -1,16 +1,17 @@
 import React, { useState, useMemo } from 'react';
 import { 
   Sparkles, 
+  Eye, 
   Maximize2, 
   X, 
   Check, 
   Info, 
   ChevronRight,
   ShieldCheck,
-  Feather
+  Tag
 } from 'lucide-react';
 import { 
-  BROW_INSPIRATION_STYLES, 
+  BROW_INSPIRATION_GALLERY, 
   BROW_GALLERY_FILTERS 
 } from './BrowConstants';
 
@@ -20,8 +21,8 @@ export default function BrowGallerySection() {
   const [lightboxImage, setLightboxImage] = useState(null);
 
   const filteredStyles = useMemo(() => {
-    if (activeFilter === 'all') return BROW_INSPIRATION_STYLES;
-    return BROW_INSPIRATION_STYLES.filter((item) => item.category === activeFilter);
+    if (activeFilter === 'all') return BROW_INSPIRATION_GALLERY;
+    return BROW_INSPIRATION_GALLERY.filter((item) => item.category === activeFilter);
   }, [activeFilter]);
 
   return (
@@ -30,9 +31,9 @@ export default function BrowGallerySection() {
       {/* Section Header */}
       <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14 space-y-3">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white border border-[#DCE1D8] shadow-xs">
-          <Feather className="w-3.5 h-3.5 text-[#263D2B]" />
+          <Eye className="w-3.5 h-3.5 text-[#263D2B]" />
           <span className="text-[10.5px] font-bold uppercase tracking-[0.24em] text-[#263D2B]">
-            BROW ANTHOLOGY &amp; ARCHITECTURES
+            BROW ANTHOLOGY &amp; ARCHITECTURE
           </span>
         </div>
 
@@ -41,26 +42,26 @@ export default function BrowGallerySection() {
         </h2>
 
         <p className="text-xs sm:text-sm text-[#465640] max-w-2xl mx-auto leading-relaxed">
-          Explore our collection of 12 distinct brow silhouettes, from natural feathery strokes and horizontal straight brows to high-lift architectural curves and brushed-up volume.
+          Explore our collection of 12 distinct brow silhouettes, from understated natural grooming and feathered wisps to crisp elevated arches and fluffy laminated textures.
         </p>
 
-        {/* Clear Inspiration Label */}
+        {/* Informational Guidance Notice */}
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-[#F7F4ED] border border-[#DCE1D8] text-[11px] text-[#465640] max-w-xl text-left sm:text-center mt-2">
           <Info className="w-4 h-4 text-[#263D2B] flex-shrink-0" />
           <span>
-            <strong>Style Inspiration:</strong> These styles represent aesthetic inspirations and design concepts. Final brow shape and thickness are individually tailored to your unique bone structure and natural follicle density.
+            <strong>Inspiration Reference:</strong> Gallery styles demonstrate aesthetic brow silhouettes. Final arch height and thickness are individually tailored to your facial landmarks during your appointment.
           </span>
         </div>
       </div>
 
-      {/* Filter Tabs */}
+      {/* Working Filters */}
       <div className="flex items-center justify-center gap-2 mb-10 overflow-x-auto pb-2">
         <div className="inline-flex items-center gap-1.5 p-1 rounded-2xl bg-white border border-[#DCE1D8] shadow-xs">
           {BROW_GALLERY_FILTERS.map((tab) => {
             const isActive = activeFilter === tab.id;
             const count = tab.id === 'all' 
-              ? BROW_INSPIRATION_STYLES.length 
-              : BROW_INSPIRATION_STYLES.filter(item => item.category === tab.id).length;
+              ? BROW_INSPIRATION_GALLERY.length 
+              : BROW_INSPIRATION_GALLERY.filter(item => item.category === tab.id).length;
 
             return (
               <button
@@ -83,7 +84,7 @@ export default function BrowGallerySection() {
         </div>
       </div>
 
-      {/* Gallery Cards Grid (12 Brow Styles) */}
+      {/* Asymmetric Gallery Grid (12 Cards) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
         {filteredStyles.map((style) => (
           <div
@@ -137,7 +138,7 @@ export default function BrowGallerySection() {
               {/* Card Body */}
               <div className="p-5 sm:p-6 space-y-4">
                 
-                {/* Look Title and Tagline */}
+                {/* Title and Tagline */}
                 <div className="space-y-1">
                   <h3 className="font-serif text-2xl text-[#10110F] group-hover:text-[#263D2B] transition-colors">
                     {style.name}
@@ -150,13 +151,13 @@ export default function BrowGallerySection() {
                   </p>
                 </div>
 
-                {/* Shape Characteristics */}
+                {/* Shape and Finish Characteristics */}
                 <div className="space-y-1.5 pt-1">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-[#10110F] block">
                     Shape &amp; Finish Characteristics:
                   </span>
                   <ul className="space-y-1 text-xs text-[#465640]">
-                    {style.shapeCharacteristics.slice(0, 2).map((char, idx) => (
+                    {style.characteristics.slice(0, 2).map((char, idx) => (
                       <li key={idx} className="flex items-start gap-1.5">
                         <Check className="w-3.5 h-3.5 text-[#263D2B] flex-shrink-0 mt-0.5" />
                         <span className="line-clamp-1">{char}</span>
@@ -168,7 +169,7 @@ export default function BrowGallerySection() {
                 {/* Suitable Look */}
                 <div className="p-3 rounded-2xl bg-[#F7F4ED] border border-[#DCE1D8] space-y-1 text-[11px]">
                   <span className="font-bold text-[#263D2B] block uppercase tracking-wider text-[9.5px]">
-                    Ideal Aesthetics:
+                    Ideal Compatibility:
                   </span>
                   <p className="text-[#465640] leading-snug line-clamp-2">
                     {style.suitableLook}
@@ -178,14 +179,14 @@ export default function BrowGallerySection() {
               </div>
             </div>
 
-            {/* View Style Interaction Footer */}
+            {/* View Style Action Footer */}
             <div className="p-5 sm:p-6 pt-0 border-t border-[#DCE1D8]/60 flex items-center justify-between gap-3 mt-4">
               <button
                 type="button"
                 onClick={() => setSelectedStyleModal(style)}
                 className="global-button-secondary w-full !py-2.5 !px-4 text-xs font-semibold text-center cursor-pointer hover:border-[#263D2B] transition-colors flex items-center justify-center gap-1.5"
               >
-                <span>View Style Architecture &amp; Guidance</span>
+                <span>View Style Architecture</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -215,16 +216,16 @@ export default function BrowGallerySection() {
               <X className="w-5 h-5" />
             </button>
 
-            {/* Header info */}
+            {/* Modal Header */}
             <div className="space-y-2 pr-8">
               <div className="flex items-center gap-2">
                 {selectedStyleModal.isServiceInCatalog ? (
                   <span className="px-3 py-1 rounded-full bg-[#263D2B] text-white text-[10px] font-bold uppercase tracking-wider">
-                    Offered Salon Treatment
+                    Offered Treatment
                   </span>
                 ) : (
                   <span className="px-3 py-1 rounded-full bg-[#10110F] text-[#F7F4ED] text-[10px] font-bold uppercase tracking-wider">
-                    Design Inspiration Concept
+                    Design Inspiration
                   </span>
                 )}
                 <span className="text-xs text-[#6B7068] font-mono">
@@ -262,13 +263,13 @@ export default function BrowGallerySection() {
               {selectedStyleModal.description}
             </p>
 
-            {/* Shape Characteristics */}
+            {/* Characteristics Grid */}
             <div className="space-y-2">
               <h4 className="text-xs font-bold uppercase tracking-wider text-[#10110F]">
-                Architectural Characteristics:
+                Shape &amp; Finish Characteristics:
               </h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {selectedStyleModal.shapeCharacteristics.map((c, idx) => (
+                {selectedStyleModal.characteristics.map((c, idx) => (
                   <div key={idx} className="flex items-start gap-2 p-2.5 rounded-xl bg-[#F7F4ED] border border-[#DCE1D8] text-xs text-[#10110F]">
                     <Check className="w-3.5 h-3.5 text-[#263D2B] flex-shrink-0 mt-0.5" />
                     <span>{c}</span>
@@ -277,20 +278,20 @@ export default function BrowGallerySection() {
               </div>
             </div>
 
-            {/* Suitable Look */}
+            {/* Ideal Compatibility */}
             <div className="p-4 rounded-2xl bg-[#F7F4ED] border border-[#DCE1D8] space-y-1 text-xs">
-              <span className="font-bold text-[#10110F] block">Ideal Facial Aesthetics:</span>
+              <span className="font-bold text-[#10110F] block">Ideal Compatibility:</span>
               <p className="text-[#465640] leading-relaxed">
                 {selectedStyleModal.suitableLook}
               </p>
             </div>
 
-            {/* Cross-Link to Approved Service */}
-            {selectedStyleModal.offeredServiceName && (
+            {/* Service cross-link if available */}
+            {selectedStyleModal.offeredTreatmentName && (
               <div className="p-3.5 rounded-2xl bg-white border border-[#DCE1D8] text-xs flex items-center justify-between gap-3">
                 <div>
                   <span className="text-[10px] uppercase font-bold text-[#6B7068] block">Corresponding Approved Service:</span>
-                  <span className="font-serif text-[#10110F] font-semibold">{selectedStyleModal.offeredServiceName}</span>
+                  <span className="font-serif text-[#10110F] font-semibold">{selectedStyleModal.offeredTreatmentName}</span>
                 </div>
                 <a
                   href="#brow-services"
@@ -302,12 +303,7 @@ export default function BrowGallerySection() {
               </div>
             )}
 
-            {/* Disclaimer */}
-            <p className="text-[11px] text-[#6B7068] italic">
-              {selectedStyleModal.inspirationNote}
-            </p>
-
-            {/* Close action - NO BOOKING */}
+            {/* Close action */}
             <div className="pt-2 border-t border-[#DCE1D8] flex justify-end">
               <button
                 type="button"
@@ -353,7 +349,7 @@ export default function BrowGallerySection() {
             <div className="p-5 sm:p-6 bg-[#10110F] border-t border-white/10 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <span className="text-[10px] font-mono uppercase tracking-widest text-[#A8B5A0] block">
-                  High-Resolution Brow Reference
+                  High-Resolution Studio Preview
                 </span>
                 <h4 className="font-serif text-xl sm:text-2xl text-white">
                   {lightboxImage.title}
