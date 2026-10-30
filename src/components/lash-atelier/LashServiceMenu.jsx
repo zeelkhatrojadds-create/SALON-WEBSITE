@@ -1,8 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { 
   Clock, 
-  Calendar, 
   Check, 
   ChevronRight, 
   Sparkles, 
@@ -11,14 +9,12 @@ import {
   Search, 
   X, 
   Info, 
-  HeartHandshake,
   Tag
 } from 'lucide-react';
 import salonDB from '../../db/salonDatabase';
 import SafeServiceImage from '../common/SafeServiceImage';
 
-export default function LashServiceMenu({ onSelectServiceForConsultation }) {
-  const navigate = useNavigate();
+export default function LashServiceMenu() {
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [modalService, setModalService] = useState(null);
@@ -66,24 +62,30 @@ export default function LashServiceMenu({ onSelectServiceForConsultation }) {
   }, [allLashServices, selectedFilter, searchQuery]);
 
   return (
-    <section id="lash-service-menu" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <section id="lash-service-menu" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-[#DCE1D8]">
       
       {/* Section Header */}
       <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14 space-y-3">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white border border-[#DCE1D8] shadow-xs">
           <Sparkles className="w-3.5 h-3.5 text-[#263D2B]" />
           <span className="text-[10.5px] font-bold uppercase tracking-[0.24em] text-[#263D2B]">
-            AUTHENTIC ATELIER SERVICE MENU
+            APPROVED STUDIO CATALOG
           </span>
         </div>
 
         <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-[#10110F] font-normal tracking-tight">
-          Approved Lash Artistry Services
+          Approved Lash Service Collection
         </h2>
 
         <p className="text-xs sm:text-sm text-[#465640] max-w-2xl mx-auto leading-relaxed">
-          Every service is performed by our certified beauty directors with authentic, salon-approved pricing, actual service durations, and meticulous hypoallergenic care.
+          Explore all authentic, salon-approved lash treatments from our master catalog with exact CAD pricing, certified treatment durations, and comprehensive ritual descriptions.
         </p>
+
+        {/* Informational Guidance Notice */}
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white border border-[#DCE1D8] text-[11px] text-[#6B7068]">
+          <Info className="w-3.5 h-3.5 text-[#263D2B] flex-shrink-0" />
+          <span>Informational service catalog. Click any treatment card to view complete protocol details and client benefits.</span>
+        </div>
       </div>
 
       {/* Filter Tabs & Search Bar */}
@@ -134,7 +136,7 @@ export default function LashServiceMenu({ onSelectServiceForConsultation }) {
         <div className="p-12 text-center rounded-3xl bg-white border border-[#DCE1D8] space-y-3">
           <Eye className="w-8 h-8 text-[#6B7068] mx-auto" />
           <h3 className="font-serif text-xl text-[#10110F]">No lash services matched your search</h3>
-          <p className="text-xs text-[#6B7068]">Try searching with a different keyword or view all approved services.</p>
+          <p className="text-xs text-[#6B7068]">Try searching with a different keyword or reset filters.</p>
           <button
             type="button"
             onClick={() => { setSelectedFilter('all'); setSearchQuery(''); }}
@@ -198,7 +200,7 @@ export default function LashServiceMenu({ onSelectServiceForConsultation }) {
                       </p>
                     </div>
 
-                    {/* Benefits Preview */}
+                    {/* Features / Benefits Preview */}
                     {service.benefits && service.benefits.length > 0 && (
                       <div className="space-y-1.5 pt-1">
                         <span className="text-[10px] font-bold uppercase tracking-wider text-[#263D2B] block">
@@ -245,9 +247,10 @@ export default function LashServiceMenu({ onSelectServiceForConsultation }) {
                   <button
                     type="button"
                     onClick={() => setModalService(service)}
-                    className="global-button-secondary w-full !py-2.5 !px-3.5 text-xs font-semibold text-center cursor-pointer hover:border-[#263D2B] transition-colors"
+                    className="global-button-secondary w-full !py-2.5 !px-3.5 text-xs font-semibold text-center cursor-pointer hover:border-[#263D2B] transition-colors flex items-center justify-center gap-1.5"
                   >
-                    View Details &amp; Guidance →
+                    <span>View Treatment Details &amp; Protocol</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
 
@@ -297,7 +300,7 @@ export default function LashServiceMenu({ onSelectServiceForConsultation }) {
                 </span>
                 <span>•</span>
                 <span className="text-[#263D2B] font-semibold">
-                  Ottawa Studio
+                  Ottawa Studio Sanctuary
                 </span>
               </div>
             </div>
@@ -354,14 +357,14 @@ export default function LashServiceMenu({ onSelectServiceForConsultation }) {
               </div>
             )}
 
-            {/* Modal Actions */}
+            {/* Modal Actions - NO BOOKING */}
             <div className="pt-3 border-t border-[#DCE1D8] flex items-center justify-end">
               <button
                 type="button"
                 onClick={() => setModalService(null)}
                 className="w-full sm:w-auto global-button !py-2.5 !px-6 text-white text-xs font-bold uppercase tracking-wider cursor-pointer shadow-md"
               >
-                Close Window
+                Close Protocol Window
               </button>
             </div>
 
