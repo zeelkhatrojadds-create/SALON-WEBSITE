@@ -4,7 +4,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Sparkles, ArrowRight, X, Eye, Scissors } from 'lucide-react';
+import { Search, Sparkles, ArrowRight, X, Eye, Scissors, Feather } from 'lucide-react';
 import { salonDB } from '../db/salonDatabase';
 import { MAIN_SERVICE_CATEGORIES, getServicesForCategory } from '../data/mainCategoriesData';
 import CategoryCard from '../components/services/CategoryCard';
@@ -128,6 +128,13 @@ export default function ServicesPage({ isSection = false }) {
             >
               <Sparkles className="w-3.5 h-3.5 text-[#263D2B]" />
               <span>THE MAKEUP ATELIER</span>
+            </Link>
+            <Link
+              to="/brow-atelier"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white hover:bg-[#F7F4ED] border border-[#DCE1D8] hover:border-[#263D2B] text-[#263D2B] text-xs font-bold uppercase tracking-[0.14em] shadow-2xs transition-all duration-200 hover:scale-[1.02]"
+            >
+              <Feather className="w-3.5 h-3.5 text-[#263D2B]" />
+              <span>THE BROW ATELIER</span>
             </Link>
             <Link
               to="/special-treatments"

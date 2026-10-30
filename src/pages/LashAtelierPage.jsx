@@ -267,6 +267,20 @@ export default function LashAtelierPage() {
             </Link>
 
             <Link
+              to="/the-brow-atelier"
+              className="px-6 py-3.5 rounded-full border border-white/30 text-white hover:bg-white/10 text-xs font-semibold flex items-center justify-center gap-2 transition-colors"
+            >
+              <span>The Brow Atelier</span>
+            </Link>
+
+            <Link
+              to="/the-makeup-atelier"
+              className="px-6 py-3.5 rounded-full border border-white/30 text-white hover:bg-white/10 text-xs font-semibold flex items-center justify-center gap-2 transition-colors"
+            >
+              <span>The Makeup Atelier</span>
+            </Link>
+
+            <Link
               to="/hair-atelier"
               className="px-6 py-3.5 rounded-full border border-white/30 text-white hover:bg-white/10 text-xs font-semibold flex items-center justify-center gap-2 transition-colors"
             >
