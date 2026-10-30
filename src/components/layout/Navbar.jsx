@@ -219,6 +219,55 @@ export default function Navbar() {
     };
   }, [isServicesDropdownOpen]);
 
+  // Lock background page scrolling when the Services mega dropdown menu is open
+  useEffect(() => {
+    if (!isServicesDropdownOpen) return;
+
+    // Calculate scrollbar width to prevent horizontal layout shift
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    const originalOverflow = document.body.style.overflow;
+    const originalPaddingRight = document.body.style.paddingRight;
+
+    document.body.style.overflow = 'hidden';
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
+    const preventWheelScroll = (e) => {
+      // If cursor is inside dropdown card and dropdown itself has internal scrollable content, allow it
+      if (dropdownCardRef.current && dropdownCardRef.current.contains(e.target)) {
+        const el = dropdownCardRef.current;
+        if (el.scrollHeight > el.clientHeight) {
+          const atTop = el.scrollTop === 0 && e.deltaY < 0;
+          const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight && e.deltaY > 0;
+          if (!atTop && !atBottom) {
+            return;
+          }
+        }
+      }
+      e.preventDefault();
+    };
+
+    const preventKeyScroll = (e) => {
+      if (['Space', 'PageUp', 'PageDown', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.code)) {
+        if (['INPUT', 'TEXTAREA'].includes(e.target?.tagName)) return;
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener('wheel', preventWheelScroll, { passive: false });
+    window.addEventListener('touchmove', preventWheelScroll, { passive: false });
+    window.addEventListener('keydown', preventKeyScroll, { passive: false });
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.body.style.paddingRight = originalPaddingRight;
+      window.removeEventListener('wheel', preventWheelScroll);
+      window.removeEventListener('touchmove', preventWheelScroll);
+      window.removeEventListener('keydown', preventKeyScroll);
+    };
+  }, [isServicesDropdownOpen]);
+
   // Prevent dropdown card from overflowing right/left edges of viewport
   useEffect(() => {
     if (isServicesDropdownOpen && dropdownCardRef.current) {
